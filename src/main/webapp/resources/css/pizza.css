@@ -1,0 +1,52 @@
+.menu-entry+.menu-entry {
+	border-top: 1px solid #DDDDDD;
+}
+
+.pizza-name {
+	font-size: 170%;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.pizza-image-container {
+	text-align: center;
+	margin-bottom: 25px;
+}
+
+.label-ingredients {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.pizzeria-name {
+	font-size: 130%;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.right-container {
+	position: absolute;
+	bottom: 15;
+	right: 0;
+}
+
+.pizza-price {
+	font-size: 150%;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.pizzeriaPizza-label {
+	font-weight: bold;
+}
+
+/* .menu-entry:last-child { */
+/* 	padding-bottom: 0; */
+/* } */
+
+.menu-entry {
+	position: relative;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	width: 100%;
+}

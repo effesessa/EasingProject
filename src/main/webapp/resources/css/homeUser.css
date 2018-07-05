@@ -1,0 +1,67 @@
+.wrapper {
+	padding-left: 15px;
+}
+
+.profile-image-container {
+	text-align: center;
+}
+
+.top-pizza {
+	margin-top: 15px;
+}
+
+.myref {
+	font-size: 130%;
+	font-weight: bold;
+}
+
+.pizzeriaPizza-label {
+	font-weight: bold;
+}
+
+.name-container {
+	font-size: 140%;
+	font-weight: bold;
+	margin-top: 25px;
+}
+
+.username-container {
+	margin-top: 15px;
+	font-size: 110%;
+	font-style: italic;
+}
+
+
+.form-radius {
+	width: 85px;
+	display: inline-block;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.button-radius {
+	margin-left: 25px;
+}
+
+#map {
+	margin-top: 25px;
+	height: 80%;
+}
+
+.ratings {
+	margin-top: 10px;
+}
+
+.feedbacks-header {
+	font-weight: bold;
+	font-size: 110%;
+	margin-bottom: 20px;
+}
+
+.feedbacks-bubble .bubble-title {
+	margin-bottom: 10px;
+}
+
+.no-feedbacks {
+	margin-top: 20px;
+}

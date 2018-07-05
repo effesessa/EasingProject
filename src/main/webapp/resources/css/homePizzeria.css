@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+
+#wrapper {
+	padding-left: 15px;
+}
+
+#login-error {
+	margin-bottom: 25px;
+}
+
+.home-table tr {
+	cursor: pointer;
+}
+
+.home-form {
+	margin-top: 10px;
+}
+
+.form-column {
+	padding-left: 15px;
+}
+
+.buttons-container {
+	margin-top: 35px;
+	text-align: center;
+}
+
+.buttons-container .button-update, .buttons-container .button-delete,
+	.buttons-container .button-pay, .buttons-container .button-save {
+	margin-left: 10px;
+}
+
+tr.highlighted {
+	color: #A94442;
+}
+
+.pizzeria-link {
+	margin-top: 25px;
+	font-size: 110%;
+	font-weight: bold;
+}

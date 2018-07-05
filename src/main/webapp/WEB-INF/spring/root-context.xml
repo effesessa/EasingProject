@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/easingdb?UseUnicode=true&amp;characterEncoding=utf8" />
+		<property name="username" value="root"/>
+		<property name="password" value="131446"/> 
+		
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="it.unical.entities" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- <prop key="hibernate.show_sql">true</prop> -->
+			</props>
+		</property>
+	</bean>
+
+	<bean id="databaseHandler" class="it.unical.dao.DatabaseHandler">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- bean id="passwordHashing" class="it.unical.pizzamanager.utils.PasswordHashing" /-->
+
+	<!-- Keep DAO beans in alphabetical order for clarity. -->
+
+	<bean id="contestDAO" class="it.unical.dao.ContestDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="juryDAO" class="it.unical.dao.JuryDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="jurymemberDAO" class="it.unical.dao.JuryMemberDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="membershipDAO" class="it.unical.dao.MembershipDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="partecipationDAO" class="it.unical.dao.PartecipationDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="problemDAO" class="it.unical.dao.ProblemDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="registrationDAO" class="it.unical.dao.RegistrationDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="subjectDAO" class="it.unical.dao.SubjectDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="submitDAO" class="it.unical.dao.SubmitDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="teamDAO" class="it.unical.dao.TeamDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="testcaseDAO" class="it.unical.dao.TestcaseDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="userDAO"
+		class="it.unical.dao.UserDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<context:component-scan
+		base-package="org/springframework/samples/task/basic/annotation" />
+	<task:annotation-driven />
+
+</beans>

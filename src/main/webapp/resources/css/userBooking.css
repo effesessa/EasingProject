@@ -1,0 +1,20 @@
+.wrapper {
+	padding-left: 15px;
+}
+
+.buttons-container {
+	margin-top: 25px;
+}
+
+.panel-collapse {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.list-group {
+	border: 0!important;
+}
+
+#accordion {
+	margin-bottom: 0;
+}

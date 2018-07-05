@@ -1,0 +1,38 @@
+- 06/06/2018
+	- aggiunto package it.unical.core.submission
+	- aggiunto livello di astrazione ed estendibilità per l'esecuzione automatica di più linguaggi.
+	- utilizzo del pattern factory method e della reflection per l'implementazione.
+	- classi aggiunte nel package it.unical.core.processbuilder (IProcessBuilder, JavaProcessBuilder, CppProcessBuilder,
+	  CProcessBuilder, PyProcessBuilder, NoOneProcessBuilder, ProcessBuilderFactory).
+	- Utilizzo del pattern Singleton per la classe ProcessBuilderFactory.
+	NOTA: Per aggiunte future di altri linguaggi, basta aggiungere una classe "EstensioneFileLinguaggio"ProcessBuilder, 
+	      che implementa l'interfaccia IProcessBuilder ed implementare i metodi richiesti.
+- 08/06/2018
+	- aggiunta classe Engine, per la compilazione, l'esecuzione e la verifica della sottomissione ad un problema.
+	- aggiunte nel package it.unical.utils le classi StringUtils, FFileUtils, Status, TypeFileExtension.
+	TODO: metodo match soluzione esatta ancora da implementare.
+- 09/06/2018
+    - aggiunto package it.unical.core.strategy
+    - aggiunto livello di astrazione ed estendibilità per il salvataggio di problemi.
+	- utilizzo del pattern strategy e del pattern template method per l'implementazione.
+	- classi aggiunte nel package it.unical.core.strategy (AbstractStrategy, CompressStrategy, FileStrategy, 
+	  AlgorithmStrategy, TypeContext)
+	- utilizzo del pattern Singleton per la classe TypeContext.
+	- TODO manca la scelta di generare un input ArrayString o IntegerString, per ora AlgorithmStrategy genera 
+	  un output a partire dall'algoritmo senza un input.
+	  
+- 12/06/2018
+	- modificata la funzione addProblem nella classe ProblemController.
+	- aggiunto enctype="multipart/form-data" per il form addProblem in navBarTeacher.
+- 18/06/2018
+    - aggiunta nel package it.unical.utils la classe MultipartFileUtils.
+    - riuso delle classi appartenenti al package it.unical.core.strategy per implementare la sottomissione.
+    - aggiunta nel pom.xml le dipendenze per la lib zip4j per estrazione files dagli archivi in modo rapido.
+ 03/07/2018
+ 	- attraverso l'uso della strategy è stato rimodellato e reimplementato il motore della compilazione
+ 	- fix getAllSubmitByProblemAndTeam in SubmitDAOImpl che restituiva una sola submit e non una lista di submits.
+ 	- aggiunta nel package it.unical.core la classe SumissionHandler per delegare il compito di salvare la
+ 	  sottomissione corrente e di controllare la storicità delle sottomissioni. (max 5 sottomissioni)
+ 	- sostituito il campo solution da tinyblob a mediumblob.
+ 	
+ 	.....

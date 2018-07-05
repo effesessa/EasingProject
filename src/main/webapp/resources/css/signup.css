@@ -1,0 +1,88 @@
+h2 {
+	margin-top: 0;
+	margin-bottom: 50px;
+}
+
+.message.message-multiline {
+	position: absolute;
+	top: -10px;	
+}
+
+.sign-up-error {
+	font-size: 120%;
+	font-weight: bold;
+	color: #BB0000;
+	margin-bottom: 30px;
+}
+
+.loader {
+	display: none;
+	width: 14px;
+	height: 14px;
+	top: 10px;
+	right: 10px;
+}
+
+/* This selector applies to every row preceded by another row (so every row except the first). */
+.row+.row {
+	margin-top: 20px;
+}
+
+.form-group {
+	margin-bottom: 0;
+}
+
+@media ( min-width : 992px) {
+	.input-container {
+		padding-right: 0px;
+	}
+}
+
+#signup-additional {
+	margin-top: 40px;
+	text-align: center;
+}
+
+#signup-additional .nav li+li a {
+	margin-left: 20px;
+}
+
+#signup-additional .nav {
+	margin-top: 30px;
+	font-size: 120%;
+}
+
+.message, .message-permanent {
+	margin-top: 7px;
+	margin-left: 15px;
+}
+
+.message {
+	display: none;
+}
+
+.message.visible {
+	display: block;
+}
+
+.hint, .validating {
+	color: #AAAAAA;
+}
+
+.error, .taken {
+	color: #A94442;
+}
+
+.valid {
+	color: #3C763D;
+}
+
+.additional {
+	display: none;
+	margin-top: 35px;
+}
+
+.button-submit-container {
+	text-align: center;
+	margin-top: 30px;
+}

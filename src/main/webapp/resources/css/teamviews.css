@@ -1,0 +1,13 @@
+@charset "ISO-8859-1";
+
+h2, h4, body
+{
+	text-align:center;
+}
+
+form
+{
+	margin-top: 5%;
+	margin-left: 5%;
+	margin-right: 10%;
+}

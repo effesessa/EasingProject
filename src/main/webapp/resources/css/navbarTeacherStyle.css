@@ -1,0 +1,19 @@
+@charset "ISO-8859-1";
+
+form
+{
+	margin-top: 5%;
+	margin-left: 5%;
+	margin-right: 10%;
+}
+
+.modal-title
+{
+	text-align: center;
+	font-size: 200%;
+}
+
+#timeout, #year
+{
+	width: 15%
+}

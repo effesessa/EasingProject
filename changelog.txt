@@ -1,0 +1,32 @@
+05-06-2018:
+	- Unificato i 4 form per la creazione di un Problema in uno solo
+	- Aggiunto input mancanti al form (descrizione del problema, timeout ecc)
+	- Sostituito il campo "ID Contest" nel form con una lista dei Contest disponibili (recuperata tramite chiamata ajax)
+	- Creato un file javascript per la gestione\validazione del form
+	- Creato un file css per il form
+	- Creata funzione in ProblemController per catturare la chiamata ajax
+	- Creata funzione in ContestDAO per invocare una query che restituisce i Contest disponibili dato un Professore
+	- Adattato AddContestForm.java per il nuovo form
+	- Spostati i form di creazione (Subject\Contest\Problem) in navbarTearcher, dato che lì risiedono i link (altrimenti in qualsiasi altra pagina diversa da HomeUser non si sarebbe potuto richiamare il form)
+	
+	TODO:
+	- Cambiare in ProblemController contest.get() nella riga 98 con contest.getContestByName() (ora il form manda il nome e non l'id del contest)
+	
+07-06-2018
+	- Migliorati i form per la creazione di un Contest e un Subject
+	- Eliminato il campo "ID" nel form per la creazione del Subject (da autogenerare)
+	- Aggiunti i campi mancanti nei form (a Contest mancano alcuni campi di cui non ho capito il significato nel DB)
+	- Creata funzione in ContestController per catturare le chiamate ajax
+	- Adattato AddSubjectForm.java per il nuovo form
+	
+	TODO:
+	- Settare l'ID di Subject come generato (ora in HomeController nel metodo di creazione di un Subject l'ID viene settato dal campo del form ora rimosso)
+	
+	NOTA:
+	- Per una delle due chiamate ajax ho dovuto, nel metodo in ContestController, eseguire la query e prendere i nomi prima di serializzarli con jackson, altrimenti veniva restituito LazyInitializationException. Decidere poi in back-end se usare un Fetch EAGER (ora è Lazy), la notazione @JsonIgnore sui campi che non devono essere serializzati, trovare un altro modo (Proxy?) o lasciare così finché non servirà l'oggetto completo (al momento serve solo un campo di quell'entità)
+	https://vladmihalcea.com/the-best-way-to-handle-the-lazyinitializationexception/
+	
+09-06-2018
+	- Bugfix
+	- Create due JSP di supporto: header.jsp, che include file css comuni (Google Fonts, Bootstrap), e footer.jsp, che include javascript comuni (jQuery, Bootstrap)
+	
