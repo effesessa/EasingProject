@@ -39,31 +39,32 @@ public class CompressStrategy extends AbstractStrategy {
 	
 	@Override
 	public String process(Problem problem, File submittedFile, File testCaseFile, String teamName) throws IOException {
+		String nameArchive = StringUtils.getBaseName(testCaseFile.getName());
 		try {
 			ZipFile archive = new ZipFile(testCaseFile);
-			archive.extractAll(System.getProperty(Engine.WORKING_DIRECTORY));
+			archive.extractAll(System.getProperty(Engine.WORKING_DIRECTORY) + nameArchive);
 		} 
 		catch (ZipException e) {
 			e.printStackTrace();
 		}
-		String nameArchive = StringUtils.getBaseName(testCaseFile.getName());
 		File directory = new File(System.getProperty(Engine.WORKING_DIRECTORY) + nameArchive);
 		File[] files = directory.listFiles();
 		Arrays.sort(files);
-		for (File file : files) {
+		for (int i = 0; i < files.length; i+=2) {
+			File file = files[i];
 			if(Engine.compile(submittedFile.getName()).equals(Status.COMPILE_ERROR))
 				return Status.COMPILE_ERROR;
 			long timeLimit = TimeUnit.SECONDS.toMillis((long)(float)problem.getTimelimit());
-			String input = FileUtils.readFileToString(file, "UTF-8");
-			String response = Engine.run(submittedFile.getName(), timeLimit, input);
+			String response = Engine.run(submittedFile.getName(), timeLimit, file.getName());
 			if(Status.statusList.contains(response))
 				return response;
-			String correctSolution = new String(problem.getSol(), "UTF-8");
+			String correctSolution = FileUtils.readFileToString(files[i+1],"UTF-8");
+			correctSolution = StringUtils.checkAndRemoveUTF8BOM(correctSolution);
 			if(!Engine.match(response,correctSolution).equals(Status.WRONG_ANSWER))
 				return Status.WRONG_ANSWER;
 		}
 		FFileUtils.deleteDirectory(directory);
-		return Status.SUCCESS;
+		return Status.CORRECT;
 	}
 
 }

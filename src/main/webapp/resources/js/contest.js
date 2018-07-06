@@ -149,15 +149,15 @@ pnProductNavContents.addEventListener("transitionend", function() {
 // Handle setting the currently active link
 pnProductNavContents.addEventListener("click",
 		function(e) {
-			var links = [].slice.call(document
-					.querySelectorAll(".pn-ProductNav_Link"));
+			var links = [].slice.call(document.querySelectorAll(".pn-ProductNav_Link"));
 			links.forEach(function(item) {
-				$("#body-"+item.text).css("display","none");
+				var bodyID = item.text.replace(" ", "");
+				$("#body-"+bodyID).css("display","none");
 				item.setAttribute("aria-selected", "false");
 			})
-			$("#body-"+e.target.text).css("display","block");
+			var bodyID = e.target.text.replace(" ", "");
+			$("#body-"+bodyID).css("display","block");
 			e.target.setAttribute("aria-selected", "true");
-			console.log(e.target.text);
 			// Pass the clicked item and it's colour to the move indicator
 			// function
 			moveIndicator(e.target, color);
