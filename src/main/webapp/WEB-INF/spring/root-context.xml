@@ -85,8 +85,11 @@
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 
-	<bean id="userDAO"
-		class="it.unical.dao.UserDAOImpl">
+	<bean id="userDAO" class="it.unical.dao.UserDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="tagDAO" class="it.unical.dao.TagDAOImpl">
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 
