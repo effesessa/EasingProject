@@ -40,3 +40,5 @@
  06/07/2018
  	- aggiunte le classi Tag, TagDAO, TagDAOImpl e aggiunto bean xml per la classe TagDAO in root-context.xml
  	- update package processbuilder per differenziare linguaggio da compilare o meno.
+ 07/07/2018
+ 	- fixed CompressStrategy, amen!
