@@ -24,15 +24,19 @@
 - 12/06/2018
 	- modificata la funzione addProblem nella classe ProblemController.
 	- aggiunto enctype="multipart/form-data" per il form addProblem in navBarTeacher.
+	
 - 18/06/2018
     - aggiunta nel package it.unical.utils la classe MultipartFileUtils.
     - riuso delle classi appartenenti al package it.unical.core.strategy per implementare la sottomissione.
     - aggiunta nel pom.xml le dipendenze per la lib zip4j per estrazione files dagli archivi in modo rapido.
+    
  03/07/2018
  	- attraverso l'uso della strategy è stato rimodellato e reimplementato il motore della compilazione
  	- fix getAllSubmitByProblemAndTeam in SubmitDAOImpl che restituiva una sola submit e non una lista di submits.
  	- aggiunta nel package it.unical.core la classe SumissionHandler per delegare il compito di salvare la
  	  sottomissione corrente e di controllare la storicità delle sottomissioni. (max 5 sottomissioni)
- 	- sostituito il campo solution da tinyblob a mediumblob.
+ 	- sostituito il campo solution da tinyblob a mediumblob (lato db).
  	
- 	.....
+ 06/07/2018
+ 	- aggiunte le classi Tag, TagDAO, TagDAOImpl e aggiunto bean xml per la classe TagDAO in root-context.xml
+ 	- update package processbuilder per differenziare linguaggio da compilare o meno.

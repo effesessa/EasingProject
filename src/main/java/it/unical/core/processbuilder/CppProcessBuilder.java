@@ -28,4 +28,9 @@ public class CppProcessBuilder implements IProcessBuilder {
 				StringUtils.getBaseName(file) + ".exe", input);
 	}
 
+	@Override
+	public boolean compile() {
+		return true;
+	}
+
 }

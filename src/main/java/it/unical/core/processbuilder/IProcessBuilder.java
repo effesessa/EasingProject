@@ -6,9 +6,11 @@ package it.unical.core.processbuilder;
 
 public interface IProcessBuilder {
 	
-	public ProcessBuilder getCompileProcessBuilder(String file);
+	boolean compile();
 	
-	public ProcessBuilder getRunProcessBuilder(String file);
+	ProcessBuilder getCompileProcessBuilder(String file);
 	
-	public ProcessBuilder getRunProcessBuilder(String file, String input);
+	ProcessBuilder getRunProcessBuilder(String file);
+	
+	ProcessBuilder getRunProcessBuilder(String file, String input);
 }

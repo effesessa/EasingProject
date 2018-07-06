@@ -22,4 +22,9 @@ public class JavaProcessBuilder implements IProcessBuilder {
 	public ProcessBuilder getRunProcessBuilder(String file, String input) {
 		return new ProcessBuilder("java", "-cp", ".", StringUtils.getBaseName(file), input);
 	}
+
+	@Override
+	public boolean compile() {
+		return true;
+	}
 }

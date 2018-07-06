@@ -18,8 +18,12 @@ public class PyProcessBuilder implements IProcessBuilder {
 
 	@Override
 	public ProcessBuilder getRunProcessBuilder(String file, String input) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ProcessBuilder("python", file, input);
+	}
+
+	@Override
+	public boolean compile() {
+		return false;
 	}
 
 }

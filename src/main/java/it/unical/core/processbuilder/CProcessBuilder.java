@@ -25,5 +25,10 @@ public class CProcessBuilder implements IProcessBuilder {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public boolean compile() {
+		return true;
+	}
 
 }
