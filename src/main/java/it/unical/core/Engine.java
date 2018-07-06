@@ -97,8 +97,9 @@ public class Engine {
 		System.out.println("*************" + response + "*************");
 		System.out.println("*************" + correctSolution + "*************");
 		System.out.println("MATCH FUNCTION ----------------->");
-		if(!response.equals(correctSolution))
+		if(!response.equals(correctSolution)) {
 			return Status.WRONG_ANSWER;
+		}
 		return Status.CORRECT;
 	}
 	

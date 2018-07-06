@@ -42,7 +42,7 @@ public abstract class AbstractStrategy {
 	}
 	
 	/**
-	 * if present in DB, testcase file can be txt, dat, zip, 7z, rar
+	 * if present in DB, testcase file can be txt, dat, zip
 	 * for archives there can be more test cases with relative outputs
 	 * otherwise file is null and the submission is without input(testcase)
 	 * the output is always present on DB

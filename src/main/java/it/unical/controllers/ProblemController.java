@@ -459,7 +459,7 @@ public class ProblemController
 	@RequestMapping(value = "/submit", method = RequestMethod.POST)
 	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException {
 		setAccountAttribute(session, model);
-		System.out.println("********************prova submit*********************");
+		System.out.println("********************submit*********************");
 		
 		ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 		Problem problem = problemDAO.get(submitForm.getIdProblem());
@@ -471,7 +471,7 @@ public class ProblemController
 		String status = typeContext.submit(problem, submitForm);
 		System.out.println(status);
 		SubmissionHandler.save(context, problem, submitForm, status);
-		System.out.println("********************prova submit*********************");
+		System.out.println("********************submit*********************");
 		return "redirect:/";
 	}
 	
