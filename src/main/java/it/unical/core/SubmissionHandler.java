@@ -23,7 +23,6 @@ public class SubmissionHandler {
 	
 	public static void save(WebApplicationContext context, Problem problem, SubmitForm submitDTO, String status) {
 		new Thread(new Runnable() {
-			
 			@Override
 			public void run() {
 				File submittedFile = new File(System.getProperty(Engine.WORKING_DIRECTORY) 

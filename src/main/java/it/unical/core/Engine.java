@@ -32,6 +32,8 @@ public class Engine {
 	public static String compile(String file) {
 		ProcessBuilderFactory processBuilderFactory = ProcessBuilderFactory.getInstance();
 		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(file);
+		if(!iProcessBuilder.compile())
+			return Status.COMPILE_SUCCESS;
 		ProcessBuilder processBuilder = iProcessBuilder.getCompileProcessBuilder(file);
 		processBuilder.directory(new File(System.getProperty(WORKING_DIRECTORY)));
         processBuilder.redirectErrorStream(true);
