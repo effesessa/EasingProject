@@ -13,7 +13,7 @@ public class PyProcessBuilder implements IProcessBuilder {
 
 	@Override
 	public ProcessBuilder getRunProcessBuilder(String file) {
-		return new ProcessBuilder("");
+		return new ProcessBuilder("python", file);
 	}
 
 	@Override
