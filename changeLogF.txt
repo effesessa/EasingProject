@@ -41,4 +41,10 @@
  	- aggiunte le classi Tag, TagDAO, TagDAOImpl e aggiunto bean xml per la classe TagDAO in root-context.xml
  	- update package processbuilder per differenziare linguaggio da compilare o meno.
  07/07/2018
- 	- fixed CompressStrategy, amen!
+ 	- fixed CompressStrategy
+ 	- c'è un problema con la codifica dei file, quando lo studente legge in file in input.
+ 	- se il professore carica come testcase un file con codifica ANSI è tutto ok
+ 	- se il professore carica come testcase un file con codifica UTF-8 c'è un problema lato studente
+ 	- lo studente per leggere correttamente deve rimpiazzare il BOM (?) 
+ 	  per esempio in java String s = line.replace("\uFEFF" , "");
+ 	- per i files di output non c'è nessun problema della codifica che gestisce il sistema.

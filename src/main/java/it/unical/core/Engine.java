@@ -93,25 +93,18 @@ public class Engine {
 	}
 
 	public static String match(String response, String correctSolution) {
-		System.out.println("MATCH FUNCTION ----------------->");
-		System.out.println("*************" + response + "*************");
-		System.out.println("*************" + correctSolution + "*************");
-		System.out.println("MATCH FUNCTION ----------------->");
+		debugMatch(response, correctSolution);
 		if(!response.equals(correctSolution)) {
 			return Status.WRONG_ANSWER;
 		}
 		return Status.CORRECT;
 	}
 	
-	/*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream(),"UTF-8"));
-    bufferedReader.mark(1);
-    if (bufferedReader.read() != 0xFEFF)
-    	bufferedReader.reset();
-	StringBuilder builder = new StringBuilder();
-	String line = "";
-	while ((line = bufferedReader.readLine()) != null) {
-		builder.append(line);
+	private static void debugMatch(String r, String c) {
+		System.out.println("*************match*************");
+		System.out.println("-------------" + r + "-------------");
+		System.out.println("-------------" + c + "-------------");
+		System.out.println("*************match*************");
 	}
-	output = builder.toString();
-	*/
+	
 }

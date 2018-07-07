@@ -43,6 +43,7 @@ public class FileStrategy extends AbstractStrategy {
 		if(Status.statusList.contains(response))
 			return response;
 		String correctSolution = new String(problem.getSol(),"UTF-8");
+		System.out.println("BOM: " + correctSolution);
 		correctSolution = StringUtils.checkAndRemoveUTF8BOM(correctSolution);
 		return Engine.match(response,correctSolution);
 	}
