@@ -30,3 +30,35 @@
 	- Bugfix
 	- Create due JSP di supporto: header.jsp, che include file css comuni (Google Fonts, Bootstrap), e footer.jsp, che include javascript comuni (jQuery, Bootstrap)
 	
+15-06-2018
+	- Ridisegnato il form per la sottomissione di soluzioni ai problemi
+	- Aggiunto stile in contest.css
+	- Creata servlet in ContestController per fornire il PDF (traccia) in download per ogni problema
+	- Modificato contestMainView in ContestController, ora le Descrizioni seguono la formattazione iniziale per quanto riguarda il punto e a capo
+	- Inserite le opzioni "cp" e "." al JavaProcessBuilder per l'esecuzione [Utili solo su Windows]
+	
+20-06-2018
+	- Aggiunto campo hidden al form della submit di una soluzione (contest.jsp) eliminando il parametro problemID passato nell'URL
+	
+03-07-2018
+	- Riscritta Vista "teamviews.jsp" in modo da rispettare lo stile generale del sito
+	- Migliorato form per la creazione di un Team
+	- Aggiunta validazione javascript sul form per la creazione di un Team
+	- Ottimizzazione di codice ripetuto in tutte le Viste (spostato nelle navBar)
+	- Eliminato campo "type" nel form per la Creazione di un Problema (inutile con la reflection)
+	- Modificato "AddTeamForm" per rispecchiare il nuovo form
+	- Modificata servlet "addTeam" in "TeamController" SOLO per rimuovere gli errori dati dalla modifica di "AddTeamForm"
+	- Riscritta Vista "subjectview.jsp" in modo da rispettare lo stile generale del sito
+	
+04-07-2018
+	- Fixato bug sulla Vista "contest.jsp" che impediva una corretta visualizzazione
+	- Riaggiunto campo "type" nel form per la Creazione di un Problema
+
+06-07-2018
+	- Aggiunta la possibilità di rendere disponibili i TestCase agli studenti nella creazione di un Problema
+	- Aggiunto supporto ai Tag nel form della creazione di un Problema
+		- Utilizzata libreria bootstrap-tagsinput per i tag e typeaheadJS per il completamento automatico
+		- Aggiornate le risorse (JS e CSS) della Vista "navbarTearcher"
+		- Modificata ProblemController per fornire la lista dei Tag via chiamata AJAX
+	- Fixato bug per cui non era possibile creare un Contest (la servlet sfruttava l'ID invece del nome, ora la chiamata AJAX restituisce anche l'ID)
+	- Fixato bug per cui non era possibile creare una Subject (prima bisognava inserire l'ID manualmente, ora viene incrementato manualmente (NB: Controllo sulla Transazione)

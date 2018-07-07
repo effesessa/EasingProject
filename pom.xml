@@ -266,6 +266,12 @@
 			<version>1.3.2</version>
 		</dependency>
 		
+		<!-- Bootstrap-TagsInput - https://mvnrepository.com/artifact/org.webjars/bootstrap-tagsinput -->
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>bootstrap-tagsinput</artifactId>
+		    <version>0.8.0</version>
+		</dependency>		
 	</dependencies>
 	<build>
 		<finalName>Prove</finalName>

@@ -1,86 +1,107 @@
 package it.unical.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.type.StandardBasicTypes;
 
 import it.unical.entities.Registration;
 import it.unical.entities.Subject;
 import it.unical.entities.User;
 
-
-
 @SuppressWarnings("unused")
-public class SubjectDAOImpl implements SubjectDAO {
+public class SubjectDAOImpl implements SubjectDAO
+{
 
 	private DatabaseHandler databaseHandler;
 
-	public SubjectDAOImpl() {
+	public SubjectDAOImpl()
+	{
 		databaseHandler = null;
 	}
 
-	public DatabaseHandler getDatabaseHandler() {
-		return databaseHandler;
-	}
-
-	public void setDatabaseHandler(DatabaseHandler databaseHandler) {
-		this.databaseHandler = databaseHandler;
-	}
-
 	@Override
-	public void create(Subject subject) {
+	public void create(Subject subject)
+	{
 		databaseHandler.create(subject);
 	}
 
 	@Override
-	public void delete(Subject subject) {
+	public void delete(Subject subject)
+	{
 		databaseHandler.delete(subject);
 	}
 
 	@Override
-	public void update(Subject subject) {
-		databaseHandler.update(subject);
-	}
-
-
-	@Override
-	public Subject get(Integer id) {
-		Session session = databaseHandler.getSessionFactory().openSession();
-		Query query = session.createQuery("from Subject where id_subject = :id");
+	public Subject get(Integer id)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Subject where id_subject = :id");
 		query.setParameter("id", id);
-		Subject subject = (Subject) query.uniqueResult();
+		final Subject subject = (Subject) query.uniqueResult();
 		session.close();
 		return subject;
 	}
-	
+
+	@Override
+	public Subject get(String name)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Subject where name = :name");
+		query.setParameter("name", name);
+		final Subject subject = (Subject) query.uniqueResult();
+		session.close();
+		return subject;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Subject> getAll() {
-		Session session = databaseHandler.getSessionFactory().openSession();
-		List<Subject> subjects = session.createQuery("from Subject").list();
+	public List<Subject> getAll()
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final List<Subject> subjects = session.createQuery("from Subject").list();
 		session.close();
 		return subjects;
 	}
 
-	@Override
-	public Subject get(String name) {
-		Session session = databaseHandler.getSessionFactory().openSession();
-		Query query = session.createQuery("from Subject where name = :name");
-		query.setParameter("name", name);
-		Subject subject = (Subject) query.uniqueResult();
-		session.close();
-		return subject;
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Subject> getAllSubjectFromProfessor(Integer professor) {
-		Session session = databaseHandler.getSessionFactory().openSession();
-		Query query = session.createQuery("from Subject where user_professor = :professor");
+	public List<Subject> getAllSubjectFromProfessor(Integer professor)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Subject where user_professor = :professor");
 		query.setParameter("professor", professor);
-		List<Subject> subjects = (List<Subject>) query.list();
+		final List<Subject> subjects = query.list();
 		session.close();
 		return subjects;
+	}
+
+	public DatabaseHandler getDatabaseHandler()
+	{
+		return databaseHandler;
+	}
+
+	@Override
+	public long getLastID()
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("SELECT max(s.subjectId.id_subject) FROM Subject s");
+		final Integer result = (Integer) query.uniqueResult();
+		session.close();
+		return result;
+
+	}
+
+	public void setDatabaseHandler(DatabaseHandler databaseHandler)
+	{
+		this.databaseHandler = databaseHandler;
+	}
+
+	@Override
+	public void update(Subject subject)
+	{
+		databaseHandler.update(subject);
 	}
 }

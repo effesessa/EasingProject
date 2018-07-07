@@ -1,0 +1,7 @@
+TODO:
+	- Possibilità di bloccare il download della traccia
+	- Possibilità di mostrare gli input agli utenti *
+	- Vista con la lista dei Problemi, avente una lista di utenti registrati per ogni Problema
+	- Possibilità di modificare i Problemi
+	- Aggiunta dei Tag per i Problemi
+	- Possibilità di importare Problemi vecchi in nuovi Contest

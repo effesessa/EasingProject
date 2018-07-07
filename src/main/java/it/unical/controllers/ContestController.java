@@ -2,7 +2,9 @@ package it.unical.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -37,6 +39,7 @@ import it.unical.entities.Membership;
 import it.unical.entities.Partecipation;
 import it.unical.entities.Problem;
 import it.unical.entities.Subject;
+import it.unical.entities.SubjectId;
 import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.SubscribeForm;
@@ -62,12 +65,12 @@ public class ContestController
 		{
 			final SubjectDAO subjectDAO = (SubjectDAO) context.getBean("subjectDAO");
 			final List<Subject> subjects = subjectDAO.getAllSubjectFromProfessor(userID);
-			final List<String> subjsNames = new ArrayList<>();
+			final Map<Integer, String> subjs = new HashMap<>();
 			for (final Subject s : subjects)
-				subjsNames.add(s.getName());
+				subjs.put(s.getSubjectId().getId_subject(), s.getName());
 			try
 			{
-				mapper.writeValue(response.getOutputStream(), subjsNames);
+				mapper.writeValue(response.getOutputStream(), subjs);
 			}
 			catch (final IOException e)
 			{

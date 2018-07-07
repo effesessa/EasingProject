@@ -1,7 +1,7 @@
 /**
  * 
  */
-
+var c = [];
 function init()
 {
 	var fileExtension;
@@ -58,6 +58,48 @@ function init()
 	$("#newContest_deadline").datepicker( {
 		format: "dd-mm-yyyy"
 	});
+	
+	$.ajax(
+	{
+		type : "GET", url : "createProblem?req=tags", datatype : "json",
+		success : function(data)
+		{
+			data = $.parseJSON(data);
+			var tags = [];
+			$.each(data, function(key, val)
+			{
+				tags.push(val);
+			})
+			console.log(tags);
+			
+			var tagsnames = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				local: $.map(tags, function (tag) {
+					return {
+						name: tag
+					};
+				})
+			});
+			tagsnames.initialize();
+			
+			$('#tagsDiv input').tagsinput({
+				typeaheadjs: [{
+					minLength: 1,
+					highlight: true,
+				},{
+					minlength: 1,
+					name: 'tagsnames',
+					displayKey: 'name',
+					valueKey: 'name',
+					source: tagsnames.ttAdapter()
+				}],
+				freeInput: true,
+				confirmKeys: [13, 44, 32],
+				trimValue: true
+			});
+		}
+	});
 }
 
 function getContests()
@@ -88,11 +130,14 @@ function getSubjectsAndJuries()
 		{
 			$('#newContest_subjectName').html("");
 			data = $.parseJSON(data);
+			console.log(data);
 			var subjs = [];
 			$.each(data, function(key, val)
 			{
-				subjs.push('<option id="' + val + '">' + val + '</option>');
+				subjs.push('<option value="' + key + '">' + val + '</option>');
 			})
+			console.log(subjs);
+			c = subjs;
 			$('#newContest_subjectName').append(subjs);
 		}
 	});

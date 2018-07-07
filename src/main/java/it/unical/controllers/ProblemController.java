@@ -39,6 +39,7 @@ import it.unical.dao.ContestDAO;
 import it.unical.dao.MembershipDAO;
 import it.unical.dao.ProblemDAO;
 import it.unical.dao.SubmitDAO;
+import it.unical.dao.TagDAO;
 import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Contest;
@@ -65,213 +66,144 @@ public class ProblemController
 	private WebApplicationContext context;
 
 	@RequestMapping(value = "/addProblem", method = RequestMethod.POST)
-	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model) throws IOException {
-		TypeContext typeContext = TypeContext.getInstance();
+	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model)
+			throws IOException
+	{
+		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
-		Problem problem = typeContext.prepareToSave(problemForm);
-		if(typeContext.getStatus() == Status.SUCCESS) {
-			ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-			ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-			Contest contest = contestDAO.getContestByName(problemForm.getContestName());
+		final Problem problem = typeContext.prepareToSave(problemForm);
+		if (typeContext.getStatus() == Status.SUCCESS)
+		{
+			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+			final Contest contest = contestDAO.getContestByName(problemForm.getContestName());
 			problem.setId_contest(contest);
 			problemDAO.create(problem);
-		}	
+		}
 		else
 			System.out.println("TODO redirect with popup errore" + typeContext.getStatus());
 		return "redirect:/";
 	}
-	
-	/*@RequestMapping(value = "/addProblem", method = RequestMethod.POST)
-	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model)
-			throws IOException
-	{
-		// TODO Controllare che non esista un altro Problema dello stesso
-		// Contest con lo stesso nome
-		setAccountAttribute(session, model);
-		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		final Problem problem = new Problem();
-		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-		final Contest contest = contestDAO.getContestByName(problemForm.getContestName());
 
-		switch (Integer.parseInt(problemForm.getType()))
-		{
-		case 1:
-		{
-
-			String pathTest = problemForm.getPathTest();
-			String pathSol = problemForm.getPathSol();
-
-			pathTest = pathTest.replace("file:///", "/");
-			pathSol = pathSol.replace("file:///", "/");
-
-			final File file1 = new File(pathTest.trim());
-			final byte[] fileData1 = new byte[(int) file1.length()];
-			final File file2 = new File(pathSol);
-			byte[] fileData2 = new byte[(int) file2.length()];
-			try
-			{
-				final FileInputStream fileInputStream1 = new FileInputStream(file1);
-				fileInputStream1.read(fileData1);
-				fileInputStream1.close();
-			}
-			catch (final Exception e)
-			{
-				e.printStackTrace();
-				return "redirect:/";
-			}
-
-			try
-			{
-				final FileInputStream fileInputStream2 = new FileInputStream(file2);
-				fileInputStream2.read(fileData2);
-				fileInputStream2.close();
-			}
-			catch (final Exception e)
-			{
-				fileData2 = null;
-				e.printStackTrace();
-
-			}
-
-			problem.setName(problemForm.getName());
-			problem.setType(problemForm.getType());
-			//problem.setId_contest(contest);
-			problem.setJury(contest.getJury());
-			problem.setTimelimit((float) 1000.0);
-			problem.setSol(fileData2);
-			problem.setTest(fileData1);
-			problemDAO.create(problem);
-			logger.info("inserito");
-			return "redirect:/";
-		}
-		case 2:
-		{
-			String pathTest = problemForm.getPathZip();
-
-			pathTest = pathTest.replace("file:///", "/");
-
-			final File file1 = new File(pathTest.trim());
-			final byte[] fileData1 = new byte[(int) file1.length()];
-			try
-			{
-				final FileInputStream fileInputStream1 = new FileInputStream(file1);
-				fileInputStream1.read(fileData1);
-				fileInputStream1.close();
-			}
-			catch (final Exception e)
-			{
-				e.printStackTrace();
-				return "redirect:/";
-			}
-
-			problem.setName(problemForm.getName());
-			problem.setType(problemForm.getType());
-			problem.setId_contest(contest);
-			problem.setJury(contest.getJury());
-			problem.setTimelimit((float) 1000.0);
-			problem.setTest(fileData1);
-			problemDAO.create(problem);
-
-			return "redirect:/";
-		}
-		case 3:
-		{
-			String pathTest = problemForm.getPathAlgorithm();
-
-			pathTest = pathTest.replace("file:///", "/");
-			final File file1 = new File(pathTest.trim());
-			final byte[] fileData1 = new byte[(int) file1.length()];
-
-			try
-			{
-				final FileInputStream fileInputStream1 = new FileInputStream(file1);
-				fileInputStream1.read(fileData1);
-				fileInputStream1.close();
-			}
-			catch (final Exception e)
-			{
-				e.printStackTrace();
-				return "redirect:/";
-			}
-
-			pathTest = pathTest.replace("/Main.java", "");
-
-			final Judge judge = new Judge("java", "");
-
-			String result = judge.compile("java", "", pathTest);
-
-			result = judge.execute("java", "", 1000, pathTest);
-
-			final byte[] solution = result.getBytes();
-
-			problem.setName(problemForm.getName());
-			problem.setType(problemForm.getType());
-			problem.setId_contest(contest);
-			problem.setJury(contest.getJury());
-			problem.setTimelimit((float) 1000.0);
-			problem.setSol(solution);
-			problemDAO.create(problem);
-
-			return "redirect:/";
-		}
-
-		case 4:
-		{
-
-			String pathTest = problemForm.getPathAlgorithm();
-
-			pathTest = pathTest.replace("file:///", "/");
-			final File file1 = new File(pathTest.trim());
-			final byte[] fileData1 = new byte[(int) file1.length()];
-
-			try
-			{
-				final FileInputStream fileInputStream1 = new FileInputStream(file1);
-				fileInputStream1.read(fileData1);
-				fileInputStream1.close();
-			}
-			catch (final Exception e)
-			{
-				e.printStackTrace();
-				return "redirect:/";
-			}
-
-			pathTest = pathTest.replace("/Main.java", "");
-
-			final Judge judge = new Judge("java", "");
-			final String domain = problemForm.getDomain();
-
-			String test = null;
-
-			if (domain.equals("Array Integer"))
-			{
-				final TestCase testcase = new ArrayTest();
-				test = testcase.generate();
-			}
-
-			String result = judge.compile("java", "", pathTest);
-
-			result = judge.execute("java", test, 1000, pathTest);
-			logger.info(result);
-			if (result.equals("RUN_ERROR"))
-				return "redirect:/";
-			final byte[] solution = result.getBytes();
-
-			System.out.println(result);
-
-			problem.setName(problemForm.getName());
-			problem.setType(problemForm.getType());
-			problem.setId_contest(contest);
-			problem.setJury(contest.getJury());
-			problem.setTimelimit((float) 1000.0);
-			problem.setTest(test.getBytes());
-			problem.setSol(solution);
-			problemDAO.create(problem);
-		}
-		}
-		return "redirect:/";
-	}
-	*/
+	/*
+	 * @RequestMapping(value = "/addProblem", method = RequestMethod.POST)
+	 * public String addProblem(HttpSession session, @ModelAttribute
+	 * AddProblemForm problemForm, Model model) throws IOException { // TODO
+	 * Controllare che non esista un altro Problema dello stesso // Contest con
+	 * lo stesso nome setAccountAttribute(session, model); final ProblemDAO
+	 * problemDAO = (ProblemDAO) context.getBean("problemDAO"); final Problem
+	 * problem = new Problem(); final ContestDAO contestDAO = (ContestDAO)
+	 * context.getBean("contestDAO"); final Contest contest =
+	 * contestDAO.getContestByName(problemForm.getContestName());
+	 *
+	 * switch (Integer.parseInt(problemForm.getType())) { case 1: {
+	 *
+	 * String pathTest = problemForm.getPathTest(); String pathSol =
+	 * problemForm.getPathSol();
+	 *
+	 * pathTest = pathTest.replace("file:///", "/"); pathSol =
+	 * pathSol.replace("file:///", "/");
+	 *
+	 * final File file1 = new File(pathTest.trim()); final byte[] fileData1 =
+	 * new byte[(int) file1.length()]; final File file2 = new File(pathSol);
+	 * byte[] fileData2 = new byte[(int) file2.length()]; try { final
+	 * FileInputStream fileInputStream1 = new FileInputStream(file1);
+	 * fileInputStream1.read(fileData1); fileInputStream1.close(); } catch
+	 * (final Exception e) { e.printStackTrace(); return "redirect:/"; }
+	 *
+	 * try { final FileInputStream fileInputStream2 = new
+	 * FileInputStream(file2); fileInputStream2.read(fileData2);
+	 * fileInputStream2.close(); } catch (final Exception e) { fileData2 = null;
+	 * e.printStackTrace();
+	 *
+	 * }
+	 *
+	 * problem.setName(problemForm.getName());
+	 * problem.setType(problemForm.getType()); //problem.setId_contest(contest);
+	 * problem.setJury(contest.getJury()); problem.setTimelimit((float) 1000.0);
+	 * problem.setSol(fileData2); problem.setTest(fileData1);
+	 * problemDAO.create(problem); logger.info("inserito"); return "redirect:/";
+	 * } case 2: { String pathTest = problemForm.getPathZip();
+	 *
+	 * pathTest = pathTest.replace("file:///", "/");
+	 *
+	 * final File file1 = new File(pathTest.trim()); final byte[] fileData1 =
+	 * new byte[(int) file1.length()]; try { final FileInputStream
+	 * fileInputStream1 = new FileInputStream(file1);
+	 * fileInputStream1.read(fileData1); fileInputStream1.close(); } catch
+	 * (final Exception e) { e.printStackTrace(); return "redirect:/"; }
+	 *
+	 * problem.setName(problemForm.getName());
+	 * problem.setType(problemForm.getType()); problem.setId_contest(contest);
+	 * problem.setJury(contest.getJury()); problem.setTimelimit((float) 1000.0);
+	 * problem.setTest(fileData1); problemDAO.create(problem);
+	 *
+	 * return "redirect:/"; } case 3: { String pathTest =
+	 * problemForm.getPathAlgorithm();
+	 *
+	 * pathTest = pathTest.replace("file:///", "/"); final File file1 = new
+	 * File(pathTest.trim()); final byte[] fileData1 = new byte[(int)
+	 * file1.length()];
+	 *
+	 * try { final FileInputStream fileInputStream1 = new
+	 * FileInputStream(file1); fileInputStream1.read(fileData1);
+	 * fileInputStream1.close(); } catch (final Exception e) {
+	 * e.printStackTrace(); return "redirect:/"; }
+	 *
+	 * pathTest = pathTest.replace("/Main.java", "");
+	 *
+	 * final Judge judge = new Judge("java", "");
+	 *
+	 * String result = judge.compile("java", "", pathTest);
+	 *
+	 * result = judge.execute("java", "", 1000, pathTest);
+	 *
+	 * final byte[] solution = result.getBytes();
+	 *
+	 * problem.setName(problemForm.getName());
+	 * problem.setType(problemForm.getType()); problem.setId_contest(contest);
+	 * problem.setJury(contest.getJury()); problem.setTimelimit((float) 1000.0);
+	 * problem.setSol(solution); problemDAO.create(problem);
+	 *
+	 * return "redirect:/"; }
+	 *
+	 * case 4: {
+	 *
+	 * String pathTest = problemForm.getPathAlgorithm();
+	 *
+	 * pathTest = pathTest.replace("file:///", "/"); final File file1 = new
+	 * File(pathTest.trim()); final byte[] fileData1 = new byte[(int)
+	 * file1.length()];
+	 *
+	 * try { final FileInputStream fileInputStream1 = new
+	 * FileInputStream(file1); fileInputStream1.read(fileData1);
+	 * fileInputStream1.close(); } catch (final Exception e) {
+	 * e.printStackTrace(); return "redirect:/"; }
+	 *
+	 * pathTest = pathTest.replace("/Main.java", "");
+	 *
+	 * final Judge judge = new Judge("java", ""); final String domain =
+	 * problemForm.getDomain();
+	 *
+	 * String test = null;
+	 *
+	 * if (domain.equals("Array Integer")) { final TestCase testcase = new
+	 * ArrayTest(); test = testcase.generate(); }
+	 *
+	 * String result = judge.compile("java", "", pathTest);
+	 *
+	 * result = judge.execute("java", test, 1000, pathTest);
+	 * logger.info(result); if (result.equals("RUN_ERROR")) return "redirect:/";
+	 * final byte[] solution = result.getBytes();
+	 *
+	 * System.out.println(result);
+	 *
+	 * problem.setName(problemForm.getName());
+	 * problem.setType(problemForm.getType()); problem.setId_contest(contest);
+	 * problem.setJury(contest.getJury()); problem.setTimelimit((float) 1000.0);
+	 * problem.setTest(test.getBytes()); problem.setSol(solution);
+	 * problemDAO.create(problem); } } return "redirect:/"; }
+	 */
 
 	@RequestMapping(value = "/createProblem", method = RequestMethod.GET)
 	public void addProblem(@RequestParam String req, HttpSession session, Model model, HttpServletResponse response)
@@ -287,6 +219,20 @@ public class ProblemController
 			try
 			{
 				mapper.writeValue(response.getOutputStream(), contests);
+			}
+			catch (final IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if (SessionUtils.isLoggedIn(session) && req.equals("tags"))
+		{
+			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			final List<String> tags = tagDAO.getAllTagValues();
+			try
+			{
+				mapper.writeValue(response.getOutputStream(), tags);
 			}
 			catch (final IOException e)
 			{
@@ -412,6 +358,26 @@ public class ProblemController
 		return info;
 	}
 
+	@RequestMapping(value = "/submit", method = RequestMethod.POST)
+	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException
+	{
+		setAccountAttribute(session, model);
+		System.out.println("********************submit*********************");
+
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final Problem problem = problemDAO.get(submitForm.getIdProblem());
+		System.out.println(submitForm.getIdProblem());
+		System.out.println(submitForm.getTeam());
+		System.out.println(submitForm.getSolution().getOriginalFilename());
+		final TypeContext typeContext = TypeContext.getInstance();
+		typeContext.setStrategy(Engine.BASE_NAME + Engine.DOT + problem.getType());
+		final String status = typeContext.submit(problem, submitForm);
+		System.out.println(status);
+		SubmissionHandler.save(context, problem, submitForm, status);
+		System.out.println("********************submit*********************");
+		return "redirect:/";
+	}
+
 	// Vista di un Problema
 	// Vista di origine non utilizzata
 	// Lista dei problemi già integrata nella Vista dei Contest
@@ -456,258 +422,149 @@ public class ProblemController
 			model.addAttribute("typeSession", "Login");
 	}
 
-	@RequestMapping(value = "/submit", method = RequestMethod.POST)
-	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException {
-		setAccountAttribute(session, model);
-		System.out.println("********************submit*********************");
-		
-		ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		Problem problem = problemDAO.get(submitForm.getIdProblem());
-		System.out.println(submitForm.getIdProblem());
-		System.out.println(submitForm.getTeam());
-		System.out.println(submitForm.getSolution().getOriginalFilename());
-		TypeContext typeContext = TypeContext.getInstance();
-		typeContext.setStrategy(Engine.BASE_NAME + Engine.DOT + problem.getType());
-		String status = typeContext.submit(problem, submitForm);
-		System.out.println(status);
-		SubmissionHandler.save(context, problem, submitForm, status);
-		System.out.println("********************submit*********************");
-		return "redirect:/";
-	}
-	
 	// Submit soluzione
-	/*@RequestMapping(value = "/submit", method = RequestMethod.POST)
-	public String submit(@RequestParam String problemId, HttpSession session, @RequestParam("team") String team1,
-			@RequestParam String path, Model model) throws IOException
-	{
-		setAccountAttribute(session, model);
-
-		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-
-		final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
-		final Team team = teamDAO.getByName(team1);
-
-		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		final Problem problem = problemDAO.get(Integer.parseInt(problemId));
-
-		Submit submit = submitDAO.getAllSubmitByProblemAndTeamFake(Integer.parseInt(problemId), team.getId());
-		switch (Integer.parseInt(problem.getType()))
-		{
-		case 1:
-		{
-			String pathSol = path;
-			final byte[] data = problem.getTest();
-			final byte[] data2 = problem.getSol();
-
-			pathSol = pathSol.replace("file:///", "/");
-
-			final File fileSolution = new File(pathSol);
-			final byte[] fileData = new byte[(int) fileSolution.length()];
-
-			pathSol = pathSol.replace("/Main.java", "");
-
-			final Judge judge = new Judge("java", team.getName());
-
-			String result = judge.compile("java", team.getName(), pathSol);
-
-			final String strTestCase = new String(data, StandardCharsets.UTF_8);
-			final String strSolution = new String(data2, StandardCharsets.UTF_8);
-
-			if (result.equals("COMPILE_SUCCESS"))
-			{
-				result = judge.execute("java", strTestCase, 1000, pathSol);
-
-				final String match = judge.match(result, strSolution);
-				if (match.equals("RIGHT"))
-				{
-					final LocalDate localDate = LocalDate.now();
-					logger.info("corretto");
-					if (submit != null)
-					{
-						submitDAO.delete(submit);
-						submit.setIdTeam(team);
-						submit.setProblem(problem);
-						submit.setInfo(problem.getName());
-						submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate));
-						// set the score eventually here
-						submit.setSolution(fileData);
-						submitDAO.create(submit);
-						return "redirect:/";
-					}
-					else
-					{
-						submit = new Submit();
-						submit.setIdTeam(team);
-						submit.setProblem(problem);
-						submit.setInfo(problem.getName());
-						// set the score eventually here
-						submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate));
-						submit.setSolution(fileData);
-						submitDAO.create(submit);
-						return "redirect:/";
-					}
-				}
-				else
-				{
-					logger.info("errato");
-					return "redirect:/";
-				}
-			}
-			else
-				return "redirect:/";
-		}
-
-		case 2:
-		{
-			String pathSol = path;
-			final byte[] data = problem.getTest();
-
-			pathSol = pathSol.replace("file:///", "/");
-
-			final File fileSolution = new File(pathSol);
-			final byte[] fileData = new byte[(int) fileSolution.length()];
-
-			pathSol = pathSol.replace("/Main.java", "");
-
-			final ArrayList<String> info = executeZip(team, data, pathSol);
-			model.addAttribute("problem", problem);
-			model.addAttribute("infos", info);
-			model.addAttribute("team", team);
-			model.addAttribute("path", path);
-
-			return "addProblemConfirmation";
-		}
-
-		case 3:
-		{
-			final LocalDate localDate = LocalDate.now();
-			String pathSol = path;
-			final byte[] data2 = problem.getSol();
-
-			pathSol = pathSol.replace("file:///", "/");
-
-			final File fileSolution = new File(pathSol);
-			final byte[] fileData = new byte[(int) fileSolution.length()];
-
-			pathSol = pathSol.replace("/Main.java", "");
-
-			final Judge judge = new Judge("java", team.getName());
-
-			String result = judge.compile("java", team.getName(), pathSol);
-
-			final String strSolution = new String(data2, StandardCharsets.UTF_8);
-
-			if (result.equals("COMPILE_SUCCESS"))
-			{
-				result = judge.execute("java", "", 1000, pathSol);
-
-				final String match = judge.match(result, strSolution);
-				if (match.equals("RIGHT"))
-				{
-					logger.info("corretto");
-					if (submit != null)
-					{
-						submitDAO.delete(submit);
-						submit.setIdTeam(team);
-						submit.setProblem(problem);
-						submit.setInfo(problem.getName());
-						// set the score eventually here
-						submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate));
-						submit.setSolution(fileData);
-						submitDAO.create(submit);
-						return "problemview";
-					}
-					else
-					{
-						submit = new Submit();
-						submit.setIdTeam(team);
-						submit.setProblem(problem);
-						submit.setInfo(problem.getName());
-						// set the score eventually here
-						submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate));
-						submit.setSolution(fileData);
-						submitDAO.create(submit);
-						return "problemview";
-					}
-				}
-				else
-				{
-					logger.info("errato");
-					return "redirect:/";
-				}
-			}
-			else
-				return "redirect:/";
-		}
-
-		case 4:
-		{
-			final LocalDate localDate = LocalDate.now();
-			String pathSol = path;
-			final byte[] data = problem.getTest();
-			final byte[] data2 = problem.getSol();
-
-			pathSol = pathSol.replace("file:///", "/");
-
-			final File fileSolution = new File(pathSol);
-			final byte[] fileData = new byte[(int) fileSolution.length()];
-
-			pathSol = pathSol.replace("/Main.java", "");
-
-			final Judge judge = new Judge("java", team.getName());
-
-			String result = judge.compile("java", team.getName(), pathSol);
-
-			final String strTestCase = new String(data, StandardCharsets.UTF_8);
-			System.out.println("Gli passo questo test case: " + strTestCase);
-			final String strSolution = new String(data2, StandardCharsets.UTF_8);
-
-			if (result.equals("COMPILE_SUCCESS"))
-			{
-				result = judge.execute("java", strTestCase, 1000, pathSol);
-
-				final String match = judge.match(result, strSolution);
-				if (match.equals("RIGHT"))
-				{
-					logger.info("corretto");
-					if (submit != null)
-					{
-						submitDAO.delete(submit);
-						submit.setIdTeam(team);
-						submit.setProblem(problem);
-						submit.setInfo(problem.getName());
-						submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate));
-						// set the score eventually here
-						submit.setSolution(fileData);
-						submitDAO.create(submit);
-						return "redirect:/";
-					}
-					else
-					{
-						submit = new Submit();
-						submit.setIdTeam(team);
-						submit.setProblem(problem);
-						submit.setInfo(problem.getName());
-						// set the score eventually here
-						submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate));
-						submit.setSolution(fileData);
-						submitDAO.create(submit);
-						return "redirect:/";
-					}
-				}
-				else
-				{
-					logger.info("errato");
-					return "redirect:/";
-				}
-			}
-			else
-				return "redirect:/";
-		}
-
-		}
-		return "redirect:/";
-
-	}
-	*/
+	/*
+	 * @RequestMapping(value = "/submit", method = RequestMethod.POST) public
+	 * String submit(@RequestParam String problemId, HttpSession
+	 * session, @RequestParam("team") String team1,
+	 *
+	 * @RequestParam String path, Model model) throws IOException {
+	 * setAccountAttribute(session, model);
+	 *
+	 * final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+	 *
+	 * final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO"); final Team
+	 * team = teamDAO.getByName(team1);
+	 *
+	 * final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+	 * final Problem problem = problemDAO.get(Integer.parseInt(problemId));
+	 *
+	 * Submit submit =
+	 * submitDAO.getAllSubmitByProblemAndTeamFake(Integer.parseInt(problemId),
+	 * team.getId()); switch (Integer.parseInt(problem.getType())) { case 1: {
+	 * String pathSol = path; final byte[] data = problem.getTest(); final
+	 * byte[] data2 = problem.getSol();
+	 *
+	 * pathSol = pathSol.replace("file:///", "/");
+	 *
+	 * final File fileSolution = new File(pathSol); final byte[] fileData = new
+	 * byte[(int) fileSolution.length()];
+	 *
+	 * pathSol = pathSol.replace("/Main.java", "");
+	 *
+	 * final Judge judge = new Judge("java", team.getName());
+	 *
+	 * String result = judge.compile("java", team.getName(), pathSol);
+	 *
+	 * final String strTestCase = new String(data, StandardCharsets.UTF_8);
+	 * final String strSolution = new String(data2, StandardCharsets.UTF_8);
+	 *
+	 * if (result.equals("COMPILE_SUCCESS")) { result = judge.execute("java",
+	 * strTestCase, 1000, pathSol);
+	 *
+	 * final String match = judge.match(result, strSolution); if
+	 * (match.equals("RIGHT")) { final LocalDate localDate = LocalDate.now();
+	 * logger.info("corretto"); if (submit != null) { submitDAO.delete(submit);
+	 * submit.setIdTeam(team); submit.setProblem(problem);
+	 * submit.setInfo(problem.getName());
+	 * submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate)
+	 * ); // set the score eventually here submit.setSolution(fileData);
+	 * submitDAO.create(submit); return "redirect:/"; } else { submit = new
+	 * Submit(); submit.setIdTeam(team); submit.setProblem(problem);
+	 * submit.setInfo(problem.getName()); // set the score eventually here
+	 * submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate)
+	 * ); submit.setSolution(fileData); submitDAO.create(submit); return
+	 * "redirect:/"; } } else { logger.info("errato"); return "redirect:/"; } }
+	 * else return "redirect:/"; }
+	 *
+	 * case 2: { String pathSol = path; final byte[] data = problem.getTest();
+	 *
+	 * pathSol = pathSol.replace("file:///", "/");
+	 *
+	 * final File fileSolution = new File(pathSol); final byte[] fileData = new
+	 * byte[(int) fileSolution.length()];
+	 *
+	 * pathSol = pathSol.replace("/Main.java", "");
+	 *
+	 * final ArrayList<String> info = executeZip(team, data, pathSol);
+	 * model.addAttribute("problem", problem); model.addAttribute("infos",
+	 * info); model.addAttribute("team", team); model.addAttribute("path",
+	 * path);
+	 *
+	 * return "addProblemConfirmation"; }
+	 *
+	 * case 3: { final LocalDate localDate = LocalDate.now(); String pathSol =
+	 * path; final byte[] data2 = problem.getSol();
+	 *
+	 * pathSol = pathSol.replace("file:///", "/");
+	 *
+	 * final File fileSolution = new File(pathSol); final byte[] fileData = new
+	 * byte[(int) fileSolution.length()];
+	 *
+	 * pathSol = pathSol.replace("/Main.java", "");
+	 *
+	 * final Judge judge = new Judge("java", team.getName());
+	 *
+	 * String result = judge.compile("java", team.getName(), pathSol);
+	 *
+	 * final String strSolution = new String(data2, StandardCharsets.UTF_8);
+	 *
+	 * if (result.equals("COMPILE_SUCCESS")) { result = judge.execute("java",
+	 * "", 1000, pathSol);
+	 *
+	 * final String match = judge.match(result, strSolution); if
+	 * (match.equals("RIGHT")) { logger.info("corretto"); if (submit != null) {
+	 * submitDAO.delete(submit); submit.setIdTeam(team);
+	 * submit.setProblem(problem); submit.setInfo(problem.getName()); // set the
+	 * score eventually here
+	 * submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate)
+	 * ); submit.setSolution(fileData); submitDAO.create(submit); return
+	 * "problemview"; } else { submit = new Submit(); submit.setIdTeam(team);
+	 * submit.setProblem(problem); submit.setInfo(problem.getName()); // set the
+	 * score eventually here
+	 * submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate)
+	 * ); submit.setSolution(fileData); submitDAO.create(submit); return
+	 * "problemview"; } } else { logger.info("errato"); return "redirect:/"; } }
+	 * else return "redirect:/"; }
+	 *
+	 * case 4: { final LocalDate localDate = LocalDate.now(); String pathSol =
+	 * path; final byte[] data = problem.getTest(); final byte[] data2 =
+	 * problem.getSol();
+	 *
+	 * pathSol = pathSol.replace("file:///", "/");
+	 *
+	 * final File fileSolution = new File(pathSol); final byte[] fileData = new
+	 * byte[(int) fileSolution.length()];
+	 *
+	 * pathSol = pathSol.replace("/Main.java", "");
+	 *
+	 * final Judge judge = new Judge("java", team.getName());
+	 *
+	 * String result = judge.compile("java", team.getName(), pathSol);
+	 *
+	 * final String strTestCase = new String(data, StandardCharsets.UTF_8);
+	 * System.out.println("Gli passo questo test case: " + strTestCase); final
+	 * String strSolution = new String(data2, StandardCharsets.UTF_8);
+	 *
+	 * if (result.equals("COMPILE_SUCCESS")) { result = judge.execute("java",
+	 * strTestCase, 1000, pathSol);
+	 *
+	 * final String match = judge.match(result, strSolution); if
+	 * (match.equals("RIGHT")) { logger.info("corretto"); if (submit != null) {
+	 * submitDAO.delete(submit); submit.setIdTeam(team);
+	 * submit.setProblem(problem); submit.setInfo(problem.getName());
+	 * submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate)
+	 * ); // set the score eventually here submit.setSolution(fileData);
+	 * submitDAO.create(submit); return "redirect:/"; } else { submit = new
+	 * Submit(); submit.setIdTeam(team); submit.setProblem(problem);
+	 * submit.setInfo(problem.getName()); // set the score eventually here
+	 * submit.setDate(DateTimeFormatter.ofPattern("yyy/MM/dd").format(localDate)
+	 * ); submit.setSolution(fileData); submitDAO.create(submit); return
+	 * "redirect:/"; } } else { logger.info("errato"); return "redirect:/"; } }
+	 * else return "redirect:/"; }
+	 *
+	 * } return "redirect:/";
+	 *
+	 * }
+	 */
 }

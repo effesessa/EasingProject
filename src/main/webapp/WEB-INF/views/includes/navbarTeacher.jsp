@@ -13,7 +13,7 @@
 <!-- 	<link href="resources/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 	<script src="resources/plugins/bootstrap/js/bootstrap.js"></script> -->
 	
-	
+	<link rel="stylesheet" href="resources/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" type="text/css">
 	<link rel="stylesheet" href="resources/css/navbarTeacherStyle.css" type="text/css">
 	<!-- <script type="text/javascript" src="resources/js/moment.js"></script> -->
 	<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
@@ -222,120 +222,117 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h3 class="modal-title">Crea un Problema</h3>
 				</div>
-				<!-- <div class="tabs">
-					<div class="wizard"> -->
-						<!-- <div class="wizard-inner">
-							<div class="connecting-line"></div>
-							<ul class="nav nav-tabs" role="tablist">
-								<li role="presentation" class="active">
-									<span class="round-tab">
-										<i class="far fa-copy" style="position: relative; bottom: 10px; color: gray"></i>
-									</span>
-								</li>
-							</ul>
-						</div> -->
-						
-						<!-- <div class="tab-content" style="margin: 0 16px 0 16px;">
-							<div class="tab-pane active" role="tabpanel" id="step1"> -->
-								<form:form action="addProblem" method="post" enctype="multipart/form-data" modelAttribute="problemForm">
-									<input type="hidden" name="type" id="type" value="1"/> 
-									<div class="form-group">
-										<label for="contest">Nome Contest</label>
-										<div class="input-group">
-											<span class="input-group-addon">
-												<i class="glyphicon glyphicon-education"></i>
-											</span>
-											<select class="form-control" id="contestName" name="contestName" required>
-											   <!--  <option disabled selected value="">Contest</option> -->
-											</select>
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="problemName">Nome</label>
-										<div class="input-group">
-											<span class="input-group-addon">
-												<i class="glyphicon glyphicon-text-size"></i>
-											</span>
-											<input type="text" class="form-control" name="name" id="problemName" placeholder="Nome del Problema" required autofocus>
-										</div>
-									</div>
-									
-									<div class="form-group">
-								    	<label for="description">Descrizione</label>
-										<div class="input-group">
-								    		<span class="input-group-addon">
-												<i class="glyphicon glyphicon-pencil"></i>
-											</span>
-											<textarea class="form-control" id="description" name="description" rows="5" cols="60" placeholder="Inserire una breve descrizione del Problema" style="resize: vertical;" required></textarea>		
-										</div>
-								  	</div>
-									<div class="form-group">
-								    	<label for="download">Testo del Problema</label>
-										<div class="input-group">
-											<span class="input-group-addon">
-												<i class="glyphicon glyphicon-file"></i>
-											</span>
-				    						<input id="download" name="download" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.pdf" required>
-										</div>
-							  		</div>
-							  		<div class="form-group">
-								    	<label for="timeout">Timeout d'esecuzione (secondi)</label>
-										<div class="input-group">
-								    		<span class="input-group-addon">
-												<i class="glyphicon glyphicon-time"></i>
-											</span>
-											<input class="form-control" id="timeout" name="timeout" type="number" min=1 step=0.5 value="1" required />
-										</div>
-								  	</div>
-									<div class="form-group">
-								    	<label for="testcase">File di input o Algoritmo</label>
-										<div class="input-group">
-											<span class="input-group-addon">
-												<i class="glyphicon glyphicon-open-file"></i>
-											</span>
-				    						<input id="testcase" name="testcase" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.java,.cpp,.c,.zip,.rar,.7z,.tar" required>
-										</div>
-							  		</div>
-									<div class="form-group output-group hidden">
-								    	<label for="output">Output atteso</label>
-										<div class="input-group">
-											<span class="input-group-addon">
-												<i class="glyphicon glyphicon-open-file"></i>
-											</span>
-				    						<input id="output" name="output" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt">
-										</div>
-							  		</div>
-							  		<div class="form-check generate-group hidden">
-									  <input class="form-check-input" type="checkbox" value="" id="generateInput">
-									  <label class="form-check-label" for="generateInput"> Vuoi che vengano generati degli input?</label>
-									</div>
-									<div class="form-group hidden">
-										<label class="form-check-label" for="domain"> Dominio:</label>
-										<div class="form-check">
-											<label class="form-check-label">
-												<input class="form-check-input" type="radio" name="domain" id="intDomain" value="Array Integer" checked> Array Integer
-											</label>
-										</div>
-										<div class="form-check">
-											<label class="form-check-label">
-												<input class="form-check-input" type="radio" name="domain" id="stringDomain" value="String" > String
-											</label>
-										</div>
-									</div>
-									<div class="modal-footer">
-										<input type="submit" class="btn btn-primary button-login" value="Add Problem" />
-									</div>
-								</form:form>
-							<!-- </div> -->
-							<div class="clearfix"></div>
-						<!-- </div> -->
-					<!-- </div>
-				</div> -->
+				<form:form action="addProblem" method="post" enctype="multipart/form-data" modelAttribute="problemForm">
+					<input type="hidden" name="type" id="type" value="1"/> 
+					<div class="form-group">
+						<label for="contest">Nome Contest</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-education"></i>
+							</span>
+							<select class="form-control" id="contestName" name="contestName" required>
+							   <!--  <option disabled selected value="">Contest</option> -->
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="problemName">Nome</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-text-size"></i>
+							</span>
+							<input type="text" class="form-control" name="name" id="problemName" placeholder="Nome del Problema" required autofocus>
+						</div>
+					</div>
+					<div class="form-group">
+				    	<label for="description">Descrizione</label>
+						<div class="input-group">
+				    		<span class="input-group-addon">
+								<i class="glyphicon glyphicon-pencil"></i>
+							</span>
+							<textarea class="form-control" id="description" name="description" rows="5" cols="60" placeholder="Inserire una breve descrizione del Problema" style="resize: vertical;" required></textarea>		
+						</div>
+				  	</div>
+					<div class="form-group">
+				    	<label for="download">Testo del Problema</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-file"></i>
+							</span>
+    						<input id="download" name="download" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.pdf" required>
+						</div>
+			  		</div>
+			  		<div class="form-group">
+				    	<label for="timeout">Timeout d'esecuzione (secondi)</label>
+						<div class="input-group">
+				    		<span class="input-group-addon">
+								<i class="glyphicon glyphicon-time"></i>
+							</span>
+							<input class="form-control" id="timeout" name="timeout" type="number" min=1 step=0.5 value="1" required />
+						</div>
+				  	</div>
+				  	<br>
+				  	<div class="form-check generate-group">
+				  		<input class="form-check-input" type="checkbox" value="" id="show_testcase" name="show_testcase">
+				  		<label class="form-check-label" for="ioAccess"> Vuoi che gli Studenti possano accedere ai file di input e di output?</label>
+					</div>
+					<div class="form-group">
+				    	<label for="testcase">File di input o Algoritmo</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-open-file"></i>
+							</span>
+    						<input id="testcase" name="testcase" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.java,.cpp,.c,.zip,.rar,.7z,.tar" required>
+						</div>
+			  		</div>
+					<div class="form-group output-group hidden">
+				    	<label for="output">Output atteso</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-open-file"></i>
+							</span>
+    						<input id="output" name="output" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt">
+						</div>
+			  		</div>
+			  		<div class="form-check generate-group hidden">
+					  <input class="form-check-input" type="checkbox" value="" id="generateInput">
+					  <label class="form-check-label" for="generateInput"> Vuoi che vengano generati degli input?</label>
+					</div>
+					<div class="form-group hidden">
+						<label class="form-check-label" for="domain"> Dominio:</label>
+						<div class="form-check">
+							<label class="form-check-label">
+								<input class="form-check-input" type="radio" name="domain" id="intDomain" value="Array Integer" checked> Array Integer
+							</label>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label">
+								<input class="form-check-input" type="radio" name="domain" id="stringDomain" value="String" > String
+							</label>
+						</div>
+					</div>
+					<br>
+					<div class="form-group">
+						<label for="problemTags">Tag</label>
+						<div class="input-group" id="tagsDiv">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-tags"></i>
+							</span>
+							<input type="text" class="form-control" name="problemTags" id="problemTags" placeholder="Inserisci i tags separati da una virgola">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<input type="submit" class="btn btn-primary button-login" value="Add Problem" />
+					</div>
+				</form:form>
+				<div class="clearfix"></div>
 			</div>
 		</div>
 	</div>
 	<%@ include file="footer.jsp" %>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+	<script src="resources/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+	<script src="resources/js/typeahead.bundle.js"></script>
 	<script src="resources/js/navbarTeacherScript.js"></script>
 	<!-- <script src="resources/plugins/jquery/jquery.min.js"></script>
 	<script src="resources/plugins/bootstrap/js/bootstrap.js"></script> -->

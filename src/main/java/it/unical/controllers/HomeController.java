@@ -107,11 +107,12 @@ public class HomeController
 			final SubjectDAO subjectDAO = (SubjectDAO) context.getBean("subjectDAO");
 			final Subject subject = new Subject();
 			final SubjectId subjectId = new SubjectId();
-			subjectId.setId_subject(Integer.parseInt(form.getId()));
+			subjectId.setId_subject((int) (subjectDAO.getLastID() + 1));
 			subjectId.setYear(form.getYear());
 			subject.setSubjectId(subjectId);
 			subject.setName(form.getName());
 			subject.setPassword(form.getPassword());
+			subject.setUrl(form.getUrl());
 			subject.setId_professor(user);
 			subjectDAO.create(subject);
 
@@ -162,8 +163,8 @@ public class HomeController
 			for (int i = 0; i < teams.size(); i++)
 				for (int j = 0; j < submitDAO.getAllSubmitByTeam(teams.get(i).getId()).size(); j++)
 					submits.add(submitDAO.getAllSubmitByTeam(teams.get(i).getId()).get(j));// sono
-																								// più
-																								// submit
+																							// più
+																							// submit
 
 			// TODO Possono esserci ripetizioni se uno Studente fa
 			// parte di pi� Team che partecipano a un Contest, a meno che non si

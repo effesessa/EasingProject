@@ -1,6 +1,5 @@
 package it.unical.entities;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,14 +16,14 @@ import it.unical.dao.DatabaseHandler;
 public class Problem
 {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
- 	@Column(name = "id_problem")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_problem")
 	private Integer id_problem;
 
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "test", columnDefinition="mediumblob")
+	@Column(name = "test", columnDefinition = "mediumblob")
 	private byte[] test;
 
 	@Column(name = "timelimit")
@@ -33,13 +32,13 @@ public class Problem
 	@Column(name = "type")
 	private String type;
 
-	@Column(name = "sol", columnDefinition="blob")
+	@Column(name = "sol", columnDefinition = "blob")
 	private byte[] sol;
 
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "download", columnDefinition="mediumblob")
+	@Column(name = "download", columnDefinition = "mediumblob")
 	private byte[] download;
 
 	@ManyToOne
@@ -50,7 +49,7 @@ public class Problem
 	@JoinColumn(name = "contest_idcontest")
 	private Contest id_contest;
 
-	public Problem ()
+	public Problem()
 	{
 		this.id_problem = DatabaseHandler.NO_ID;
 		this.name = null;
@@ -61,84 +60,104 @@ public class Problem
 		this.description = null;
 	}
 
-	public Integer getId_problem() {
-		return id_problem;
-	}
-
-	public byte[] getDownload() {
-		return download;
-	}
-
-	public void setDownload(byte[] download) {
-		this.download = download;
-	}
-
-	public void setId_problem(Integer id_problem) {
-		this.id_problem = id_problem;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public byte[] getTest() {
-		return test;
-	}
-
-	public void setTest(byte[] test) {
-		this.test = test;
-	}
-
-	public Float getTimelimit() {
-		return timelimit;
-	}
-
-	public void setTimelimit(Float timelimit) {
-		this.timelimit = timelimit;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public byte[] getSol() {
-		return sol;
-	}
-
-	public void setSol(byte[] sol) {
-		this.sol = sol;
-	}
-
-	public String getDescription() {
+	public String getDescription()
+	{
 		return description;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public byte[] getDownload()
+	{
+		return download;
 	}
 
-	public Jury getJury() {
-		return jury;
-	}
-
-	public void setJury(Jury jury) {
-		this.jury = jury;
-	}
-
-	public Contest getId_contest() {
+	public Contest getId_contest()
+	{
 		return id_contest;
 	}
 
-	public void setId_contest(Contest id_contest) {
+	public Integer getId_problem()
+	{
+		return id_problem;
+	}
+
+	public Jury getJury()
+	{
+		return jury;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public byte[] getSol()
+	{
+		return sol;
+	}
+
+	public byte[] getTest()
+	{
+		return test;
+	}
+
+	public Float getTimelimit()
+	{
+		return timelimit;
+	}
+
+	public String getType()
+	{
+		return type;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public void setDownload(byte[] download)
+	{
+		this.download = download;
+	}
+
+	public void setId_contest(Contest id_contest)
+	{
 		this.id_contest = id_contest;
+	}
+
+	public void setId_problem(Integer id_problem)
+	{
+		this.id_problem = id_problem;
+	}
+
+	public void setJury(Jury jury)
+	{
+		this.jury = jury;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public void setSol(byte[] sol)
+	{
+		this.sol = sol;
+	}
+
+	public void setTest(byte[] test)
+	{
+		this.test = test;
+	}
+
+	public void setTimelimit(Float timelimit)
+	{
+		this.timelimit = timelimit;
+	}
+
+	public void setType(String type)
+	{
+		this.type = type;
 	}
 
 }
