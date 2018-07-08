@@ -84,6 +84,7 @@ public class Engine {
             if (exitCode != 0)
                 return Status.RUN_TIME_ERROR;
             output = IOUtils.toString(process.getInputStream());
+            System.out.println("OUTPUT: " + output);
         } 
         catch(Exception e) {
         	e.printStackTrace();

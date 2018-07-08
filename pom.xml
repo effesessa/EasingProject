@@ -7,7 +7,7 @@
 	<artifactId>EasingProject</artifactId>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
-	<name>Prove</name>
+	<name>EasingProject</name>
 	<properties>
 		<org.springframework-version>4.2.3.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
@@ -274,7 +274,7 @@
 		</dependency>		
 	</dependencies>
 	<build>
-		<finalName>Prove</finalName>
+		<finalName>EasingProject</finalName>
 
 		<plugins>
 
@@ -287,7 +287,7 @@
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<webApp>
-						<contextPath>/Prove</contextPath>
+						<contextPath>/EasingProject</contextPath>
 					</webApp>
 				</configuration>
 

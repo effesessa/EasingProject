@@ -102,7 +102,7 @@
 											<span class="input-group-addon">
 												<i class="glyphicon glyphicon-open-file"></i>
 											</span>
-				    						<input id="solution" name="solution" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".java,.cpp,.c,.py" required>
+				    						<input id="solution" name="solution" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".dlv,.java,.cpp,.c,.py" required>
 										</div>
 							  		</div>
 									<div>

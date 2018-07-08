@@ -34,12 +34,15 @@ public class TypeFileExtension {
 	
 	public static final String TXT = "txt";
 	
+	public static final String DLV = "dlv";
+	
 	static {
 		List<String> list = new ArrayList<>();
 		list.add(CPP);
 		list.add(C);
 		list.add(JAVA);
 		list.add(PYTHON);
+		list.add(DLV);
 		extensionsLanguage = Collections.unmodifiableList(list);
 	}
 	
@@ -54,6 +57,7 @@ public class TypeFileExtension {
 	static {
 		List<String> list = new ArrayList<>();
 		list.add(DAT);
+		list.add(DLV);
 		list.add(TXT);
 		extensionsText = Collections.unmodifiableList(list);
 	}

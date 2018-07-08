@@ -9,12 +9,12 @@ public class DlvProcessBuilder implements IProcessBuilder {
 
 	@Override
 	public ProcessBuilder getRunProcessBuilder(String file) {
-		return new ProcessBuilder("dlv", "-nofacts", file);
+		return new ProcessBuilder("C:\\dlv\\bin\\dlv.exe", "-silent", "-nofacts", file);
 	}
 
 	@Override
 	public ProcessBuilder getRunProcessBuilder(String file, String input) {
-		return new ProcessBuilder("dlv", "-nofacts", file, input);
+		return new ProcessBuilder("C:\\dlv\\bin\\dlv.exe", "-silent", "-nofacts", file, input);
 	}
 	
 	@Override
