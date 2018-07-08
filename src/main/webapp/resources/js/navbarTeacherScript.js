@@ -70,7 +70,6 @@ function init()
 			{
 				tags.push(val);
 			})
-			console.log(tags);
 			
 			var tagsnames = new Bloodhound({
 				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -117,6 +116,29 @@ function getContests()
 				contests.push('<option id="' + val + '">' + val + '</option>');
 			})
 			$('#contestName').append(contests);
+		}
+	});
+	$.ajax(
+	{
+		type : "GET", url : "createProblem?req=popularTags", datatype : "json",
+		success : function(data)
+		{
+			data = $.parseJSON(data);
+			var tags = [];
+			$('#popularTags').html("I Tag più utilizzati: ");
+			var i = 0;
+			$.each(data, function(key, val)
+			{
+				tags.push(val[0]+", ");
+				if(key == data.length-1)
+				{
+					$('#popularTags').append("<i>"+val[0]+"</i>");
+				}
+				else
+				{
+					$('#popularTags').append("<i>"+val[0]+"</i>, ");
+				}
+			})
 		}
 	});
 }

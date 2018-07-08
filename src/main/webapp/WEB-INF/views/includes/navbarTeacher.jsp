@@ -320,6 +320,8 @@
 							</span>
 							<input type="text" class="form-control" name="problemTags" id="problemTags" placeholder="Inserisci i tags separati da una virgola">
 						</div>
+							<small id="popularTags" class="form-text text-muted">
+							</small>
 					</div>
 					<div class="modal-footer">
 						<input type="submit" class="btn btn-primary button-login" value="Add Problem" />

@@ -76,6 +76,11 @@
 		- Modificato "HomeController" (addContest)
 		- Modificato "AddContestForm" (aggiunta "deadline" ed eliminati campi year, month e day)
 	
+08-07-2018
+	- Aggiunta la visualizzazione dei Tag più popolari durante la creazione di un Problema
+		- Modificato TagDAO, TagDAOImpl, navbarTearcher
+	- Creata Vista e Controller "myproblems" (url: /myProblems ) che mostra la lista dei Problemi CREATI dall'utente suddivisi per i rispettivi Contest
+		- Modificato ProblemController, ContestDAO, ContestDAOImpl, ProblemDAO, ProblemDAOImpl
 		
 	
 	

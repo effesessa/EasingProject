@@ -106,6 +106,29 @@ public class ProblemController
 		return "redirect:/";
 	}
 
+	@RequestMapping(value = "/myProblems", method = RequestMethod.GET)
+	public String addProblem(HttpSession session, Model model) throws IOException
+	{
+		setAccountAttribute(session, model);
+		final User user = (User) model.asMap().get("user");
+		logger.info(user.getSurname() + " - " + user.isProfessor());
+
+		if (user == null || !user.isProfessor())
+			return "redirect:/";
+
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+
+		// final List<String> professorContests =
+		// contestDAO.getContestsNamesByProfessor(user.getId());
+		final List<Contest> professorContests = contestDAO.getContestsByProfessor(user.getId());
+		final List<Problem> problemsByProfessor = problemDAO.getProblemsByProfessor(user.getId());
+
+		model.addAttribute("contests", professorContests);
+		model.addAttribute("problems", problemsByProfessor);
+		return "myproblems";
+	}
+
 	/*
 	 * @RequestMapping(value = "/addProblem", method = RequestMethod.POST)
 	 * public String addProblem(HttpSession session, @ModelAttribute
@@ -251,6 +274,20 @@ public class ProblemController
 		{
 			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
 			final List<String> tags = tagDAO.getAllTagValues();
+			try
+			{
+				mapper.writeValue(response.getOutputStream(), tags);
+			}
+			catch (final IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if (SessionUtils.isLoggedIn(session) && req.equals("popularTags"))
+		{
+			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			final List<String> tags = tagDAO.getMostPopularTags();
 			try
 			{
 				mapper.writeValue(response.getOutputStream(), tags);
