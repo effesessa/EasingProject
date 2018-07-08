@@ -75,16 +75,19 @@ public class Engine {
         processBuilder.redirectErrorStream(true);
 		String output = "";
         try {
+        	long startTime = System.nanoTime();
             Process process = processBuilder.start();
             if (!process.waitFor(timeLimit*2, TimeUnit.MILLISECONDS))
                 return Status.TIME_LIMIT_EXIT;
+            long endTime = System.nanoTime();
             int exitCode = process.exitValue();
             for (int i = 0; i < process.getErrorStream().available(); i++)
 				System.out.println(process.getErrorStream().read());
             if (exitCode != 0)
                 return Status.RUN_TIME_ERROR;
             output = IOUtils.toString(process.getInputStream());
-            System.out.println("OUTPUT: " + output);
+            long duration = (endTime - startTime) / 1000000;
+            System.out.println(duration);
         } 
         catch(Exception e) {
         	e.printStackTrace();
