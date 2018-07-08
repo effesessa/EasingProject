@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import it.unical.dao.DatabaseHandler;
 
 @Entity
@@ -41,6 +43,10 @@ public class Problem
 	@Column(name = "download", columnDefinition = "mediumblob")
 	private byte[] download;
 
+	@Column(name = "show_testcase", columnDefinition = "TINYINT")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
+	private boolean show_testcase;
+
 	@ManyToOne
 	@JoinColumn(name = "id_jury")
 	private Jury jury;
@@ -58,6 +64,7 @@ public class Problem
 		this.type = null;
 		this.sol = null;
 		this.description = null;
+		this.show_testcase = false;
 	}
 
 	public String getDescription()
@@ -110,6 +117,11 @@ public class Problem
 		return type;
 	}
 
+	public boolean isShow_testcase()
+	{
+		return show_testcase;
+	}
+
 	public void setDescription(String description)
 	{
 		this.description = description;
@@ -138,6 +150,11 @@ public class Problem
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public void setShow_testcase(boolean show_testcase)
+	{
+		this.show_testcase = show_testcase;
 	}
 
 	public void setSol(byte[] sol)

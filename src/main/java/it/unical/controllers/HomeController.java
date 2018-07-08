@@ -84,9 +84,7 @@ public class HomeController
 		contest.setRestriction(1);
 		contest.setSubject(subject);
 		contest.setJury(jury);
-		contest.setDeadline(
-				"" + addContestForm.getYear() + "/" + addContestForm.getMonth() + "/" + addContestForm.getDay());
-		logger.info(contest.getSubject().getSubjectId().getId_subject() + " : " + contest.getJury().getId_jury());
+		contest.setDeadline(addContestForm.getDeadline());
 		contestDAO.create(contest);
 		return "redirect:/";
 

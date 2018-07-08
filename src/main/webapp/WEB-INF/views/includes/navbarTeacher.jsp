@@ -179,7 +179,7 @@
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-education"></i>
 							</span>
-							<select class="form-control" id="newContest_subjectName" name="subjectName" required>
+							<select class="form-control" id="newContest_subjectName" name="subjectId" required>
 							</select>
 						</div>
 						<!-- <div>Corso:</div>
@@ -273,8 +273,8 @@
 				  	</div>
 				  	<br>
 				  	<div class="form-check generate-group">
-				  		<input class="form-check-input" type="checkbox" value="" id="show_testcase" name="show_testcase">
-				  		<label class="form-check-label" for="ioAccess"> Vuoi che gli Studenti possano accedere ai file di input e di output?</label>
+				  		<input class="form-check-input" type="checkbox" value=1 id="show_testcase" name="show_testcase">
+				  		<label class="form-check-label" for="show_testcase"> Vuoi che gli Studenti possano accedere ai file di input e di output?</label>
 					</div>
 					<div class="form-group">
 				    	<label for="testcase">File di input o Algoritmo</label>

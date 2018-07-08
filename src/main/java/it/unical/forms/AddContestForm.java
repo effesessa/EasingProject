@@ -1,79 +1,71 @@
 package it.unical.forms;
 
-public class AddContestForm {
+public class AddContestForm
+{
 
 	private String name;
-	private String year;
-	private String month;
-	private String day;
 	private String rankable;
 
 	private String jury;
-	public String getJury() {
-		return jury;
-	}
-
-	public void setJury(String jury) {
-		this.jury = jury;
-	}
-
 	private String subjectId;
+
+	private String deadline;
 
 	public AddContestForm()
 	{
-		this.name="";
-		this.year="";
-		this.month="";
-		this.day="";
-		this.rankable="";
-		this.subjectId=null;
+		this.name = "";
+		this.rankable = "";
+		this.subjectId = null;
+		this.deadline = null;
 	}
 
-	public String getName() {
+	public String getDeadline()
+	{
+		return deadline;
+	}
+
+	public String getJury()
+	{
+		return jury;
+	}
+
+	public String getName()
+	{
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getYear() {
-		return year;
-	}
-
-	public void setYear(String year) {
-		this.year = year;
-	}
-
-	public String getMonth() {
-		return month;
-	}
-
-	public void setMonth(String month) {
-		this.month = month;
-	}
-
-	public String getDay() {
-		return day;
-	}
-
-	public void setDay(String day) {
-		this.day = day;
-	}
-
-	public String getRankable() {
+	public String getRankable()
+	{
 		return rankable;
 	}
 
-	public void setRankable(String rankable) {
-		this.rankable = rankable;
-	}
-
-	public String getSubjectId() {
+	public String getSubjectId()
+	{
 		return subjectId;
 	}
 
-	public void setSubjectId(String subjectId) {
+	public void setDeadline(String deadline)
+	{
+		this.deadline = deadline;
+	}
+
+	public void setJury(String jury)
+	{
+		this.jury = jury;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public void setRankable(String rankable)
+	{
+		this.rankable = rankable;
+	}
+
+	public void setSubjectId(String subjectId)
+	{
 		this.subjectId = subjectId;
 	}
 }

@@ -46,6 +46,7 @@ import it.unical.entities.Contest;
 import it.unical.entities.Membership;
 import it.unical.entities.Problem;
 import it.unical.entities.Submit;
+import it.unical.entities.Tag;
 import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.AddProblemForm;
@@ -69,6 +70,17 @@ public class ProblemController
 	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model)
 			throws IOException
 	{
+		if (problemForm.isShow_testcase() == false)
+			logger.info("NO ACCESS");
+		else
+			logger.info("ACCESS");
+		logger.info("==============");
+		logger.info(problemForm.getProblemTags());
+		final String[] tags = problemForm.getProblemTags().split(",");
+		logger.info("==============");
+		for (final String string : tags)
+			logger.info(string);
+
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
 		final Problem problem = typeContext.prepareToSave(problemForm);
@@ -79,6 +91,15 @@ public class ProblemController
 			final Contest contest = contestDAO.getContestByName(problemForm.getContestName());
 			problem.setId_contest(contest);
 			problemDAO.create(problem);
+
+			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			for (final String tag : tags)
+			{
+				final Tag t = new Tag();
+				t.setProblem(problem);
+				t.setValue(tag);
+				tagDAO.create(t);
+			}
 		}
 		else
 			System.out.println("TODO redirect with popup errore" + typeContext.getStatus());

@@ -59,6 +59,27 @@
 	- Aggiunto supporto ai Tag nel form della creazione di un Problema
 		- Utilizzata libreria bootstrap-tagsinput per i tag e typeaheadJS per il completamento automatico
 		- Aggiornate le risorse (JS e CSS) della Vista "navbarTearcher"
-		- Modificata ProblemController per fornire la lista dei Tag via chiamata AJAX
+		- Modificata "ProblemController" per fornire la lista dei Tag via chiamata AJAX
 	- Fixato bug per cui non era possibile creare un Contest (la servlet sfruttava l'ID invece del nome, ora la chiamata AJAX restituisce anche l'ID)
+		- Modificato "ContestController" (createContest)
+		- Modificato "HomeController" (addContest)
 	- Fixato bug per cui non era possibile creare una Subject (prima bisognava inserire l'ID manualmente, ora viene incrementato manualmente (NB: Controllo sulla Transazione)
+		- Modificato "HomeController" (addSubject)
+		- Modificati "SubjectDAO" e "SubjectDAOImpl" (creata "getLastID")
+	- Aggiunto supporto back-end ai Tag e alla disponibilità dei TestCase agli studenti
+		- Modificato "ProblemController" (addProblem)
+		- Modificato "AbstractStrategy" (prepareToSave, per salvare il nuovo campo show_testcase)
+		- Modificato "Problem" (aggiunto il campo show_testcase)
+		- Modificato "AddProblemForm" (aggiunto il campo show_testcase e problemTags)
+	- Fixato bug per la creazione di un Contest (settava male l'ID, la tabella hibernate_sequence deve avere un valore di partenza)
+	- Aggiunto il salvataggio della data din un Contest
+		- Modificato "HomeController" (addContest)
+		- Modificato "AddContestForm" (aggiunta "deadline" ed eliminati campi year, month e day)
+	
+		
+	
+	
+	
+	
+	
+	
