@@ -31,6 +31,7 @@
 
 <!-- Custom Css -->
 <link href="resources/css/style.css" rel="stylesheet">
+<link href="resources/css/smallball.css" rel="stylesheet">
 
 <!-- Jquery Core Js -->
 <!-- <script src="resources/plugins/jquery/jquery.min.js"></script> -->
@@ -83,6 +84,7 @@
 											<th>Problem</th>
 											<th>Team</th>
 											<th>Date</th>
+											<th>Language</th>
 											<th>Score</th>
 											<th>Status</th>
 										</tr>
@@ -90,35 +92,57 @@
 									<tbody>
 										<c:forEach items="${submits}" var="submit">
 											<tr>
+												<td>${submit.problem.id_contest.idcontest}</td>
 												<td>${submit.problem.name}</td>
-												<td>Sort</td>
 												<td>${submit.team.name}</td>
 												<td>${submit.date}</td>
-												<td>${problem.score}</td>
 												<td>
 												<c:choose>
-														<c:when test="${submit.info=='CORRECT'}">
-															<span class="label label-success">CORRECT</span>
-														</c:when>
-														<c:when test="${submit.info=='WRONG_ANSWER'}">
-															<span class="label label-danger">WRONG_ANSWER</span>
-														</c:when>
-														<c:when test="${submit.info=='COMPILE_ERROR'}">
-															<span class="label label-danger">COMPILE_ERROR</span>
-														</c:when>
-														<c:when test="${submit.info=='TIME_LIMIT_EXIT'}">
-															<span class="label label-warning">TIME_LIMIT_EXIT</span>
-														</c:when>
-														<c:when test="${submit.info=='RUN_TIME_ERROR'}">
-															<span class="label label-default">RUN_TIME_ERROR</span>
-														</c:when>
-														<c:when test="${submit.info=='EXECUTION_ERROR'}">
-															<span class="label label-default">EXECUTION_ERROR</span>
-														</c:when>
-														<c:otherwise>
-															<span class="label bg-info">UNKNOWN_ERROR</span>
-														</c:otherwise>
-													</c:choose>
+													<c:when test="${submit.type=='java'}">
+														<span class="smallball smallball-java"></span> java
+													</c:when>
+													<c:when test="${submit.type=='cpp'}">
+														<span class="smallball smallball-cpp"></span> c++
+													</c:when>
+													<c:when test="${submit.type=='py'}">
+														<span class="smallball smallball-python"></span> python
+													</c:when>
+													<c:when test="${submit.type=='c'}">
+														<span class="smallball smallball-c"></span> c
+													</c:when>
+													<c:when test="${submit.type=='dlv'}">
+														<span class="smallball smallball-dlv"></span> dlv
+													</c:when>
+													<c:otherwise>
+														<span class="smallball"></span>
+													</c:otherwise>
+												</c:choose>
+												</td>
+												<td>${submit.score}</td>
+												<td>
+												<c:choose>
+													<c:when test="${submit.info=='CORRECT'}">
+														<span class="label label-success">CORRECT</span>
+													</c:when>
+													<c:when test="${submit.info=='WRONG_ANSWER'}">
+														<span class="label label-danger">WRONG_ANSWER</span>
+													</c:when>
+													<c:when test="${submit.info=='COMPILE_ERROR'}">
+														<span class="label label-danger">COMPILE_ERROR</span>
+													</c:when>
+													<c:when test="${submit.info=='TIME_LIMIT_EXIT'}">
+														<span class="label label-warning">TIME_LIMIT_EXIT</span>
+													</c:when>
+													<c:when test="${submit.info=='RUN_TIME_ERROR'}">
+														<span class="label label-default">RUN_TIME_ERROR</span>
+													</c:when>
+													<c:when test="${submit.info=='EXECUTION_ERROR'}">
+														<span class="label label-default">EXECUTION_ERROR</span>
+													</c:when>
+													<c:otherwise>
+														<span class="label bg-info">UNKNOWN_ERROR</span>
+													</c:otherwise>
+												</c:choose>
 												</td>
 											</tr>
 										</c:forEach>

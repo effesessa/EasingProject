@@ -46,6 +46,9 @@ public class Submit
 	@Column(name = "info")
 	private String info;
 	
+	@Column(name = "type")
+	private String type;
+	
 	@Column(name = "date")
 	private String date;
 	
@@ -110,5 +113,12 @@ public class Submit
 		this.solution = solution;
 	}
 	
+	public String getType() {
+		return type;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
+	}
 	
 }

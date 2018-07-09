@@ -12,6 +12,7 @@ import it.unical.entities.Submit;
 import it.unical.entities.Team;
 import it.unical.forms.SubmitForm;
 import it.unical.utils.FFileUtils;
+import it.unical.utils.StringUtils;
 
 /**
  * @author Fabrizio
@@ -40,6 +41,7 @@ public class SubmissionHandler {
 				submit.setDate(DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDate.now()));
 				byte submittedFileInBytes[] = FFileUtils.readFileToByteArray(submittedFile);
 				submit.setSolution(submittedFileInBytes);
+				submit.setType(StringUtils.getExtension(submittedFile.getName()));
 				submitDAO.create(submit);
 			}
 		}).start();
