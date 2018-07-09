@@ -29,14 +29,18 @@ public class ProcessBuilderFactory {
 	
 	public IProcessBuilder createIProcessBuilder(String file) {
 		String extension = StringUtils.getExtension(file);
-		if(processBuilderCache.containsKey(extension) && processBuilderCache.get(extension) != null)
+		synchronized (processBuilderCache) {
+			if(processBuilderCache.containsKey(extension) && processBuilderCache.get(extension) != null)
 				return processBuilderCache.get(extension);
+		}
 		extension = StringUtils.capitalize(extension);
 		System.out.println(corePackage + extension + "ProcessBuilder");
 		try {
 			Class<?> classIProcessBuilder = Class.forName(corePackage + extension + "ProcessBuilder");
 			IProcessBuilder iProcessBuilder = (IProcessBuilder) classIProcessBuilder.newInstance();
-			processBuilderCache.put(extension, iProcessBuilder);
+			synchronized (processBuilderCache) {
+				processBuilderCache.putIfAbsent(extension, iProcessBuilder);
+			}
 			return iProcessBuilder;
 		} 
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
