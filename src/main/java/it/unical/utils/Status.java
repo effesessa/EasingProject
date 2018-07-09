@@ -32,6 +32,8 @@ public class Status {
 	
 	public static final String SUCCESS = "SUCCESS";
 	
+	public static final String UNKNOWN_ERROR = "UNKNOWN_ERROR";
+	
 	static {
 		List<String> list = new ArrayList<>();
 		list.add(DEFAULT);

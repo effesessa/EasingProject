@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import it.unical.core.Engine;
+import it.unical.core.Verdict;
 import it.unical.entities.Problem;
 import it.unical.forms.AddProblemForm;
 import it.unical.forms.SubmitForm;
 import it.unical.utils.FFileUtils;
 import it.unical.utils.MultipartFileUtils;
+import it.unical.utils.Status;
 import it.unical.utils.StringUtils;
 
 /**
@@ -18,12 +20,12 @@ import it.unical.utils.StringUtils;
 
 public abstract class AbstractStrategy {
 
-	private String status;
+	private Verdict verdict;
 
-	public abstract String generateOutput(AddProblemForm problemDTO, Problem problem);
+	public abstract Verdict generateOutput(AddProblemForm problemDTO, Problem problem);
 
-	public String getStatus() {
-		return status;
+	public Verdict getVerdict() {
+		return verdict;
 	}
 
 	public abstract void manageInputFile(AddProblemForm problemDTO, Problem problem) throws IOException;
@@ -44,7 +46,7 @@ public abstract class AbstractStrategy {
 				problem.setType(StringUtils.getExtension(problemDTO.getTestcase().getOriginalFilename()));
 			manageInputFile(problemDTO, problem);
 			manageOutputFile(problemDTO, problem);
-			status = generateOutput(problemDTO, problem);
+			verdict = generateOutput(problemDTO, problem);
 		} 
 		catch (final IOException e) {
 			e.printStackTrace();
@@ -52,7 +54,7 @@ public abstract class AbstractStrategy {
 		return problem;
 	}
 
-	public abstract String process(Problem problem, File submittedFile, File testCaseFile, String teamName)throws IOException;
+	public abstract Verdict process(Problem problem, File submittedFile, File testCaseFile, String teamName)throws IOException;
 
 	/**
 	 * if present in DB, testcase file can be txt, dat, zip for archives there can
@@ -60,7 +62,7 @@ public abstract class AbstractStrategy {
 	 * submission is without input(testcase) the output is always present on DB
 	 */
 	// template method submit
-	public String submit(Problem problem, SubmitForm submitDTO) {
+	public Verdict submit(Problem problem, SubmitForm submitDTO) {
 		final File submittedFile = MultipartFileUtils.convert(submitDTO.getSolution());
 		File testCaseFile = null;
 		if (problem.getTest() != null) {
@@ -69,13 +71,13 @@ public abstract class AbstractStrategy {
 			testCaseFile = FFileUtils.createNewFile(fileName);
 			System.out.println(testCaseFile.getName());
 			FFileUtils.writeByteArrayToFile(testCaseFile, problem.getTest());
-		} else if (!(this instanceof AlgorithmStrategy))
-			return "TESTCASEFILE IS NULL";
+		} 
 		try {
 			return process(problem, submittedFile, testCaseFile, submitDTO.getTeam());
-		} catch (final IOException e) {
+		} 
+		catch (final IOException e) {
 			e.printStackTrace();
 		}
-		return "INTERNAL ERROR";
+		return new Verdict().setStatus(Status.UNKNOWN_ERROR);
 	}
 }

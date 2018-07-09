@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.unical.core.Engine;
 import it.unical.core.SubmissionHandler;
+import it.unical.core.Verdict;
 import it.unical.core.strategy.TypeContext;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.MembershipDAO;
@@ -86,7 +87,7 @@ public class ProblemController
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
 		final Problem problem = typeContext.prepareToSave(problemForm);
-		if (typeContext.getStatus() == Status.SUCCESS)
+		if (typeContext.getVerdict().getStatus() == Status.SUCCESS)
 		{
 			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
@@ -104,7 +105,7 @@ public class ProblemController
 			}
 		}
 		else
-			System.out.println("TODO redirect with popup errore" + typeContext.getStatus());
+			System.out.println("TODO redirect with popup errore" + typeContext.getVerdict().getStatus());
 		return "redirect:/";
 	}
 
@@ -484,9 +485,9 @@ public class ProblemController
 		System.out.println(submitForm.getSolution().getOriginalFilename());
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
-		final String status = typeContext.submit(problem, submitForm);
-		System.out.println(status);
-		SubmissionHandler.save(context, problem, submitForm, status);
+		final Verdict verdict = typeContext.submit(problem, submitForm);		
+		System.out.println(verdict.getStatus());
+		SubmissionHandler.save(context, problem, submitForm, verdict);
 		System.out.println("********************submit*********************");
 		return "redirect:/";
 	}

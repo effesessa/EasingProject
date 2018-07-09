@@ -1,5 +1,6 @@
 package it.unical.core.strategy;
 
+import it.unical.core.Verdict;
 import it.unical.entities.Problem;
 import it.unical.forms.AddProblemForm;
 import it.unical.forms.SubmitForm;
@@ -22,7 +23,7 @@ public class TypeContext {
 	
 	private static TypeContext typeContext;
 	
-	private String status;
+	private Verdict verdict;
 	
 	private TypeContext() {
 		fileStrategy = new FileStrategy();
@@ -48,15 +49,15 @@ public class TypeContext {
 	
 	public Problem prepareToSave(AddProblemForm problemDTO) {
 		Problem problem = abstractStrategy.prepareToSave(problemDTO);
-		status = abstractStrategy.getStatus();
+		verdict = abstractStrategy.getVerdict();
 		return problem;
 	}
 	
-	public String submit(Problem problem, SubmitForm submitDTO) {
+	public Verdict submit(Problem problem, SubmitForm submitDTO) {
 		return abstractStrategy.submit(problem, submitDTO);
 	}
 	
-	public String getStatus() {
-		return status;
+	public Verdict getVerdict() {
+		return verdict;
 	}
 }

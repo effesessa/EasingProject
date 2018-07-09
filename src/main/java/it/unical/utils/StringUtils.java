@@ -50,6 +50,18 @@ public class StringUtils {
 		return FilenameUtils.getBaseName(file);
 	}
 	
+	public static String checkAndSplitTimeExecution(String status) {
+		String executionTime = Engine.NO_EXECUTION_TIME;
+		if(status.contains(Engine.EXECUTION_TIME)) {
+			System.out.println("Yes contains");
+			final String split[] = status.split(Engine.EXECUTION_TIME);
+			status = split[0];
+			System.out.println("split: " + status);
+			executionTime = split[1];
+		}
+		return executionTime;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static boolean compatible(MultipartFile multipartFile, String oldType) {
 		String newType = StringUtils.getExtension(multipartFile.getOriginalFilename());

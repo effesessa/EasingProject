@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.web.multipart.MultipartFile;
 
 import it.unical.core.Engine;
+import it.unical.core.Verdict;
 import it.unical.entities.Problem;
 import it.unical.forms.AddProblemForm;
 import it.unical.utils.Status;
@@ -27,7 +28,7 @@ public class AlgorithmStrategy extends AbstractStrategy {
 	}
 
 	@Override
-	public String generateOutput(AddProblemForm problemDTO, Problem problem) {
+	public Verdict generateOutput(AddProblemForm problemDTO, Problem problem) {
 		MultipartFile multipartFile = problemDTO.getTestcase();
 		File algorithmFile = new File(System.getProperty(Engine.WORKING_DIRECTORY) + multipartFile.getOriginalFilename());
 		try {
@@ -36,20 +37,20 @@ public class AlgorithmStrategy extends AbstractStrategy {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		String response = "";
-		if(Engine.compile(algorithmFile.getName()) == Status.COMPILE_ERROR)
-			return Status.COMPILE_ERROR;
-		response = Engine.run(algorithmFile.getName(), TimeUnit.SECONDS.toMillis(problemDTO.getTimeout()));
-		System.out.println(response);
-		if(Status.statusList.contains(response))
-			return response;
-		problem.setSol(response.getBytes());
+		Verdict verdict = new Verdict();
+		if(Engine.compile(algorithmFile.getName()).getStatus().equals(Status.COMPILE_ERROR))
+			return verdict.setStatus(Status.COMPILE_ERROR);
+		verdict = Engine.run(algorithmFile.getName(), TimeUnit.SECONDS.toMillis(problemDTO.getTimeout()));
+		System.out.println(verdict.getStatus());
+		if(Status.statusList.contains(verdict.getStatus()))
+			return verdict;
+		problem.setSol(verdict.getStatus().getBytes());
 		algorithmFile.delete();
-		return Status.SUCCESS;
+		return verdict.setStatus(Status.SUCCESS);
 	}
 	
 	@Override
-	public String process(Problem problem, File submittedFile, File testCaseFile, String teamName) throws IOException {
-		return "";
+	public Verdict process(Problem problem, File submittedFile, File testCaseFile, String teamName) throws IOException {
+		return null;
 	}
 }

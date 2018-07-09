@@ -21,7 +21,7 @@ public class SubmissionHandler {
 	
 	public static final int MAX_SUBMISSION_SAVED = 5;
 	
-	public static void save(WebApplicationContext context, Problem problem, SubmitForm submitDTO, String status) {
+	public static void save(WebApplicationContext context, Problem problem, SubmitForm submitDTO, Verdict verdict) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -34,7 +34,9 @@ public class SubmissionHandler {
 				Submit submit = new Submit();
 				submit.setIdTeam(team);
 				submit.setProblem(problem);
-				submit.setInfo(status);
+				submit.setInfo(verdict.getStatus());
+				if(verdict.getExecutionTime() != null)
+					submit.setScore(verdict.getExecutionTime());
 				submit.setDate(DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDate.now()));
 				byte submittedFileInBytes[] = FFileUtils.readFileToByteArray(submittedFile);
 				submit.setSolution(submittedFileInBytes);
