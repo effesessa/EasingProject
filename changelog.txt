@@ -84,6 +84,10 @@
 	- Adattata graficamente la Vista "myproblems", aggiunto button per modificare ed eliminare un Problema (da implementare in back-end)
 		- Utilizzata libreria bootbox.js per il popup di alert e messaggi di conferme
 		- Create le risorse (JS e CSS) per la Vista "myproblems"
+
+09-07-2018
+	- Aggiunta la possibilità di scaricare i TestCase nella pagina del problema, se questi sono stati abilitati dal Professore
+		- Modificata "contest.jsp", "contest.css", "ContestController"
 		
 	
 	

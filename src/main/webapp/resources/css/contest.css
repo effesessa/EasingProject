@@ -137,3 +137,7 @@ span>a, span>a:hover
 	margin: 19px;
 	float: right;
 }
+.btn-info
+{
+	font-weight: bold;
+}
