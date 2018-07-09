@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Insert title here</title>
+	<title>Easing - I miei Problemi</title>
 	<%@ include file="includes/header.jsp" %>
 	<link href="resources/css/style.css" rel="stylesheet">
 	<link href="resources/css/myProblemsStyle.css" rel="stylesheet">
@@ -36,7 +36,7 @@
 														<li class="list-group-item">
 															${problem.name}
 															<span class="toRight">
-																<input class="btn btn-warning" type="button" value="Modifica" />
+																<input class="btn btn-warning editProblemBtn" type="button" value="Modifica" data-id="${problem.id_problem}" data-toggle="modal" data-target="#editProblemModal" />
 																<input class="btn btn-danger deleteProblemBtn" type="button" value="Elimina" data-id="${problem.id_problem}" />
 															</span>
 														</li>
@@ -138,11 +138,96 @@
 		</div>
 	</section>
 	
+	<div id="editProblemModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title">Modifica un Problema</h3>
+				</div>
+				<form:form action="problem" method="post" enctype="multipart/form-data" modelAttribute="problemForm">
+					<div class="form-group">
+						<label for="editP_contest">Nome Contest</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-education"></i>
+							</span>
+							<select class="form-control" id="editP_contestName" name="contestName" required>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="editP_problemName">Nome</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-text-size"></i>
+							</span>
+							<input type="text" class="form-control" name="name" id="editP_problemName" placeholder="Nome del Problema" required autofocus>
+						</div>
+					</div>
+					<div class="form-group">
+				    	<label for="editP_description">Descrizione</label>
+						<div class="input-group">
+				    		<span class="input-group-addon">
+								<i class="glyphicon glyphicon-pencil"></i>
+							</span>
+							<textarea class="form-control" id="editP_description" name="description" rows="5" cols="60" placeholder="Inserire una breve descrizione del Problema" style="resize: vertical;" required></textarea>		
+						</div>
+				  	</div>
+					<div class="form-group">
+				    	<label for="editP_download">Testo del Problema</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-file"></i>
+							</span>
+    						<input id="editP_download" name="download" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.pdf" required>
+						</div>
+			  		</div>
+			  		<div class="form-group">
+				    	<label for="editP_timeout">Timeout d'esecuzione (secondi)</label>
+						<div class="input-group">
+				    		<span class="input-group-addon">
+								<i class="glyphicon glyphicon-time"></i>
+							</span>
+							<input class="form-control" id="editP_timeout" name="timeout" type="number" min=1 step=0.5 value="1" required />
+						</div>
+				  	</div>
+				  	<br>
+				  	<div class="form-check generate-group">
+				  		<input class="form-check-input" type="checkbox" value=1 id="editP_show_testcase" name="show_testcase">
+				  		<label class="form-check-label" for="editP_show_testcase"> Vuoi che gli Studenti possano accedere ai file di input e di output?</label>
+					</div>
+
+					<br>
+					<div class="form-group">
+						<label for="editP_problemTags">Tag</label><br>
+						<small class="form-text text-muted">Inserisci i Tag separati da una virgola o uno spazio</small>
+						<div class="input-group" id="editP_tagsDiv">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-tags"></i>
+							</span>
+							<input type="text" class="form-control" name="problemTags" id="editP_problemTags">
+						</div>
+							<small id="editP_popularTags" class="form-text text-muted">
+							</small>
+					</div>
+					<div class="modal-footer">
+						<input type="submit" class="btn btn-primary button-login" value="Edit Problem" />
+					</div>
+				</form:form>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+	
+	
 	<!-- Waves Effect Plugin Js -->
 	<script src="resources/plugins/node-waves/waves.js"></script>
 	<!-- Custom Js -->
 	<script src="resources/js/admin.js"></script>
 	<script src="resources/js/bootbox.min.js"></script>
+	<script src="resources/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+	<script src="resources/js/typeahead.bundle.js"></script>
 	<script src="resources/js/myProblemsScript.js"></script>
 </body>
 </html>

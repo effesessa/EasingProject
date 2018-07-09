@@ -18,10 +18,16 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import it.unical.dao.DatabaseHandler;
 
 @Entity
 @Table(name = "problem")
+@JsonFilter("userFilter")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class Problem
 {
 	@Id
@@ -62,8 +68,11 @@ public class Problem
 	@JoinColumn(name = "contest_idcontest")
 	private Contest id_contest;
 
-	@OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL)
 	private List<Submit> submits;
+
+	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL)
+	private List<Tag> tags;
 
 	public Problem()
 	{
@@ -115,6 +124,11 @@ public class Problem
 	public List<Submit> getSubmits()
 	{
 		return submits;
+	}
+
+	public List<Tag> getTags()
+	{
+		return tags;
 	}
 
 	public byte[] getTest()
@@ -182,6 +196,11 @@ public class Problem
 		this.submits = submits;
 	}
 
+	public void setTags(List<Tag> tags)
+	{
+		this.tags = tags;
+	}
+
 	public void setTest(byte[] test)
 	{
 		this.test = test;
@@ -195,6 +214,13 @@ public class Problem
 	public void setType(String type)
 	{
 		this.type = type;
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.name + " " + this.description + " " + this.id_contest.getSubject().getContest() + " "
+				+ this.getJury().getProfessor().getId();
 	}
 
 }

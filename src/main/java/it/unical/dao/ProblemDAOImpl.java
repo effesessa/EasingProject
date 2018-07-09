@@ -47,6 +47,17 @@ public class ProblemDAOImpl implements ProblemDAO
 		return problem;
 	}
 
+	@Override
+	public Problem get_JoinFetch(Integer id)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Problem P left join fetch P.tags where P.id = :id");
+		query.setParameter("id", id);
+		final Problem problem = (Problem) query.uniqueResult();
+		session.close();
+		return problem;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Problem> getByName(String name)

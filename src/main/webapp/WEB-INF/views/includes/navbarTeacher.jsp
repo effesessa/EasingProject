@@ -84,6 +84,9 @@
 					<li><a href="#" data-toggle="modal" data-target="#myModal3" onclick="getContests()">
 							<i class="material-icons">update</i> <span>Add Problem</span>
 					</a></li>
+					<li><a href="myProblems">
+							<i class="material-icons">update</i> <span>My Problems</span>
+					</a></li>
 					<li><a href="logout"> <i class="fas fa-sign-out-alt"
 							style="font-size: 1.5em;"></i> <span
 							style="position: relative; bottom: 5px">Logout</span>
@@ -313,12 +316,13 @@
 					</div>
 					<br>
 					<div class="form-group">
-						<label for="problemTags">Tag</label>
+						<label for="problemTags">Tag</label><br>
+						<small class="form-text text-muted">Inserisci i Tag separati da una virgola o uno spazio</small>
 						<div class="input-group" id="tagsDiv">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-tags"></i>
 							</span>
-							<input type="text" class="form-control" name="problemTags" id="problemTags" placeholder="Inserisci i tags separati da una virgola">
+							<input type="text" class="form-control" name="problemTags" id="problemTags">
 						</div>
 							<small id="popularTags" class="form-text text-muted">
 							</small>
