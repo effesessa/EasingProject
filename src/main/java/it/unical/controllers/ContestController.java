@@ -24,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.unical.core.Engine;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.JuryMemberDAO;
 import it.unical.dao.MembershipDAO;
@@ -44,6 +45,7 @@ import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.SubscribeForm;
 import it.unical.utils.SessionUtils;
+import it.unical.utils.TypeFileExtension;
 
 @Controller
 public class ContestController
@@ -133,6 +135,30 @@ public class ContestController
 
 	}
 
+	
+	@RequestMapping(value = "/files/{id_problem}", method = RequestMethod.GET)
+	public void getTestCase(@PathVariable("id_problem") String id_problem, HttpServletResponse response) {
+		try
+		{
+			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+			final Problem problem = problemDAO.get(Integer.valueOf(id_problem));
+			if(problem.getType().equals(TypeFileExtension.ZIP))
+				response.setContentType("application/zip");
+			else
+				response.setContentType("text/plain");
+			response.setHeader("Content-disposition", 
+					"attachment; filename=" + Engine.BASE_NAME + Engine.DOT + problem.getType());
+			final byte[] data = problem.getTest();
+			response.setContentLength(data.length);
+			response.getOutputStream().write(data);
+			response.getOutputStream().flush();
+		}
+		catch (IOException ex) {
+			logger.info("Error writing file to output stream. Filename was '{}'", id_problem, ex);
+			throw new RuntimeException("IOError writing file to output stream");
+		}
+	}
+	
 	// Visualizza il Contest e la lista dei Problemi
 	@RequestMapping(value = "/contest", method = RequestMethod.GET)
 	public String contestMainView(@RequestParam String name, HttpSession session, Model model)

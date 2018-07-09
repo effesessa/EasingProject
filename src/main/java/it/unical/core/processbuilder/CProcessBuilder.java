@@ -22,8 +22,8 @@ public class CProcessBuilder implements IProcessBuilder {
 
 	@Override
 	public ProcessBuilder getRunProcessBuilder(String file, String input) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ProcessBuilder(System.getProperty(Engine.WORKING_DIRECTORY) + 
+				System.getProperty("line.separator") + StringUtils.getBaseName(file) + ".exe", input);
 	}
 	
 	@Override

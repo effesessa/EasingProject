@@ -22,8 +22,6 @@ public class CppProcessBuilder implements IProcessBuilder {
 
 	@Override
 	public ProcessBuilder getRunProcessBuilder(String file, String input) {
-		System.out.println(System.getProperty(Engine.WORKING_DIRECTORY) +
-				StringUtils.getBaseName(file) + ".exe");
 		return new ProcessBuilder(System.getProperty(Engine.WORKING_DIRECTORY) +
 				StringUtils.getBaseName(file) + ".exe", input);
 	}
