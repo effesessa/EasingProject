@@ -88,6 +88,8 @@
 09-07-2018
 	- Aggiunta la possibilità di scaricare i TestCase nella pagina del problema, se questi sono stati abilitati dal Professore
 		- Modificata "contest.jsp", "contest.css", "ContestController"
+	- Aggiunta l'eliminazione di un Problema in back-end
+		- Modificato "ProblemController", "Problem" (aggiunto le Submits per eliminazione in Cascade)
 		
 	
 	

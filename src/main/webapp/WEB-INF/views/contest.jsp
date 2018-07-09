@@ -63,11 +63,11 @@
 								<h3>Problema <span class="label label-primary"><a target="_blank" href="${pageContext.servletContext.contextPath }/files/${problem.id_problem}">${problem.name}</a></span></h3><br>
 								<c:if test="${problem.show_testcase}">
 									<c:choose>
-										<c:when test="${(problem.type == 'zip') || (problem.type == 'rar') || (problem.type == '7z')}">
+										<c:when test="${(problem.type == 'zip')}">
 											<h4>Test-Case</h4>
 											<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">File di input</a><br><br>
 										</c:when>
-										<c:when test="${(problem.type == 'txt') || (problem.type == 'dlv')}">
+										<c:when test="${(problem.type == 'txt') || (problem.type == 'dlv') || (problem.type == 'dat')}">
 											<h4>Test-Case</h4>
 											<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">File di input</a>
 											<a href="${pageContext.servletContext.contextPath }/testCase/output/${problem.id_problem}" class="btn btn-info">File di output</a><br><br>

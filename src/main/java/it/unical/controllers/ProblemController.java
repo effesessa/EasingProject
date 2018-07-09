@@ -335,6 +335,26 @@ public class ProblemController
 
 	}
 
+	@RequestMapping(value = "/problem", method = RequestMethod.POST)
+	public String editOrDeleteProblem(@RequestParam String op, @RequestParam int id, HttpSession session, Model model)
+	{
+		if (op.equals("deleteProblem"))
+		{
+			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+			final Problem problem = problemDAO.get(id);
+			final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
+			if (userID != null && userID.equals(problem.getJury().getProfessor().getId()))
+				problemDAO.delete(problem);
+		}
+		else
+		{
+			// Controllare che l'utente sia collegato, sia un Prof e che sia il
+			// Leader della Giuria del Problema (l'if di sopra più o meno)
+			// TODO Prendere form e modificare il Problema
+		}
+		return "myproblems";
+	}
+
 	private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
 	{
 

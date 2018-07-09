@@ -1,14 +1,21 @@
 package it.unical.entities;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 
 import it.unical.dao.DatabaseHandler;
@@ -55,6 +62,9 @@ public class Problem
 	@JoinColumn(name = "contest_idcontest")
 	private Contest id_contest;
 
+	@OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Submit> submits;
+
 	public Problem()
 	{
 		this.id_problem = DatabaseHandler.NO_ID;
@@ -100,6 +110,11 @@ public class Problem
 	public byte[] getSol()
 	{
 		return sol;
+	}
+
+	public List<Submit> getSubmits()
+	{
+		return submits;
 	}
 
 	public byte[] getTest()
@@ -160,6 +175,11 @@ public class Problem
 	public void setSol(byte[] sol)
 	{
 		this.sol = sol;
+	}
+
+	public void setSubmits(List<Submit> submits)
+	{
+		this.submits = submits;
 	}
 
 	public void setTest(byte[] test)

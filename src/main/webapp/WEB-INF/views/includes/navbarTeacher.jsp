@@ -282,7 +282,7 @@
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-open-file"></i>
 							</span>
-    						<input id="testcase" name="testcase" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.java,.cpp,.c,.zip,.rar,.7z,.tar" required>
+    						<input id="testcase" name="testcase" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.dat,.dlv,.java,.cpp,.c,.zip" required>
 						</div>
 			  		</div>
 					<div class="form-group output-group hidden">
