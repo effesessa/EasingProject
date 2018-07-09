@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
@@ -19,15 +20,16 @@ import it.unical.utils.Status;
 
 public class Engine {
 	
-	public static String compile(String file) {
+	public static Verdict compile(String file) {
+		Verdict verdict = new Verdict();
 		ProcessBuilderFactory processBuilderFactory = ProcessBuilderFactory.getInstance();
 		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(file);
 		if(!iProcessBuilder.compile())
-			return Status.COMPILE_SUCCESS;
+			return verdict.setStatus(Status.COMPILE_SUCCESS);
 		ProcessBuilder processBuilder = iProcessBuilder.getCompileProcessBuilder(file);
 		processBuilder.directory(new File(System.getProperty(WORKING_DIRECTORY)));
-        processBuilder.redirectErrorStream(true);
-        boolean compiled = true;
+		processBuilder.redirectErrorStream(true);
+		boolean compiled = true;
         try {
             Process process = processBuilder.start();
             InputStream inputStream = process.getInputStream();
@@ -41,19 +43,18 @@ public class Engine {
                 inputStream.close();
                 process.destroy();
                 if(!compiled)
-                    return Status.COMPILE_ERROR;
-                return Status.COMPILE_SUCCESS;
+                    return verdict.setStatus(Status.COMPILE_ERROR);
+                return verdict.setStatus(Status.COMPILE_SUCCESS);
             }
         }
         catch(IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        return Status.COMPILE_ERROR;
+        return verdict.setStatus(Status.COMPILE_ERROR);
 	}
 	
-	public static String run(String file, long timeLimit, String...input) {
-		System.out.println("** " + file);
-		System.out.println("** " + input[0]);
+	public static Verdict run(String file, long timeLimit, String...input) {
+		Verdict verdict = new Verdict();
 		ProcessBuilderFactory processBuilderFactory = ProcessBuilderFactory.getInstance();
 		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(file);
 		ProcessBuilder processBuilder;
@@ -68,30 +69,31 @@ public class Engine {
         	long startTime = System.nanoTime();
             Process process = processBuilder.start();
             if (!process.waitFor(timeLimit*2, TimeUnit.MILLISECONDS))
-                return Status.TIME_LIMIT_EXIT;
+                return verdict.setStatus(Status.TIME_LIMIT_EXIT);
             long endTime = System.nanoTime();
             int exitCode = process.exitValue();
             for (int i = 0; i < process.getErrorStream().available(); i++)
 				System.out.println(process.getErrorStream().read());
             if (exitCode != 0)
-                return Status.RUN_TIME_ERROR;
+            	return verdict.setStatus(Status.RUN_TIME_ERROR);
             output = IOUtils.toString(process.getInputStream());
-            long duration = (endTime - startTime) / 1000000;
-            System.out.println(duration);
+            Long nanosTime = (endTime - startTime);
+    		double secondsTime = (nanosTime.doubleValue() / 1000000000);
+    		String executionTime = new DecimalFormat("#.###").format(secondsTime).replace(",",".");
+    		verdict.setStatus(output).setExecutionTime(executionTime);
         } 
         catch(Exception e) {
         	e.printStackTrace();
-            return Status.EXECUTION_ERROR;
+            return verdict.setStatus(Status.EXECUTION_ERROR);
         }
-        return output;
+        return verdict;
 	}
 
-	public static String match(String response, String correctSolution) {
-		debugMatch(response, correctSolution);
-		if(!response.equals(correctSolution)) {
-			return Status.WRONG_ANSWER;
-		}
-		return Status.CORRECT;
+	public static void match(Verdict verdict, String correctSolution) {
+		debugMatch(verdict.getStatus(), correctSolution);
+		if(!verdict.getStatus().equals(correctSolution))
+			verdict.setStatus(Status.WRONG_ANSWER);
+		verdict.setStatus(Status.CORRECT);
 	}
 	
 	private static void debugMatch(String r, String c) {
@@ -108,5 +110,9 @@ public class Engine {
 	public static final String BASE_NAME_OUTPUT =  "output";
 	
 	public static final String DOT = ".";
+	
+	public static final String EXECUTION_TIME = "EXECUTION_TIME";
+	
+	public static final String NO_EXECUTION_TIME = "NO_EXECUTION_TIME";
 	
 }

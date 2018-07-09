@@ -15,18 +15,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +40,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import it.unical.core.Engine;
 import it.unical.core.SubmissionHandler;
+import it.unical.core.Verdict;
 import it.unical.core.strategy.TypeContext;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.MembershipDAO;
@@ -59,6 +59,7 @@ import it.unical.entities.User;
 import it.unical.forms.AddProblemForm;
 import it.unical.forms.SubmitForm;
 import it.unical.utils.Judge;
+import it.unical.utils.MultipartFileUtils;
 import it.unical.utils.SessionUtils;
 import it.unical.utils.Status;
 import it.unical.utils.StringUtils;
@@ -91,7 +92,7 @@ public class ProblemController
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
 		final Problem problem = typeContext.prepareToSave(problemForm);
-		if (typeContext.getStatus() == Status.SUCCESS)
+		if (typeContext.getVerdict().getStatus() == Status.SUCCESS)
 		{
 			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
@@ -109,7 +110,7 @@ public class ProblemController
 			}
 		}
 		else
-			System.out.println("TODO redirect with popup errore" + typeContext.getStatus());
+			System.out.println("TODO redirect with popup errore" + typeContext.getVerdict().getStatus());
 		return "redirect:/";
 	}
 
@@ -343,24 +344,52 @@ public class ProblemController
 	}
 
 	@RequestMapping(value = "/problem", method = RequestMethod.POST)
-	public String editOrDeleteProblem(@RequestParam String op, @RequestParam int id, HttpSession session, Model model)
+	public String editOrDeleteProblem(@RequestParam String op, @RequestParam int id,
+			@ModelAttribute AddProblemForm addProblemForm, HttpSession session, Model model)
 	{
-		if (op.equals("deleteProblem"))
-		{
-			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-			final Problem problem = problemDAO.get(id);
-			final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
-			if (userID != null && userID.equals(problem.getJury().getProfessor().getId()))
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final Problem problem = problemDAO.get(id);
+		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
+		if (userID != null && userID.equals(problem.getJury().getProfessor().getId()))
+			if (op.equals("deleteProblem"))
 				problemDAO.delete(problem);
-		}
-		else
-		{
-			// Controllare che l'utente sia collegato, sia un Prof e che sia il
-			// Leader della Giuria del Problema (l'if di sopra più o meno)
-			// TODO Prendere form e modificare il Problema
-		}
+			else
+				try
+				{
+					if (addProblemForm.getTestcase() != null
+							&& StringUtils.compatible(addProblemForm.getTestcase(), problem.getType()))
+					{
+						problem.setTest(addProblemForm.getTestcase().getBytes());
+						problem.setType(StringUtils.getExtension(addProblemForm.getTestcase().getOriginalFilename()));
+					}
+					if (addProblemForm.getDescription() != null)
+						problem.setDescription(addProblemForm.getDescription());
+					if (addProblemForm.getDownload() != null)
+						problem.setDownload(addProblemForm.getDownload().getBytes());
+					problem.setTimelimit((float) TimeUnit.SECONDS.toMillis(addProblemForm.getTimeout()));
+					problemDAO.update(problem);
+				}
+				catch (final IOException e)
+				{
+					e.printStackTrace();
+				}
 		return "myproblems";
 	}
+
+	/*
+	 * final TypeContext typeContext = TypeContext.getInstance();
+	 * typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
+	 * final Problem problem = typeContext.prepareToSave(problemForm); if
+	 * (typeContext.getStatus() == Status.SUCCESS) { final ProblemDAO problemDAO
+	 * = (ProblemDAO) context.getBean("problemDAO"); final ContestDAO contestDAO
+	 * = (ContestDAO) context.getBean("contestDAO"); final Contest contest =
+	 * contestDAO.getContestByName(problemForm.getContestName());
+	 * problem.setId_contest(contest); problemDAO.create(problem);
+	 *
+	 * final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO"); for (final
+	 * String tag : tags) { final Tag t = new Tag(); t.setProblem(problem);
+	 * t.setValue(tag); tagDAO.create(t); } }
+	 */
 
 	private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
 	{
@@ -455,9 +484,9 @@ public class ProblemController
 		System.out.println(submitForm.getSolution().getOriginalFilename());
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
-		final String status = typeContext.submit(problem, submitForm);
-		System.out.println(status);
-		SubmissionHandler.save(context, problem, submitForm, status);
+		final Verdict verdict = typeContext.submit(problem, submitForm);
+		System.out.println(verdict.getStatus());
+		SubmissionHandler.save(context, problem, submitForm, verdict);
 		System.out.println("********************submit*********************");
 		return "redirect:/";
 	}

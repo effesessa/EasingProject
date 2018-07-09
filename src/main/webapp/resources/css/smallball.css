@@ -1,0 +1,27 @@
+.smallball {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.smallball-cpp {
+	background-color: blue;
+}
+
+.smallball-python {
+	background-color: lime; 
+}
+
+.smallball-java {
+	background-color: brown;
+}
+
+.smallball-dlv {
+	background-color: purple;
+}
+
+.smallball-c {
+	background-color: orange;
+}
+
