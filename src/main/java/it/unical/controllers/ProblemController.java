@@ -427,7 +427,7 @@ public class ProblemController
 		System.out.println(submitForm.getTeam());
 		System.out.println(submitForm.getSolution().getOriginalFilename());
 		final TypeContext typeContext = TypeContext.getInstance();
-		typeContext.setStrategy(Engine.BASE_NAME + Engine.DOT + problem.getType());
+		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
 		final String status = typeContext.submit(problem, submitForm);
 		System.out.println(status);
 		SubmissionHandler.save(context, problem, submitForm, status);

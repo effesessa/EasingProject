@@ -212,60 +212,59 @@ public class ContestController
 	}
 
 	@RequestMapping(value = "/testCase/output/{id_problem}", method = RequestMethod.GET)
-	public void getSolution(@PathVariable("id_problem") String id_problem, HttpServletResponse response)
+	public void getSolution(@PathVariable("id_problem") String id_problem, HttpServletResponse response, HttpSession session)
 	{
-		// TODO IMPEDIRE L'ACCESSO DIRETTO A CHI NON E' AUTORIZZATO
-		try
+		if(SessionUtils.isLoggedIn(session)) 
 		{
-			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-			final Problem problem = problemDAO.get(Integer.valueOf(id_problem));
-			// TODO Considerare anche le altre estensioni di archivio (rar, 7z
-			// ecc)?
-			if (problem.getType().equals(TypeFileExtension.ZIP))
-				response.setContentType("application/zip");
-			else
-				response.setContentType("text/plain");
-			response.setHeader("Content-disposition",
-					"attachment; filename=" + Engine.BASE_NAME + Engine.DOT + problem.getType());
-			final byte[] data = problem.getSol();
-			response.setContentLength(data.length);
-			response.getOutputStream().write(data);
-			response.getOutputStream().flush();
-		}
-		catch (final IOException ex)
-		{
-			logger.info("Error writing file to output stream. Filename was '{}'", id_problem, ex);
-			throw new RuntimeException("IOError writing file to output stream");
+			try
+			{
+				final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+				final Problem problem = problemDAO.get(Integer.valueOf(id_problem));
+				String mimeType = TypeFileExtension.getMimeType(problem.getType());
+				response.setContentType(mimeType);
+				response.setHeader("Content-disposition",
+						"attachment; filename=" + Engine.BASE_NAME_OUTPUT + Engine.DOT + problem.getType());
+				final byte[] data = problem.getSol();
+				response.setContentLength(data.length);
+				response.getOutputStream().write(data);
+				response.getOutputStream().flush();
+				response.getOutputStream().close();
+			}
+			catch (final IOException ex)
+			{
+				logger.info("Error writing file to output stream. Filename was '{}'", id_problem, ex);
+				throw new RuntimeException("IOError writing file to output stream");
+			}
 		}
 	}
 
 	@RequestMapping(value = "/testCase/input/{id_problem}", method = RequestMethod.GET)
-	public void getTestCase(@PathVariable("id_problem") String id_problem, HttpServletResponse response)
+	public void getTestCase(@PathVariable("id_problem") String id_problem, HttpServletResponse response, HttpSession session)
 	{
-		// TODO IMPEDIRE L'ACCESSO DIRETTO A CHI NON E' AUTORIZZATO
-		try
+		if(SessionUtils.isLoggedIn(session)) 
 		{
-			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-			final Problem problem = problemDAO.get(Integer.valueOf(id_problem));
-			// TODO Considerare anche le altre estensioni di archivio (rar, 7z
-			// ecc)?
-			if (problem.getType().equals(TypeFileExtension.ZIP))
-				response.setContentType("application/zip");
-			else
-				response.setContentType("text/plain");
-			response.setHeader("Content-disposition",
-					"attachment; filename=" + Engine.BASE_NAME + Engine.DOT + problem.getType());
-			final byte[] data = problem.getTest();
-			response.setContentLength(data.length);
-			response.getOutputStream().write(data);
-			response.getOutputStream().flush();
-		}
-		catch (final IOException ex)
-		{
-			logger.info("Error writing file to output stream. Filename was '{}'", id_problem, ex);
-			throw new RuntimeException("IOError writing file to output stream");
+			try
+			{
+				final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+				final Problem problem = problemDAO.get(Integer.valueOf(id_problem));
+				String mimeType = TypeFileExtension.getMimeType(problem.getType());
+				response.setContentType(mimeType);
+				response.setHeader("Content-disposition",
+						"attachment; filename=" + Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
+				final byte[] data = problem.getTest();
+				response.setContentLength(data.length);
+				response.getOutputStream().write(data);
+				response.getOutputStream().flush();
+				response.getOutputStream().close();
+			}
+			catch (final IOException ex)
+			{
+				logger.info("Error writing file to output stream. Filename was '{}'", id_problem, ex);
+				throw new RuntimeException("IOError writing file to output stream");
+			}
 		}
 	}
+
 
 	private void setAccountAttribute(HttpSession session, Model model)
 	{

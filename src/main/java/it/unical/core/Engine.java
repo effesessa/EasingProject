@@ -19,16 +19,6 @@ import it.unical.utils.Status;
 
 public class Engine {
 	
-	public static final String WORKING_DIRECTORY = "java.io.tmpdir";
-	
-	public static final String BASE_NAME =  "input";
-	
-	public static final String DOT = ".";
-	
-	public Engine() {
-		
-	}
-	
 	public static String compile(String file) {
 		ProcessBuilderFactory processBuilderFactory = ProcessBuilderFactory.getInstance();
 		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(file);
@@ -110,5 +100,13 @@ public class Engine {
 		System.out.println("-------------" + c + "-------------");
 		System.out.println("*************match*************");
 	}
+	
+	public static final String WORKING_DIRECTORY = "java.io.tmpdir";
+	
+	public static final String BASE_NAME_INPUT =  "input";
+	
+	public static final String BASE_NAME_OUTPUT =  "output";
+	
+	public static final String DOT = ".";
 	
 }

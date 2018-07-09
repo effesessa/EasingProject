@@ -73,7 +73,7 @@ public abstract class AbstractStrategy
 		File testCaseFile = null;
 		if (problem.getTest() != null)
 		{
-			final String fileName = Engine.BASE_NAME + submitDTO.getTeam() + Engine.DOT + problem.getType();
+			final String fileName = Engine.BASE_NAME_INPUT + submitDTO.getTeam() + Engine.DOT + problem.getType();
 			System.out.println(fileName);
 			testCaseFile = FFileUtils.createNewFile(fileName);
 			System.out.println(testCaseFile.getName());

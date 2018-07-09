@@ -61,4 +61,15 @@ public class TypeFileExtension {
 		list.add(TXT);
 		extensionsText = Collections.unmodifiableList(list);
 	}
+	
+	public static String getMimeType(String extension) {
+		switch (extension) {
+		case TXT:
+			return "text/plain";
+		case ZIP:
+			return "application/zip";
+		default:
+			return "application/octet-stream";
+		}
+	}
 }
