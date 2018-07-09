@@ -81,6 +81,9 @@
 		- Modificato TagDAO, TagDAOImpl, navbarTearcher
 	- Creata Vista e Controller "myproblems" (url: /myProblems ) che mostra la lista dei Problemi CREATI dall'utente suddivisi per i rispettivi Contest
 		- Modificato ProblemController, ContestDAO, ContestDAOImpl, ProblemDAO, ProblemDAOImpl
+	- Adattata graficamente la Vista "myproblems", aggiunto button per modificare ed eliminare un Problema (da implementare in back-end)
+		- Utilizzata libreria bootbox.js per il popup di alert e messaggi di conferme
+		- Create le risorse (JS e CSS) per la Vista "myproblems"
 		
 	
 	

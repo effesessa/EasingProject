@@ -111,7 +111,6 @@ public class ProblemController
 	{
 		setAccountAttribute(session, model);
 		final User user = (User) model.asMap().get("user");
-		logger.info(user.getSurname() + " - " + user.isProfessor());
 
 		if (user == null || !user.isProfessor())
 			return "redirect:/";

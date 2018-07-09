@@ -8,6 +8,7 @@
 	<title>Insert title here</title>
 	<%@ include file="includes/header.jsp" %>
 	<link href="resources/css/style.css" rel="stylesheet">
+	<link href="resources/css/myProblemsStyle.css" rel="stylesheet">
 </head>
 <body>
 	<jsp:include page="includes/navbarTeacher.jsp"></jsp:include>
@@ -17,8 +18,8 @@
 			<div class="block-header">
 				<div class="card" style="height: auto !important;">
 					<div class="header">
-						<h2>Results</h2>
-		
+						<h2>I miei Problemi</h2>
+						Verranno visualizzati solo i Problemi creati da una Giuria di cui sei leader.
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
 							<c:forEach var="contest" items="${contests}">
 								<div class="panel panel-default">
@@ -32,7 +33,13 @@
 											<ul class="list-group">
 												<c:forEach items="${problems}" var="problem">
 													<c:if test="${problem.id_contest.idcontest == contest.idcontest}">
-														<li class="list-group-item">${problem.id_problem} - ${problem.name}</li>
+														<li class="list-group-item">
+															${problem.name}
+															<span class="toRight">
+																<input class="btn btn-warning" type="button" value="Modifica" />
+																<input class="btn btn-danger deleteProblemBtn" type="button" value="Elimina" data-id="${problem.id_problem}" />
+															</span>
+														</li>
 													</c:if>
 												</c:forEach>
 											</ul>
@@ -135,5 +142,7 @@
 	<script src="resources/plugins/node-waves/waves.js"></script>
 	<!-- Custom Js -->
 	<script src="resources/js/admin.js"></script>
+	<script src="resources/js/bootbox.min.js"></script>
+	<script src="resources/js/myProblemsScript.js"></script>
 </body>
 </html>
