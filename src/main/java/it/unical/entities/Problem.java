@@ -64,6 +64,9 @@ public class Problem
 
 	@OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Submit> submits;
+	
+	@OneToMany(mappedBy = "problem", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<Tag> tags;
 
 	public Problem()
 	{
@@ -195,6 +198,14 @@ public class Problem
 	public void setType(String type)
 	{
 		this.type = type;
+	}
+	
+	public List<Tag> getTags() {
+		return tags;
+	}
+	
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
 	}
 
 }
