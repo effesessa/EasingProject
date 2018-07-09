@@ -26,6 +26,10 @@ public class FFileUtils {
 		}).start();
 	}
 	
+	public static void deleteFile(File file) {
+		FileUtils.deleteQuietly(file);
+	}
+	
 	public static File createNewFile(String name) {
 		File file = new File(System.getProperty(Engine.WORKING_DIRECTORY) + name);
 		try {

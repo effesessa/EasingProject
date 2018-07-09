@@ -1,9 +1,17 @@
 package it.unical.utils;
 
+import java.io.File;
 import java.text.Normalizer;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import it.unical.core.Engine;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
 
 /**
  * @author Fabrizio
@@ -40,5 +48,33 @@ public class StringUtils {
 	
 	public static String getBaseName(String file) {
 		return FilenameUtils.getBaseName(file);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static boolean compatible(MultipartFile multipartFile, String oldType) {
+		String newType = StringUtils.getExtension(multipartFile.getOriginalFilename());
+		if(newType.equals(oldType))
+			return true;
+		if(newType.equals(TypeFileExtension.ZIP)) {
+			File file = MultipartFileUtils.convert(multipartFile);
+			boolean test = true;
+			try {
+				ZipFile zipFile = new ZipFile(file);
+				List<FileHeader> fileHeaderList = zipFile.getFileHeaders();
+				for (int i = 0; i < fileHeaderList.size(); i++) {
+					FileHeader fileHeader = (FileHeader)fileHeaderList.get(i);
+					if(!StringUtils.getExtension(fileHeader.getFileName()).equals(oldType)) {
+						test = false;
+						break;
+					}
+				}
+				FFileUtils.deleteFile(file);
+				return test;
+			} 
+			catch (ZipException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 }

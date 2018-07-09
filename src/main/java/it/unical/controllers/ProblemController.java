@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -52,6 +53,7 @@ import it.unical.entities.User;
 import it.unical.forms.AddProblemForm;
 import it.unical.forms.SubmitForm;
 import it.unical.utils.Judge;
+import it.unical.utils.MultipartFileUtils;
 import it.unical.utils.SessionUtils;
 import it.unical.utils.Status;
 import it.unical.utils.StringUtils;
@@ -336,24 +338,58 @@ public class ProblemController
 	}
 
 	@RequestMapping(value = "/problem", method = RequestMethod.POST)
-	public String editOrDeleteProblem(@RequestParam String op, @RequestParam int id, HttpSession session, Model model)
-	{
-		if (op.equals("deleteProblem"))
-		{
-			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-			final Problem problem = problemDAO.get(id);
-			final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
-			if (userID != null && userID.equals(problem.getJury().getProfessor().getId()))
-				problemDAO.delete(problem);
-		}
-		else
-		{
-			// Controllare che l'utente sia collegato, sia un Prof e che sia il
-			// Leader della Giuria del Problema (l'if di sopra più o meno)
-			// TODO Prendere form e modificare il Problema
+	public String editOrDeleteProblem(@RequestParam String op, @RequestParam int id, 
+			@ModelAttribute AddProblemForm addProblemForm, HttpSession session, Model model) {
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		Problem problem = problemDAO.get(id);
+		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
+		if (userID != null && userID.equals(problem.getJury().getProfessor().getId())) {
+			if(op.equals("deleteProblem"))
+					problemDAO.delete(problem);
+			else {
+				try {
+					if(addProblemForm.getTestcase() != null && 
+							StringUtils.compatible(addProblemForm.getTestcase(), problem.getType())) {
+							problem.setTest(addProblemForm.getTestcase().getBytes());
+							problem.setType(StringUtils.getExtension(addProblemForm.getTestcase().getOriginalFilename()));
+					}
+					if(addProblemForm.getDescription() != null)
+						problem.setDescription(addProblemForm.getDescription());
+					if(addProblemForm.getDownload() != null)
+						problem.setDownload(addProblemForm.getDownload().getBytes());
+					problem.setTimelimit((float) TimeUnit.SECONDS.toMillis(addProblemForm.getTimeout()));
+					problemDAO.update(problem);
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return "myproblems";
 	}
+	
+	/*
+		final TypeContext typeContext = TypeContext.getInstance();
+		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
+		final Problem problem = typeContext.prepareToSave(problemForm);
+		if (typeContext.getStatus() == Status.SUCCESS)
+		{
+			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+			final Contest contest = contestDAO.getContestByName(problemForm.getContestName());
+			problem.setId_contest(contest);
+			problemDAO.create(problem);
+
+			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			for (final String tag : tags)
+			{
+				final Tag t = new Tag();
+				t.setProblem(problem);
+				t.setValue(tag);
+				tagDAO.create(t);
+			}
+		}
+	*/
 
 	private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
 	{
