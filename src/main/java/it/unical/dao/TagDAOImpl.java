@@ -1,8 +1,10 @@
 package it.unical.dao;
 
 import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
+
 import it.unical.entities.Tag;
 
 /**
@@ -93,6 +95,16 @@ public class TagDAOImpl implements TagDAO
 	public void update(Tag tag)
 	{
 		databaseHandler.update(tag);
+	}
+
+	@Override
+	public void deleteAllTagsByProblem(Integer id_problem)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("DELETE FROM Tag T WHERE T.problem.id_problem = :id_problem");
+		query.setParameter("id_problem", id_problem);
+		query.executeUpdate();
+		session.close();
 	}
 
 }

@@ -146,6 +146,7 @@
 					<h3 class="modal-title">Modifica un Problema</h3>
 				</div>
 				<form:form action="problem" method="post" enctype="multipart/form-data" modelAttribute="problemForm">
+					<input type="hidden" name="id" id="id" value=""/> 
 					<div class="form-group">
 						<label for="editP_contest">Nome Contest</label>
 						<div class="input-group">
@@ -180,7 +181,7 @@
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-file"></i>
 							</span>
-    						<input id="editP_download" name="download" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.pdf" required>
+    						<input id="editP_download" name="download" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.pdf">
 						</div>
 			  		</div>
 			  		<div class="form-group">

@@ -59,7 +59,6 @@ import it.unical.entities.User;
 import it.unical.forms.AddProblemForm;
 import it.unical.forms.SubmitForm;
 import it.unical.utils.Judge;
-import it.unical.utils.MultipartFileUtils;
 import it.unical.utils.SessionUtils;
 import it.unical.utils.Status;
 import it.unical.utils.StringUtils;
@@ -344,36 +343,54 @@ public class ProblemController
 	}
 
 	@RequestMapping(value = "/problem", method = RequestMethod.POST)
-	public String editOrDeleteProblem(@RequestParam String op, @RequestParam int id,
-			@ModelAttribute AddProblemForm addProblemForm, HttpSession session, Model model)
+	public String editOrDeleteProblem(@RequestParam(required=false) String op, @RequestParam String id,
+			@ModelAttribute AddProblemForm problemForm, HttpSession session, Model model)
 	{
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		final Problem problem = problemDAO.get(id);
+		logger.info(id);
+		System.out.println("ID PROBLEMA "+id);
+		final Problem problem = problemDAO.get(Integer.parseInt(id));
 		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
 		if (userID != null && userID.equals(problem.getJury().getProfessor().getId()))
-			if (op.equals("deleteProblem"))
+			if (op != null && op.equals("deleteProblem"))
 				problemDAO.delete(problem);
 			else
 				try
 				{
-					if (addProblemForm.getTestcase() != null
-							&& StringUtils.compatible(addProblemForm.getTestcase(), problem.getType()))
+					if (problemForm.getTestcase() != null
+							&& StringUtils.compatible(problemForm.getTestcase(), problem.getType()))
 					{
-						problem.setTest(addProblemForm.getTestcase().getBytes());
-						problem.setType(StringUtils.getExtension(addProblemForm.getTestcase().getOriginalFilename()));
+						problem.setTest(problemForm.getTestcase().getBytes());
+						problem.setType(StringUtils.getExtension(problemForm.getTestcase().getOriginalFilename()));
 					}
-					if (addProblemForm.getDescription() != null)
-						problem.setDescription(addProblemForm.getDescription());
-					if (addProblemForm.getDownload() != null)
-						problem.setDownload(addProblemForm.getDownload().getBytes());
-					problem.setTimelimit((float) TimeUnit.SECONDS.toMillis(addProblemForm.getTimeout()));
+					problem.setName(problemForm.getName());
+					problem.setDescription(problemForm.getDescription());
+					if (problemForm.getDownload() != null)
+						problem.setDownload(problemForm.getDownload().getBytes());
+					final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+					final Contest newContest = contestDAO.getContestByName(problemForm.getContestName());
+					problem.setId_contest(newContest);
+					problem.setTimelimit((float) TimeUnit.SECONDS.toMillis(problemForm.getTimeout()));
+					problem.setShow_testcase(problemForm.isShow_testcase());
+
+					final String[] tags = problemForm.getProblemTags().split(",");
+
 					problemDAO.update(problem);
+					final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+					tagDAO.deleteAllTagsByProblem(problem.getId_problem());
+					for (final String tag : tags)
+					{
+						final Tag t = new Tag();
+						t.setProblem(problem);
+						t.setValue(tag);
+						tagDAO.create(t);
+					}
 				}
 				catch (final IOException e)
 				{
 					e.printStackTrace();
 				}
-		return "myproblems";
+		return "redirect:/myProblems";
 	}
 
 	/*

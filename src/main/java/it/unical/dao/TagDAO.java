@@ -15,6 +15,8 @@ public interface TagDAO
 
 	void delete(Tag tag);
 
+	void deleteAllTagsByProblem(Integer id_problem);
+
 	List<Tag> getAllTagsByProblem(Integer problem);
 
 	List<String> getAllTagValues();
@@ -24,5 +26,4 @@ public interface TagDAO
 	List<String> getMostPopularTags();
 
 	void update(Tag tag);
-
 }

@@ -37,6 +37,7 @@ function deleteProblem(problemID)
 function editProblem(problemID)
 {
 	// Clear form
+	$('#id').val("");
 	$('#editP_problemName').val("");
 	$('#editP_description').val("");
 	$('#editP_timeout').val("");
@@ -50,6 +51,8 @@ function editProblem(problemID)
 		success : function(data)
 		{
 			data = $.parseJSON(data);
+			console.log(data.id_problem);
+			$('#id').val(data.id_problem);
 			$('#editP_problemName').val(data.name);
 			$('#editP_description').val(data.description);
 			$('#editP_timeout').val(data.timelimit / 1000);
