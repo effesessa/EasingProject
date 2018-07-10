@@ -36,11 +36,10 @@ public class FileStrategy extends AbstractStrategy {
 	
 	@Override
 	public Verdict process(Problem problem, File submittedFile, File testCaseFile, String teamName) throws IOException {
-		Verdict verdict = new Verdict();
-		if(Engine.compile(submittedFile.getName()).equals(Status.COMPILE_ERROR))
-			return verdict.setStatus(Status.COMPILE_ERROR);
+		Verdict verdict = Engine.compile(submittedFile.getName());
+		if(verdict.getStatus().equals(Status.COMPILE_ERROR))
+			return verdict;
 		long timeLimit = TimeUnit.SECONDS.toMillis((long)(float)problem.getTimelimit());
-		String timeExecution = "";
 		verdict = Engine.run(submittedFile.getName(), timeLimit, testCaseFile.getName());
 		if(Status.statusList.contains(verdict.getStatus()))
 			return verdict;
