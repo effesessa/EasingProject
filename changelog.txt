@@ -92,7 +92,9 @@
 		- Modificato "ProblemController", "Problem" (aggiunto le Submits per eliminazione in Cascade)
 	- Aggiunta possibilità di modificare un Problema (front-end e chiamate Ajax back-end)
 		- Modificato "ProblemController", "ProblemDAO", "ProblemDAOImpl", "Problem", "myproblems.jsp" (e script), "navbarTearcher.jsp"
-		
+
+10-07-2018
+	- Fix modifica Problema
 	
 	
 	
