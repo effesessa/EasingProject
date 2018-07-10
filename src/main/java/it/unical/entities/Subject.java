@@ -34,7 +34,7 @@ public class Subject
 	@JoinColumn(name = "user_professor")
 	private User professor;
 
-	@OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "subject")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Contest> contest;
 

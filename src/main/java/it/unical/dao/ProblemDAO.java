@@ -14,6 +14,8 @@ public interface ProblemDAO
 
 	Problem get(Integer id);
 
+	Problem get_JoinFetch(Integer id);
+
 	public List<Problem> getByName(String word);
 
 	List<Problem> getProblemOfAContest(Integer contest);

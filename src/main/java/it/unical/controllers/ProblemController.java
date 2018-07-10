@@ -12,7 +12,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -32,6 +34,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import it.unical.core.Engine;
 import it.unical.core.SubmissionHandler;
@@ -339,58 +344,52 @@ public class ProblemController
 	}
 
 	@RequestMapping(value = "/problem", method = RequestMethod.POST)
-	public String editOrDeleteProblem(@RequestParam String op, @RequestParam int id, 
-			@ModelAttribute AddProblemForm addProblemForm, HttpSession session, Model model) {
+	public String editOrDeleteProblem(@RequestParam String op, @RequestParam int id,
+			@ModelAttribute AddProblemForm addProblemForm, HttpSession session, Model model)
+	{
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		Problem problem = problemDAO.get(id);
+		final Problem problem = problemDAO.get(id);
 		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
-		if (userID != null && userID.equals(problem.getJury().getProfessor().getId())) {
-			if(op.equals("deleteProblem"))
-					problemDAO.delete(problem);
-			else {
-				try {
-					if(addProblemForm.getTestcase() != null && 
-							StringUtils.compatible(addProblemForm.getTestcase(), problem.getType())) {
-							problem.setTest(addProblemForm.getTestcase().getBytes());
-							problem.setType(StringUtils.getExtension(addProblemForm.getTestcase().getOriginalFilename()));
+		if (userID != null && userID.equals(problem.getJury().getProfessor().getId()))
+			if (op.equals("deleteProblem"))
+				problemDAO.delete(problem);
+			else
+				try
+				{
+					if (addProblemForm.getTestcase() != null
+							&& StringUtils.compatible(addProblemForm.getTestcase(), problem.getType()))
+					{
+						problem.setTest(addProblemForm.getTestcase().getBytes());
+						problem.setType(StringUtils.getExtension(addProblemForm.getTestcase().getOriginalFilename()));
 					}
-					if(addProblemForm.getDescription() != null)
+					if (addProblemForm.getDescription() != null)
 						problem.setDescription(addProblemForm.getDescription());
-					if(addProblemForm.getDownload() != null)
+					if (addProblemForm.getDownload() != null)
 						problem.setDownload(addProblemForm.getDownload().getBytes());
 					problem.setTimelimit((float) TimeUnit.SECONDS.toMillis(addProblemForm.getTimeout()));
 					problemDAO.update(problem);
 				}
-				catch (IOException e) {
+				catch (final IOException e)
+				{
 					e.printStackTrace();
 				}
-			}
-		}
 		return "myproblems";
 	}
-	
-	/*
-		final TypeContext typeContext = TypeContext.getInstance();
-		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
-		final Problem problem = typeContext.prepareToSave(problemForm);
-		if (typeContext.getStatus() == Status.SUCCESS)
-		{
-			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-			final Contest contest = contestDAO.getContestByName(problemForm.getContestName());
-			problem.setId_contest(contest);
-			problemDAO.create(problem);
 
-			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
-			for (final String tag : tags)
-			{
-				final Tag t = new Tag();
-				t.setProblem(problem);
-				t.setValue(tag);
-				tagDAO.create(t);
-			}
-		}
-	*/
+	/*
+	 * final TypeContext typeContext = TypeContext.getInstance();
+	 * typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
+	 * final Problem problem = typeContext.prepareToSave(problemForm); if
+	 * (typeContext.getStatus() == Status.SUCCESS) { final ProblemDAO problemDAO
+	 * = (ProblemDAO) context.getBean("problemDAO"); final ContestDAO contestDAO
+	 * = (ContestDAO) context.getBean("contestDAO"); final Contest contest =
+	 * contestDAO.getContestByName(problemForm.getContestName());
+	 * problem.setId_contest(contest); problemDAO.create(problem);
+	 *
+	 * final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO"); for (final
+	 * String tag : tags) { final Tag t = new Tag(); t.setProblem(problem);
+	 * t.setValue(tag); tagDAO.create(t); } }
+	 */
 
 	private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
 	{
@@ -485,7 +484,7 @@ public class ProblemController
 		System.out.println(submitForm.getSolution().getOriginalFilename());
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
-		final Verdict verdict = typeContext.submit(problem, submitForm);		
+		final Verdict verdict = typeContext.submit(problem, submitForm);
 		System.out.println(verdict.getStatus());
 		SubmissionHandler.save(context, problem, submitForm, verdict);
 		System.out.println("********************submit*********************");
@@ -496,30 +495,63 @@ public class ProblemController
 	// Vista di origine non utilizzata
 	// Lista dei problemi già integrata nella Vista dei Contest
 	@RequestMapping(value = "/problem", method = RequestMethod.GET)
-	public String problemMainView(@RequestParam String id, HttpSession session, Model model)
+	public void problemMainView(@RequestParam String op, @RequestParam String id, HttpSession session, Model model,
+			HttpServletResponse response)
 	{
 		setAccountAttribute(session, model);
+		if (op.equals("editProblem"))
+		{
+			response.setContentType("text/html; charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			final ObjectMapper mapper = new ObjectMapper();
+			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+			final Problem problem = problemDAO.get_JoinFetch(Integer.parseInt(id));
 
-		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		final Problem problem = problemDAO.get(Integer.parseInt(id));
+			final Set<String> fieldsFilter = new HashSet<>();
+			fieldsFilter.add("jury");
+			fieldsFilter.add("id_contest");
+			fieldsFilter.add("submits");
+			fieldsFilter.add("test");
+			fieldsFilter.add("type");
+			fieldsFilter.add("sol");
+			fieldsFilter.add("download");
 
-		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-		final List<Submit> submits = submitDAO.getAllSubmitByProblem(problem.getId_problem());
+			logger.info(problem.getId_problem().toString());
+			final FilterProvider filters = new SimpleFilterProvider().addFilter("userFilter",
+					SimpleBeanPropertyFilter.serializeAllExcept(fieldsFilter));
+			try
+			{
+				mapper.writer(filters).writeValue(response.getOutputStream(), problem);
+			}
+			catch (final IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			// Non utilizzata
+			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+			final Problem problem = problemDAO.get(Integer.parseInt(id));
 
-		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-		final Contest contest = contestDAO.get(problem.getId_contest().getIdcontest());
+			final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+			final List<Submit> submits = submitDAO.getAllSubmitByProblem(problem.getId_problem());
 
-		final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
-		final List<Membership> memberships = membershipDAO
-				.getTeamByStudent(SessionUtils.getUserIdFromSessionOrNull(session));
+			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+			final Contest contest = contestDAO.get(problem.getId_contest().getIdcontest());
 
-		model.addAttribute("memberships", memberships);
-		model.addAttribute("problem", problem);
-		model.addAttribute("submits", submits);
-		model.addAttribute("contest", contest);
+			final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
+			final List<Membership> memberships = membershipDAO
+					.getTeamByStudent(SessionUtils.getUserIdFromSessionOrNull(session));
 
-		return "problemview";
+			model.addAttribute("memberships", memberships);
+			model.addAttribute("problem", problem);
+			model.addAttribute("submits", submits);
+			model.addAttribute("contest", contest);
 
+			// return "problemview";
+		}
 	}
 
 	private void setAccountAttribute(HttpSession session, Model model)
