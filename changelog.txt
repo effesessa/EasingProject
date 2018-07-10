@@ -95,6 +95,13 @@
 
 10-07-2018
 	- Fix modifica Problema
+	- Aggiunta possibilità di clonare un Problema esistente in un altro Contest
+		- Modificato "myproblems"
+		- Modificato "ProblemController", ordinata la funzione e ottimizzato codice ripetuto
+		- Modificato "myProblemsStyle" e "myProblemsScript"
+		- Modificata "navbarTearcher" (valore di default per il timeout impostato a 5)
+	- Fixato bug in "contest" per cui non si riusciva a visualizzare i problemi con più di uno spazio
+		- Modificato "contest.js" (RegEx in .replace)
 	
 	
 	
