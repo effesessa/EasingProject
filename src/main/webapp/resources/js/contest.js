@@ -151,11 +151,11 @@ pnProductNavContents.addEventListener("click",
 		function(e) {
 			var links = [].slice.call(document.querySelectorAll(".pn-ProductNav_Link"));
 			links.forEach(function(item) {
-				var bodyID = item.text.replace(" ", "");
+				var bodyID = item.text.replace(/\s/g, '');
 				$("#body-"+bodyID).css("display","none");
 				item.setAttribute("aria-selected", "false");
 			})
-			var bodyID = e.target.text.replace(" ", "");
+			var bodyID = e.target.text.replace(/\s/g, '');
 			$("#body-"+bodyID).css("display","block");
 			e.target.setAttribute("aria-selected", "true");
 			// Pass the clicked item and it's colour to the move indicator

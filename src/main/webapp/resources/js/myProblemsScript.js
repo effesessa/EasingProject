@@ -73,6 +73,11 @@ function editProblem(problemID)
 	});
 }
 
+function cloneProblem(problemID)
+{
+	$('#cloneP_id').val(problemID);
+}
+
 function init()
 {
 	$('.deleteProblemBtn').click(function()
@@ -82,6 +87,10 @@ function init()
 	$('.editProblemBtn').click(function()
 	{
 		editProblem($(this).data("id"));
+	});
+	$('.cloneProblemBtn').click(function()
+	{
+		cloneProblem($(this).data("id"));
 	});
 
 	// Get Tags for Typeahead
@@ -140,6 +149,7 @@ function init()
 				contests.push('<option id="' + val + '">' + val + '</option>');
 			})
 			$('#editP_contestName').append(contests);
+			$('#cloneP_contestName').append(contests);
 		}
 	});
 	

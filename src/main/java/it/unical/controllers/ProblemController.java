@@ -61,7 +61,6 @@ import it.unical.forms.SubmitForm;
 import it.unical.utils.Judge;
 import it.unical.utils.SessionUtils;
 import it.unical.utils.Status;
-import it.unical.utils.StringUtils;
 
 @Controller
 public class ProblemController
@@ -73,21 +72,22 @@ public class ProblemController
 	@Autowired
 	private WebApplicationContext context;
 
+	private void _addTags(AddProblemForm problemForm, final Problem problem, final TagDAO tagDAO)
+	{
+		final String[] tags = problemForm.getProblemTags().split(",");
+		for (final String tag : tags)
+		{
+			final Tag t = new Tag();
+			t.setProblem(problem);
+			t.setValue(tag);
+			tagDAO.create(t);
+		}
+	}
+
 	@RequestMapping(value = "/addProblem", method = RequestMethod.POST)
 	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model)
 			throws IOException
 	{
-		if (problemForm.isShow_testcase() == false)
-			logger.info("NO ACCESS");
-		else
-			logger.info("ACCESS");
-		logger.info("==============");
-		logger.info(problemForm.getProblemTags());
-		final String[] tags = problemForm.getProblemTags().split(",");
-		logger.info("==============");
-		for (final String string : tags)
-			logger.info(string);
-
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
 		final Problem problem = typeContext.prepareToSave(problemForm);
@@ -100,39 +100,11 @@ public class ProblemController
 			problemDAO.create(problem);
 
 			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
-			for (final String tag : tags)
-			{
-				final Tag t = new Tag();
-				t.setProblem(problem);
-				t.setValue(tag);
-				tagDAO.create(t);
-			}
+			_addTags(problemForm, problem, tagDAO);
 		}
 		else
 			System.out.println("TODO redirect with popup errore" + typeContext.getVerdict().getStatus());
 		return "redirect:/";
-	}
-
-	@RequestMapping(value = "/myProblems", method = RequestMethod.GET)
-	public String addProblem(HttpSession session, Model model) throws IOException
-	{
-		setAccountAttribute(session, model);
-		final User user = (User) model.asMap().get("user");
-
-		if (user == null || !user.isProfessor())
-			return "redirect:/";
-
-		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-
-		// final List<String> professorContests =
-		// contestDAO.getContestsNamesByProfessor(user.getId());
-		final List<Contest> professorContests = contestDAO.getContestsByProfessor(user.getId());
-		final List<Problem> problemsByProfessor = problemDAO.getProblemsByProfessor(user.getId());
-
-		model.addAttribute("contests", professorContests);
-		model.addAttribute("problems", problemsByProfessor);
-		return "myproblems";
 	}
 
 	/*
@@ -255,6 +227,28 @@ public class ProblemController
 	 * problemDAO.create(problem); } } return "redirect:/"; }
 	 */
 
+	@RequestMapping(value = "/myProblems", method = RequestMethod.GET)
+	public String addProblem(HttpSession session, Model model) throws IOException
+	{
+		setAccountAttribute(session, model);
+		final User user = (User) model.asMap().get("user");
+
+		if (user == null || !user.isProfessor())
+			return "redirect:/";
+
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+
+		// final List<String> professorContests =
+		// contestDAO.getContestsNamesByProfessor(user.getId());
+		final List<Contest> professorContests = contestDAO.getContestsByProfessor(user.getId());
+		final List<Problem> problemsByProfessor = problemDAO.getProblemsByProfessor(user.getId());
+
+		model.addAttribute("contests", professorContests);
+		model.addAttribute("problems", problemsByProfessor);
+		return "myproblems";
+	}
+
 	@RequestMapping(value = "/createProblem", method = RequestMethod.GET)
 	public void addProblem(@RequestParam String req, HttpSession session, Model model, HttpServletResponse response)
 	{
@@ -343,53 +337,98 @@ public class ProblemController
 	}
 
 	@RequestMapping(value = "/problem", method = RequestMethod.POST)
-	public String editOrDeleteProblem(@RequestParam(required=false) String op, @RequestParam String id,
-			@ModelAttribute AddProblemForm problemForm, HttpSession session, Model model)
+	public String editOrDeleteProblem(@RequestParam String op, @RequestParam String id,
+			@RequestParam(required = false) String contestName, @ModelAttribute AddProblemForm problemForm,
+			HttpSession session, Model model)
 	{
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		logger.info(id);
-		System.out.println("ID PROBLEMA "+id);
+		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final Problem problem = problemDAO.get(Integer.parseInt(id));
 		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
-		if (userID != null && userID.equals(problem.getJury().getProfessor().getId()))
-			if (op != null && op.equals("deleteProblem"))
+
+		// if (userID != null &&
+		// userID.equals(problem.getJury().getProfessor().getId()))
+		// if (op != null && op.equals("deleteProblem"))
+		// problemDAO.delete(problem);
+		// else if(op != null && op.equals("editProblem"))
+		// try
+		// {
+		// problem.setName(problemForm.getName());
+		// problem.setDescription(problemForm.getDescription());
+		// if (problemForm.getDownload() != null)
+		// problem.setDownload(problemForm.getDownload().getBytes());
+		// final Contest newContest =
+		// contestDAO.getContestByName(problemForm.getContestName());
+		// problem.setId_contest(newContest);
+		// problem.setTimelimit((float)
+		// TimeUnit.SECONDS.toMillis(problemForm.getTimeout()));
+		// problem.setShow_testcase(problemForm.isShow_testcase());
+		//
+		// final String[] tags = problemForm.getProblemTags().split(",");
+		//
+		// problemDAO.update(problem);
+		// final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+		// tagDAO.deleteAllTagsByProblem(problem.getId_problem());
+		// for (final String tag : tags)
+		// {
+		// final Tag t = new Tag();
+		// t.setProblem(problem);
+		// t.setValue(tag);
+		// tagDAO.create(t);
+		// }
+		// }
+		// catch (final IOException e)
+		// {
+		// e.printStackTrace();
+		// }
+		if (op != null && userID != null && userID.equals(problem.getJury().getProfessor().getId()))
+			switch (op)
+			{
+			case "deleteProblem":
 				problemDAO.delete(problem);
-			else
+				break;
+			case "editProblem":
 				try
 				{
-					if (problemForm.getTestcase() != null
-							&& StringUtils.compatible(problemForm.getTestcase(), problem.getType()))
-					{
-						problem.setTest(problemForm.getTestcase().getBytes());
-						problem.setType(StringUtils.getExtension(problemForm.getTestcase().getOriginalFilename()));
-					}
+					// if (problemForm.getTestcase() != null
+					// && StringUtils.compatible(problemForm.getTestcase(),
+					// problem.getType()))
+					// {
+					// problem.setTest(problemForm.getTestcase().getBytes());
+					// problem.setType(StringUtils.getExtension(problemForm.getTestcase().getOriginalFilename()));
+					// }
+					final Contest newContest = contestDAO.getContestByName(problemForm.getContestName());
 					problem.setName(problemForm.getName());
 					problem.setDescription(problemForm.getDescription());
-					if (problemForm.getDownload() != null)
+					if (problemForm.getDownload() == null || problemForm.getDownload().getName().isEmpty())
+						// if (problemForm.getDownload() != null)
 						problem.setDownload(problemForm.getDownload().getBytes());
-					final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-					final Contest newContest = contestDAO.getContestByName(problemForm.getContestName());
 					problem.setId_contest(newContest);
 					problem.setTimelimit((float) TimeUnit.SECONDS.toMillis(problemForm.getTimeout()));
 					problem.setShow_testcase(problemForm.isShow_testcase());
 
-					final String[] tags = problemForm.getProblemTags().split(",");
-
 					problemDAO.update(problem);
+
 					final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
 					tagDAO.deleteAllTagsByProblem(problem.getId_problem());
-					for (final String tag : tags)
-					{
-						final Tag t = new Tag();
-						t.setProblem(problem);
-						t.setValue(tag);
-						tagDAO.create(t);
-					}
+					_addTags(problemForm, problem, tagDAO);
 				}
 				catch (final IOException e)
 				{
 					e.printStackTrace();
 				}
+				break;
+			case "cloneProblem":
+				final Contest newContest = contestDAO.getContestByName(contestName);
+				problem.setId_contest(newContest);
+				// TODO Effettuare controlli (es. Evitare più Problemi con lo
+				// stesso Nome in un Contest)
+				problemDAO.create(problem);
+				break;
+			default:
+				// Operation not supported
+				break;
+			}
 		return "redirect:/myProblems";
 	}
 

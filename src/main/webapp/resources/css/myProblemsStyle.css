@@ -5,6 +5,10 @@
 }
 .toRight .btn
 {
-  margin-top: -4%;
+  margin-top: -3%;
   margin-left: 10px;
+}
+#editP_timeout
+{
+	width: 15%;
 }

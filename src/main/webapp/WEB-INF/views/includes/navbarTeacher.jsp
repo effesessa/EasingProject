@@ -271,7 +271,7 @@
 				    		<span class="input-group-addon">
 								<i class="glyphicon glyphicon-time"></i>
 							</span>
-							<input class="form-control" id="timeout" name="timeout" type="number" min=1 step=0.5 value="1" required />
+							<input class="form-control" id="timeout" name="timeout" type="number" min=1 step=1 value="5" required />
 						</div>
 				  	</div>
 				  	<br>

@@ -36,6 +36,7 @@
 														<li class="list-group-item">
 															${problem.name}
 															<span class="toRight">
+																<input class="btn btn-success cloneProblemBtn" type="button" value="Clona" data-id="${problem.id_problem}" data-toggle="modal" data-target="#cloneProblemModal" />
 																<input class="btn btn-warning editProblemBtn" type="button" value="Modifica" data-id="${problem.id_problem}" data-toggle="modal" data-target="#editProblemModal" />
 																<input class="btn btn-danger deleteProblemBtn" type="button" value="Elimina" data-id="${problem.id_problem}" />
 															</span>
@@ -47,90 +48,6 @@
 									</div>
 								</div>
 							</c:forEach>
-							
-							<%-- 
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion" href="#collapse1"> Users</a>
-									</h4>
-								</div>
-								<div id="collapse1" class="panel-collapse collapse in">
-									<div class="panel-body">
-										<ul class="list-group">
-											<c:forEach items="${UserResult}" var="user">
-												<li class="list-group-item">${user.id} - ${user.surname} ${user.name}</li>
-											</c:forEach>
-										</ul>
-									</div>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion" href="#collapse2"> Subjects</a>
-									</h4>
-								</div>
-								<div id="collapse2" class="panel-collapse collapse">
-									<div class="panel-body">
-										<ul class="list-group">
-											<c:forEach var="subject" items="${SubjectResult}">
-												<li class="list-group-item">${subject.name}
-													<div style="display: inline;">
-														<form:form id="password-form"
-															class="navbar-form form-inline"
-															action="signUpSubject?name=${subject.name}" method="POST"
-															modelAttribute="subjectPasswordForm"
-															style="display:inline-block;">
-															<div class="form-group">
-																<div class="input-group">
-																	<input type="text" class="form-control" name="password"	placeholder="Password" />
-																</div>
-															</div>
-															<button class="btn btn-primary button-add" data-toggle="tooltip">Iscriviti</button>
-														</form:form>
-													</div>
-												</li>
-											</c:forEach>
-										</ul>
-									</div>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordion" href="#collapse3"> Contests</a>
-									</h4>
-								</div>
-								<div id="collapse3" class="panel-collapse collapse">
-									<div class="panel-body">
-										<ul class="list-group">
-											<c:forEach var="contest" items="${ContestResult}">
-												<li class="list-group-item">${contest.name}
-													<div style="display: inline;">
-														<form:form id="password-form"
-															class="navbar-form form-inline"
-															action="signUpSubject?name=${subject.name}" method="POST"
-															modelAttribute="subjectPasswordForm"
-															style="display:inline-block;">
-															<div class="form-group">
-																<div class="input-group">
-																	<select class="form-control" id="team" name="team">
-																		<c:forEach var="team" items="${TeamResult}">
-																			<option>${team.name }</option>
-																		</c:forEach>
-																	</select>
-																</div>
-															</div>
-														</form:form>
-														<button class="btn btn-primary button-add" data-toggle="tooltip">Iscriviti</button>
-													</div>
-												</li>
-											</c:forEach>
-										</ul>
-									</div>
-								</div>
-							</div> --%>
 						</div>
 					</div>
 				</div>
@@ -146,6 +63,7 @@
 					<h3 class="modal-title">Modifica un Problema</h3>
 				</div>
 				<form:form action="problem" method="post" enctype="multipart/form-data" modelAttribute="problemForm">
+					<input type="hidden" name="op" value="editProblem"/> 
 					<input type="hidden" name="id" id="id" value=""/> 
 					<div class="form-group">
 						<label for="editP_contest">Nome Contest</label>
@@ -190,7 +108,7 @@
 				    		<span class="input-group-addon">
 								<i class="glyphicon glyphicon-time"></i>
 							</span>
-							<input class="form-control" id="editP_timeout" name="timeout" type="number" min=1 step=0.5 value="1" required />
+							<input class="form-control" id="editP_timeout" name="timeout" type="number" min=1 step=1 value="5" required />
 						</div>
 				  	</div>
 				  	<br>
@@ -213,7 +131,36 @@
 							</small>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btn btn-primary button-login" value="Edit Problem" />
+						<input type="submit" class="btn btn-primary button-login" value="Modifica Problema" />
+					</div>
+				</form:form>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="cloneProblemModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title">Clona un Problema</h3>
+				</div>
+				<form:form action="problem" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="op" value="cloneProblem"/>
+					<input type="hidden" name="id" id="cloneP_id" value=""/> 
+					<div class="form-group">
+						<label for="cloneP_contestName">Seleziona un Contest di destinazione</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-education"></i>
+							</span>
+							<select class="form-control" id="cloneP_contestName" name="contestName" required>
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<input type="submit" class="btn btn-primary button-login" value="Clona Problema" />
 					</div>
 				</form:form>
 				<div class="clearfix"></div>
