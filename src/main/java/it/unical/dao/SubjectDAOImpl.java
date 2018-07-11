@@ -1,13 +1,11 @@
 package it.unical.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.type.StandardBasicTypes;
 
-import it.unical.entities.Registration;
+import it.unical.entities.Contest;
 import it.unical.entities.Subject;
 import it.unical.entities.User;
 
@@ -74,6 +72,20 @@ public class SubjectDAOImpl implements SubjectDAO
 		final Query query = session.createQuery("from Subject where user_professor = :professor");
 		query.setParameter("professor", professor);
 		final List<Subject> subjects = query.list();
+		session.close();
+		return subjects;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getAllUserByProblem(Contest contest)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery(
+				"from Registration R where R.subject.subjectId.id_subject = :idSubject AND R.subject.subjectId.year = :subjectYear");
+		query.setParameter("idSubject", contest.getSubject().getSubjectId().getId_subject());
+		query.setParameter("subjectYear", contest.getSubject().getSubjectId().getYear());
+		final List<User> subjects = query.list();
 		session.close();
 		return subjects;
 	}

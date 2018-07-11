@@ -1,9 +1,10 @@
 package it.unical.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
+import it.unical.entities.Contest;
 import it.unical.entities.Subject;
+import it.unical.entities.User;
 
 public interface SubjectDAO
 {
@@ -19,6 +20,8 @@ public interface SubjectDAO
 	public List<Subject> getAll();
 
 	List<Subject> getAllSubjectFromProfessor(Integer professor);
+
+	public List<User> getAllUserByProblem(Contest contest);
 
 	long getLastID();
 

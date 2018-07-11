@@ -12,8 +12,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
@@ -84,27 +86,18 @@ public class ProblemController
 		}
 	}
 
-	@RequestMapping(value = "/addProblem", method = RequestMethod.POST)
-	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model)
-			throws IOException
+	private void _setAccountAttribute(HttpSession session, Model model)
 	{
-		final TypeContext typeContext = TypeContext.getInstance();
-		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
-		final Problem problem = typeContext.prepareToSave(problemForm);
-		if (typeContext.getVerdict().getStatus() == Status.SUCCESS)
+		if (SessionUtils.isUser(session))
 		{
-			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-			final Contest contest = contestDAO.getContestByName(problemForm.getContestName());
-			problem.setId_contest(contest);
-			problemDAO.create(problem);
-
-			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
-			_addTags(problemForm, problem, tagDAO);
+			final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+			final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
+			model.addAttribute("user", user);
+			model.addAttribute("typeSession", "Account");
+			model.addAttribute("userLogged", true);
 		}
 		else
-			System.out.println("TODO redirect with popup errore" + typeContext.getVerdict().getStatus());
-		return "redirect:/";
+			model.addAttribute("typeSession", "Login");
 	}
 
 	/*
@@ -227,10 +220,33 @@ public class ProblemController
 	 * problemDAO.create(problem); } } return "redirect:/"; }
 	 */
 
+	@RequestMapping(value = "/addProblem", method = RequestMethod.POST)
+	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model)
+			throws IOException
+	{
+		final TypeContext typeContext = TypeContext.getInstance();
+		typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
+		final Problem problem = typeContext.prepareToSave(problemForm);
+		if (typeContext.getVerdict().getStatus() == Status.SUCCESS)
+		{
+			final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+			final Contest contest = contestDAO.getContestByName(problemForm.getContestName());
+			problem.setId_contest(contest);
+			problemDAO.create(problem);
+
+			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			_addTags(problemForm, problem, tagDAO);
+		}
+		else
+			System.out.println("TODO redirect with popup errore" + typeContext.getVerdict().getStatus());
+		return "redirect:/";
+	}
+
 	@RequestMapping(value = "/myProblems", method = RequestMethod.GET)
 	public String addProblem(HttpSession session, Model model) throws IOException
 	{
-		setAccountAttribute(session, model);
+		_setAccountAttribute(session, model);
 		final User user = (User) model.asMap().get("user");
 
 		if (user == null || !user.isProfessor())
@@ -304,7 +320,7 @@ public class ProblemController
 	public String confirm(@RequestParam String teamname, @RequestParam String problemid, @RequestParam String path,
 			HttpSession session, Model model)
 	{
-		setAccountAttribute(session, model);
+		_setAccountAttribute(session, model);
 
 		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
 
@@ -335,6 +351,21 @@ public class ProblemController
 		return "redirect:/";
 
 	}
+
+	/*
+	 * final TypeContext typeContext = TypeContext.getInstance();
+	 * typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
+	 * final Problem problem = typeContext.prepareToSave(problemForm); if
+	 * (typeContext.getStatus() == Status.SUCCESS) { final ProblemDAO problemDAO
+	 * = (ProblemDAO) context.getBean("problemDAO"); final ContestDAO contestDAO
+	 * = (ContestDAO) context.getBean("contestDAO"); final Contest contest =
+	 * contestDAO.getContestByName(problemForm.getContestName());
+	 * problem.setId_contest(contest); problemDAO.create(problem);
+	 *
+	 * final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO"); for (final
+	 * String tag : tags) { final Tag t = new Tag(); t.setProblem(problem);
+	 * t.setValue(tag); tagDAO.create(t); } }
+	 */
 
 	@RequestMapping(value = "/problem", method = RequestMethod.POST)
 	public String editOrDeleteProblem(@RequestParam String op, @RequestParam String id,
@@ -400,8 +431,7 @@ public class ProblemController
 					final Contest newContest = contestDAO.getContestByName(problemForm.getContestName());
 					problem.setName(problemForm.getName());
 					problem.setDescription(problemForm.getDescription());
-					if (problemForm.getDownload() == null || problemForm.getDownload().getName().isEmpty())
-						// if (problemForm.getDownload() != null)
+					if (!problemForm.getDownload().isEmpty())
 						problem.setDownload(problemForm.getDownload().getBytes());
 					problem.setId_contest(newContest);
 					problem.setTimelimit((float) TimeUnit.SECONDS.toMillis(problemForm.getTimeout()));
@@ -431,21 +461,6 @@ public class ProblemController
 			}
 		return "redirect:/myProblems";
 	}
-
-	/*
-	 * final TypeContext typeContext = TypeContext.getInstance();
-	 * typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
-	 * final Problem problem = typeContext.prepareToSave(problemForm); if
-	 * (typeContext.getStatus() == Status.SUCCESS) { final ProblemDAO problemDAO
-	 * = (ProblemDAO) context.getBean("problemDAO"); final ContestDAO contestDAO
-	 * = (ContestDAO) context.getBean("contestDAO"); final Contest contest =
-	 * contestDAO.getContestByName(problemForm.getContestName());
-	 * problem.setId_contest(contest); problemDAO.create(problem);
-	 *
-	 * final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO"); for (final
-	 * String tag : tags) { final Tag t = new Tag(); t.setProblem(problem);
-	 * t.setValue(tag); tagDAO.create(t); } }
-	 */
 
 	private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
 	{
@@ -530,7 +545,7 @@ public class ProblemController
 	@RequestMapping(value = "/submit", method = RequestMethod.POST)
 	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException
 	{
-		setAccountAttribute(session, model);
+		_setAccountAttribute(session, model);
 		System.out.println("********************submit*********************");
 
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
@@ -554,7 +569,7 @@ public class ProblemController
 	public void problemMainView(@RequestParam String op, @RequestParam String id, HttpSession session, Model model,
 			HttpServletResponse response)
 	{
-		setAccountAttribute(session, model);
+		_setAccountAttribute(session, model);
 		if (op.equals("editProblem"))
 		{
 			response.setContentType("text/html; charset=UTF-8");
@@ -610,18 +625,35 @@ public class ProblemController
 		}
 	}
 
-	private void setAccountAttribute(HttpSession session, Model model)
+	@RequestMapping(value = "/viewSubmits", method = RequestMethod.GET)
+	public String viewProblemSubmits(@RequestParam String id, HttpSession session, Model model,
+			HttpServletResponse response)
 	{
-		if (SessionUtils.isUser(session))
+		_setAccountAttribute(session, model);
+
+		response.setContentType("text/html; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Problem problem = problemDAO.get(Integer.parseInt(id));
+
+		final List<Submit> submits = submitDAO.getAllSubmitByProblem(problem.getId_problem());
+		final Set<Team> teams = new HashSet<>();
+		for (final Submit submit : submits)
+			teams.add(submit.getTeam());
+
+		final Map<Team, List<Submit>> submitsPerTeam = new HashMap<>();
+		for (final Team team : teams)
 		{
-			final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
-			final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
-			model.addAttribute("user", user);
-			model.addAttribute("typeSession", "Account");
-			model.addAttribute("userLogged", true);
+			final List<Submit> submitsTmp = new ArrayList<>();
+			for (final Submit submit : submits)
+				if (submit.getTeam().equals(team))
+					submitsTmp.add(submit);
+			submitsPerTeam.put(team, submitsTmp);
 		}
-		else
-			model.addAttribute("typeSession", "Login");
+
+		model.addAttribute("submitsPerTeam", submitsPerTeam);
+		return "viewProblemSubmits";
 	}
 
 	// Submit soluzione

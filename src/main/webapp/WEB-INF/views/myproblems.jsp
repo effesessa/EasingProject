@@ -34,7 +34,7 @@
 												<c:forEach items="${problems}" var="problem">
 													<c:if test="${problem.id_contest.idcontest == contest.idcontest}">
 														<li class="list-group-item">
-															${problem.name}
+															<a href="viewSubmits?id=${problem.id_problem}">${problem.name}</a>
 															<span class="toRight">
 																<input class="btn btn-success cloneProblemBtn" type="button" value="Clona" data-id="${problem.id_problem}" data-toggle="modal" data-target="#cloneProblemModal" />
 																<input class="btn btn-warning editProblemBtn" type="button" value="Modifica" data-id="${problem.id_problem}" data-toggle="modal" data-target="#editProblemModal" />
