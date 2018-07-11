@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -219,7 +220,24 @@ public class ProblemController
 	 * problem.setTest(test.getBytes()); problem.setSol(solution);
 	 * problemDAO.create(problem); } } return "redirect:/"; }
 	 */
-
+	
+	@RequestMapping(value = "/viewSubmit", method = RequestMethod.GET)
+	public String viewSubmit(@RequestParam String submitId, HttpSession session, Model model) {
+		_setAccountAttribute(session, model);
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Submit submit = submitDAO.get(Integer.parseInt(submitId));
+		String submitFile = null;
+		try {
+			submitFile = new String(submit.getSolution(), "UTF-8");
+		} 
+		catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("submit", submit);
+		model.addAttribute("submitFile", submitFile);
+		return "viewSubmit";
+	}
+	
 	@RequestMapping(value = "/addProblem", method = RequestMethod.POST)
 	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model)
 			throws IOException
