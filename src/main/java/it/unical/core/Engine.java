@@ -115,4 +115,6 @@ public class Engine {
 	
 	public static final String NO_EXECUTION_TIME = "NO_EXECUTION_TIME";
 	
+	public static final String BASE_NAME_SUBMIT = "submit";
+	
 }

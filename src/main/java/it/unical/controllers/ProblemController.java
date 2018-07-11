@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,6 +65,7 @@ import it.unical.forms.SubmitForm;
 import it.unical.utils.Judge;
 import it.unical.utils.SessionUtils;
 import it.unical.utils.Status;
+import it.unical.utils.TypeFileExtension;
 
 @Controller
 public class ProblemController
@@ -235,7 +237,28 @@ public class ProblemController
 		}
 		model.addAttribute("submit", submit);
 		model.addAttribute("submitFile", submitFile);
+		model.addAttribute("language", TypeFileExtension.highlight.get(submit.getType()));
 		return "viewSubmit";
+	}
+	
+	@RequestMapping(value = "/downloadSubmit/{submitId}", method = RequestMethod.GET)
+	public void downloadSubmit(@PathVariable String submitId, HttpSession session, HttpServletResponse response) {
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Submit submit = submitDAO.get(Integer.parseInt(submitId));
+		String mimeType = TypeFileExtension.getMimeType(submit.getType());
+		response.setContentType(mimeType);
+		response.setHeader("Content-disposition",
+				"attachment; filename=" + Engine.BASE_NAME_SUBMIT + Engine.DOT + submit.getType());
+		final byte[] data = submit.getSolution();
+		response.setContentLength(data.length);
+		try {
+			response.getOutputStream().write(data);
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@RequestMapping(value = "/addProblem", method = RequestMethod.POST)
