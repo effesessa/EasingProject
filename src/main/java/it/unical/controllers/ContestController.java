@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +39,6 @@ import it.unical.entities.Membership;
 import it.unical.entities.Partecipation;
 import it.unical.entities.Problem;
 import it.unical.entities.Subject;
-import it.unical.entities.SubjectId;
 import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.SubscribeForm;
@@ -201,6 +199,7 @@ public class ContestController
 
 			response.getOutputStream().write(data);
 			response.getOutputStream().flush();
+			response.getOutputStream().close();
 
 		}
 		catch (final IOException ex)
@@ -212,15 +211,15 @@ public class ContestController
 	}
 
 	@RequestMapping(value = "/testCase/output/{id_problem}", method = RequestMethod.GET)
-	public void getSolution(@PathVariable("id_problem") String id_problem, HttpServletResponse response, HttpSession session)
+	public void getSolution(@PathVariable("id_problem") String id_problem, HttpServletResponse response,
+			HttpSession session)
 	{
-		if(SessionUtils.isLoggedIn(session)) 
-		{
+		if (SessionUtils.isLoggedIn(session))
 			try
 			{
 				final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 				final Problem problem = problemDAO.get(Integer.valueOf(id_problem));
-				String mimeType = TypeFileExtension.getMimeType(problem.getType());
+				final String mimeType = TypeFileExtension.getMimeType(problem.getType());
 				response.setContentType(mimeType);
 				response.setHeader("Content-disposition",
 						"attachment; filename=" + Engine.BASE_NAME_OUTPUT + Engine.DOT + problem.getType());
@@ -235,19 +234,18 @@ public class ContestController
 				logger.info("Error writing file to output stream. Filename was '{}'", id_problem, ex);
 				throw new RuntimeException("IOError writing file to output stream");
 			}
-		}
 	}
 
 	@RequestMapping(value = "/testCase/input/{id_problem}", method = RequestMethod.GET)
-	public void getTestCase(@PathVariable("id_problem") String id_problem, HttpServletResponse response, HttpSession session)
+	public void getTestCase(@PathVariable("id_problem") String id_problem, HttpServletResponse response,
+			HttpSession session)
 	{
-		if(SessionUtils.isLoggedIn(session)) 
-		{
+		if (SessionUtils.isLoggedIn(session))
 			try
 			{
 				final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 				final Problem problem = problemDAO.get(Integer.valueOf(id_problem));
-				String mimeType = TypeFileExtension.getMimeType(problem.getType());
+				final String mimeType = TypeFileExtension.getMimeType(problem.getType());
 				response.setContentType(mimeType);
 				response.setHeader("Content-disposition",
 						"attachment; filename=" + Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
@@ -262,9 +260,7 @@ public class ContestController
 				logger.info("Error writing file to output stream. Filename was '{}'", id_problem, ex);
 				throw new RuntimeException("IOError writing file to output stream");
 			}
-		}
 	}
-
 
 	private void setAccountAttribute(HttpSession session, Model model)
 	{

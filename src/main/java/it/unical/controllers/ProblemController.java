@@ -64,6 +64,7 @@ import it.unical.forms.SubmitForm;
 import it.unical.utils.Judge;
 import it.unical.utils.SessionUtils;
 import it.unical.utils.Status;
+import it.unical.utils.TypeFileExtension;
 
 @Controller
 public class ProblemController
@@ -220,24 +221,7 @@ public class ProblemController
 	 * problem.setTest(test.getBytes()); problem.setSol(solution);
 	 * problemDAO.create(problem); } } return "redirect:/"; }
 	 */
-	
-	@RequestMapping(value = "/viewSubmit", method = RequestMethod.GET)
-	public String viewSubmit(@RequestParam String submitId, HttpSession session, Model model) {
-		_setAccountAttribute(session, model);
-		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-		final Submit submit = submitDAO.get(Integer.parseInt(submitId));
-		String submitFile = null;
-		try {
-			submitFile = new String(submit.getSolution(), "UTF-8");
-		} 
-		catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		model.addAttribute("submit", submit);
-		model.addAttribute("submitFile", submitFile);
-		return "viewSubmit";
-	}
-	
+
 	@RequestMapping(value = "/addProblem", method = RequestMethod.POST)
 	public String addProblem(HttpSession session, @ModelAttribute AddProblemForm problemForm, Model model)
 			throws IOException
@@ -370,21 +354,6 @@ public class ProblemController
 
 	}
 
-	/*
-	 * final TypeContext typeContext = TypeContext.getInstance();
-	 * typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
-	 * final Problem problem = typeContext.prepareToSave(problemForm); if
-	 * (typeContext.getStatus() == Status.SUCCESS) { final ProblemDAO problemDAO
-	 * = (ProblemDAO) context.getBean("problemDAO"); final ContestDAO contestDAO
-	 * = (ContestDAO) context.getBean("contestDAO"); final Contest contest =
-	 * contestDAO.getContestByName(problemForm.getContestName());
-	 * problem.setId_contest(contest); problemDAO.create(problem);
-	 *
-	 * final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO"); for (final
-	 * String tag : tags) { final Tag t = new Tag(); t.setProblem(problem);
-	 * t.setValue(tag); tagDAO.create(t); } }
-	 */
-
 	@RequestMapping(value = "/problem", method = RequestMethod.POST)
 	public String editOrDeleteProblem(@RequestParam String op, @RequestParam String id,
 			@RequestParam(required = false) String contestName, @ModelAttribute AddProblemForm problemForm,
@@ -479,6 +448,21 @@ public class ProblemController
 			}
 		return "redirect:/myProblems";
 	}
+
+	/*
+	 * final TypeContext typeContext = TypeContext.getInstance();
+	 * typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
+	 * final Problem problem = typeContext.prepareToSave(problemForm); if
+	 * (typeContext.getStatus() == Status.SUCCESS) { final ProblemDAO problemDAO
+	 * = (ProblemDAO) context.getBean("problemDAO"); final ContestDAO contestDAO
+	 * = (ContestDAO) context.getBean("contestDAO"); final Contest contest =
+	 * contestDAO.getContestByName(problemForm.getContestName());
+	 * problem.setId_contest(contest); problemDAO.create(problem);
+	 *
+	 * final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO"); for (final
+	 * String tag : tags) { final Tag t = new Tag(); t.setProblem(problem);
+	 * t.setValue(tag); tagDAO.create(t); } }
+	 */
 
 	private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
 	{
@@ -672,6 +656,27 @@ public class ProblemController
 
 		model.addAttribute("submitsPerTeam", submitsPerTeam);
 		return "viewProblemSubmits";
+	}
+
+	@RequestMapping(value = "/viewSubmit", method = RequestMethod.GET)
+	public String viewSubmit(@RequestParam String submitId, HttpSession session, Model model)
+	{
+		_setAccountAttribute(session, model);
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Submit submit = submitDAO.get(Integer.parseInt(submitId));
+		String submitFile = null;
+		try
+		{
+			submitFile = new String(submit.getSolution(), "UTF-8");
+		}
+		catch (final UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		model.addAttribute("submit", submit);
+		model.addAttribute("submitFile", submitFile);
+		model.addAttribute("language", TypeFileExtension.highlight.get(submit.getTeam()));
+		return "viewSubmit";
 	}
 
 	// Submit soluzione

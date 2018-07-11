@@ -77,5 +77,10 @@
 		</div>
 	</section>
 
+
+	<!-- Waves Effect Plugin Js -->
+	<script src="resources/plugins/node-waves/waves.js"></script>
+	<!-- Custom Js -->
+	<script src="resources/js/admin.js"></script>
 </body>
 </html>
