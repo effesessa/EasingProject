@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -354,6 +355,29 @@ public class ProblemController
 
 	}
 
+	@RequestMapping(value = "/downloadSubmit/{submitId}", method = RequestMethod.GET)
+	public void downloadSubmit(@PathVariable String submitId, HttpSession session, HttpServletResponse response)
+	{
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Submit submit = submitDAO.get(Integer.parseInt(submitId));
+		final String mimeType = TypeFileExtension.getMimeType(submit.getType());
+		response.setContentType(mimeType);
+		response.setHeader("Content-disposition",
+				"attachment; filename=" + Engine.BASE_NAME_SUBMIT + Engine.DOT + submit.getType());
+		final byte[] data = submit.getSolution();
+		response.setContentLength(data.length);
+		try
+		{
+			response.getOutputStream().write(data);
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		}
+		catch (final IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	@RequestMapping(value = "/problem", method = RequestMethod.POST)
 	public String editOrDeleteProblem(@RequestParam String op, @RequestParam String id,
 			@RequestParam(required = false) String contestName, @ModelAttribute AddProblemForm problemForm,
@@ -449,21 +473,6 @@ public class ProblemController
 		return "redirect:/myProblems";
 	}
 
-	/*
-	 * final TypeContext typeContext = TypeContext.getInstance();
-	 * typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
-	 * final Problem problem = typeContext.prepareToSave(problemForm); if
-	 * (typeContext.getStatus() == Status.SUCCESS) { final ProblemDAO problemDAO
-	 * = (ProblemDAO) context.getBean("problemDAO"); final ContestDAO contestDAO
-	 * = (ContestDAO) context.getBean("contestDAO"); final Contest contest =
-	 * contestDAO.getContestByName(problemForm.getContestName());
-	 * problem.setId_contest(contest); problemDAO.create(problem);
-	 *
-	 * final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO"); for (final
-	 * String tag : tags) { final Tag t = new Tag(); t.setProblem(problem);
-	 * t.setValue(tag); tagDAO.create(t); } }
-	 */
-
 	private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
 	{
 
@@ -543,6 +552,21 @@ public class ProblemController
 		}
 		return info;
 	}
+
+	/*
+	 * final TypeContext typeContext = TypeContext.getInstance();
+	 * typeContext.setStrategy(problemForm.getTestcase().getOriginalFilename());
+	 * final Problem problem = typeContext.prepareToSave(problemForm); if
+	 * (typeContext.getStatus() == Status.SUCCESS) { final ProblemDAO problemDAO
+	 * = (ProblemDAO) context.getBean("problemDAO"); final ContestDAO contestDAO
+	 * = (ContestDAO) context.getBean("contestDAO"); final Contest contest =
+	 * contestDAO.getContestByName(problemForm.getContestName());
+	 * problem.setId_contest(contest); problemDAO.create(problem);
+	 *
+	 * final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO"); for (final
+	 * String tag : tags) { final Tag t = new Tag(); t.setProblem(problem);
+	 * t.setValue(tag); tagDAO.create(t); } }
+	 */
 
 	@RequestMapping(value = "/submit", method = RequestMethod.POST)
 	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException
@@ -675,7 +699,7 @@ public class ProblemController
 		}
 		model.addAttribute("submit", submit);
 		model.addAttribute("submitFile", submitFile);
-		model.addAttribute("language", TypeFileExtension.highlight.get(submit.getTeam()));
+		model.addAttribute("language", TypeFileExtension.highlight.get(submit.getType()));
 		return "viewSubmit";
 	}
 

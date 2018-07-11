@@ -82,12 +82,20 @@ public class TypeFileExtension {
 	
 	public static String getMimeType(String extension) {
 		switch (extension) {
-		case TXT:
-			return "text/plain";
-		case ZIP:
-			return "application/zip";
-		default:
-			return "application/octet-stream";
+			case TXT:
+				return "text/plain";
+			case ZIP:
+				return "application/zip";
+			case CPP: 
+				return "text/x-c";
+			case JAVA:
+				return "text/x-java-source";
+			case PYTHON:
+				return "text/x-script.phyton";
+			case C:
+				return "text/x-c";
+			default:
+				return "application/octet-stream";
 		}
 	}
 }
