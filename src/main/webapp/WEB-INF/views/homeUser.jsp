@@ -87,6 +87,7 @@
 											<th>Language</th>
 											<th>Score</th>
 											<th>Status</th>
+											<th>Code</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -143,6 +144,9 @@
 														<span class="label bg-info">UNKNOWN_ERROR</span>
 													</c:otherwise>
 												</c:choose>
+												</td>
+												<td>
+													<a href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}" class="btn btn-info">Download</a>
 												</td>
 											</tr>
 										</c:forEach>

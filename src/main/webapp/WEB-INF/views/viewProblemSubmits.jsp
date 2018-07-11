@@ -40,29 +40,31 @@
 									<c:set var = "emptySubmits" value = "${5-fn:length(team.value)}"/>
 									<c:forEach var="submit" items="${team.value}" varStatus="submitIndex">
 										<td>
-											<c:choose>
-												<c:when test="${submit.info=='CORRECT'}">
-													<span class="label label-success">CORRECT</span>
-												</c:when>
-												<c:when test="${submit.info=='WRONG_ANSWER'}">
-													<span class="label label-danger">WRONG_ANSWER</span>
-												</c:when>
-												<c:when test="${submit.info=='COMPILE_ERROR'}">
-													<span class="label label-danger">COMPILE_ERROR</span>
-												</c:when>
-												<c:when test="${submit.info=='TIME_LIMIT_EXIT'}">
-													<span class="label label-warning">TIME_LIMIT_EXIT</span>
-												</c:when>
-												<c:when test="${submit.info=='RUN_TIME_ERROR'}">
-													<span class="label label-default">RUN_TIME_ERROR</span>
-												</c:when>
-												<c:when test="${submit.info=='EXECUTION_ERROR'}">
-													<span class="label label-default">EXECUTION_ERROR</span>
-												</c:when>
-												<c:otherwise>
-													<span class="label label-info">UNKNOWN_ERROR</span>
-												</c:otherwise>
-											</c:choose>
+											<a href="viewSubmit?submitId=${submit.id }">
+												<c:choose>
+													<c:when test="${submit.info=='CORRECT'}">
+														<span class="label label-success">CORRECT</span>
+													</c:when>
+													<c:when test="${submit.info=='WRONG_ANSWER'}">
+														<span class="label label-danger">WRONG_ANSWER</span>
+													</c:when>
+													<c:when test="${submit.info=='COMPILE_ERROR'}">
+														<span class="label label-danger">COMPILE_ERROR</span>
+													</c:when>
+													<c:when test="${submit.info=='TIME_LIMIT_EXIT'}">
+														<span class="label label-warning">TIME_LIMIT_EXIT</span>
+													</c:when>
+													<c:when test="${submit.info=='RUN_TIME_ERROR'}">
+														<span class="label label-default">RUN_TIME_ERROR</span>
+													</c:when>
+													<c:when test="${submit.info=='EXECUTION_ERROR'}">
+														<span class="label label-default">EXECUTION_ERROR</span>
+													</c:when>
+													<c:otherwise>
+														<span class="label label-info">UNKNOWN_ERROR</span>
+													</c:otherwise>
+												</c:choose>
+											</a>
 										</td>
 									</c:forEach>
 									<c:forEach begin="1" end="${emptySubmits}">

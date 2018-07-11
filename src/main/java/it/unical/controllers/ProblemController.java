@@ -697,6 +697,8 @@ public class ProblemController
 		{
 			e.printStackTrace();
 		}
+		submitFile = submitFile.replaceAll("<", "&lt;");
+		submitFile = submitFile.replaceAll(">", "&gt;");
 		model.addAttribute("submit", submit);
 		model.addAttribute("submitFile", submitFile);
 		model.addAttribute("language", TypeFileExtension.highlight.get(submit.getType()));
