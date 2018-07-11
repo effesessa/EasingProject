@@ -49,10 +49,10 @@
 					<li class="active"><a href="/"> <i class="material-icons">home</i>
 						<span>Home</span>
 					</a></li>
-					<li><a href="createteam"> <i class="material-icons">view_list</i>
+					<li><a href="createteam"> <i class="material-icons">group</i>
 						<span>Teams</span>
 					</a></li>
-					<li><a href="javascript:void(0);"> <i class="material-icons">content_copy</i>
+					<li><a href="javascript:void(0);"> <i class="material-icons">note_add</i>
 						<span>Create File</span>
 					</a></li>
 					<li>

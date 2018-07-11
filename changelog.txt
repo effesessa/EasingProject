@@ -102,6 +102,15 @@
 		- Modificata "navbarTearcher" (valore di default per il timeout impostato a 5)
 	- Fixato bug in "contest" per cui non si riusciva a visualizzare i problemi con più di uno spazio
 		- Modificato "contest.js" (RegEx in .replace)
+
+11-07-2018
+	- Aggiunta possibiltà di vedere le Submit dei Problemi, divise per Team
+		- Modicato "ProblemController"
+		- Creata "viewProblemSubmits"
+	- Aggiunta possibilità di vedere la singola Submit per un Problema, guardando il codice e con la possibilità di scaricarlo
+		- Creata "viewSubmit"
+		- Utilizzata libreria prismJS
+	- Aggiunta possibilità di scaricare le proprie Submit (Student) dalla Home
 	
 	
 	

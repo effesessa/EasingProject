@@ -9,6 +9,7 @@
 	<%@ include file="includes/header.jsp" %>
 	<link href="resources/css/style.css" rel="stylesheet">
 	<link href="resources/css/prism.css" rel="stylesheet" />
+	<link href="resources/css/viewSubmitStyle.css" rel="stylesheet" />
 </head>
 <body>
 	<jsp:include page="includes/navbarTeacher.jsp"></jsp:include>
@@ -44,11 +45,12 @@
 						</c:choose>
 						</h2>
 						<br>
-						<c:if test="${not empty submit.score }">
-							<h2>Tempo d'esecuzione: ${submit.score}s</h2>
-						</c:if>
-						<br>
-						<a href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}" class="btn btn-info">Scarica Sottomissione</a>
+						<h2>
+							<c:if test="${not empty submit.score }">
+								Tempo d'esecuzione: ${submit.score}s
+							</c:if>
+							<a id="downloadBtn" href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}" class="btn btn-info">Scarica Sottomissione</a>
+						</h2>
 					</div>
 					<pre>
 						<code class="language-${language}">${submitFile }</code>
@@ -59,7 +61,10 @@
 		</div>
 	</section>
 	
-	
+	<!-- Waves Effect Plugin Js -->
+	<script src="resources/plugins/node-waves/waves.js"></script>
+	<!-- Custom Js -->
+	<script src="resources/js/admin.js"></script>
 	<script src="resources/js/prism.js"></script>
 </body>
 </html>

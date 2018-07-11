@@ -75,18 +75,19 @@
 							<span>Home</span>
 					</a></li>
 					<li><a href="#" data-toggle="modal" data-target="#myModal1">
-							<i class="material-icons">view_list</i> <span>Add Subject</span>
+							<i class="material-icons">school</i> <span>Add Subject</span>
 					</a></li>
 					<li><a href="#" data-toggle="modal" data-target="#myModal2" onclick="getSubjectsAndJuries()">
-							<i class="material-icons">content_copy</i> <span>Add Contest</span>
+							<i class="material-icons">add_to_queue</i> <span>Add Contest</span>
 					</a></li>
 					<li>
 					<li><a href="#" data-toggle="modal" data-target="#myModal3" onclick="getContests()">
-							<i class="material-icons">update</i> <span>Add Problem</span>
+							<i class="material-icons">note_add</i> <span>Add Problem</span>
 					</a></li>
 					<li><a href="myProblems">
-							<i class="material-icons">update</i> <span>My Problems</span>
+							<i class="material-icons">view_list</i> <span>My Problems</span>
 					</a></li>
+					<hr />
 					<li><a href="logout"> <i class="fas fa-sign-out-alt"
 							style="font-size: 1.5em;"></i> <span
 							style="position: relative; bottom: 5px">Logout</span>

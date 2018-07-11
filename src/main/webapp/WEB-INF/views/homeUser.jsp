@@ -146,7 +146,9 @@
 												</c:choose>
 												</td>
 												<td>
-													<a href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}" class="btn btn-info">Download</a>
+													<a href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}">
+														<i class="material-icons">get_app</i>
+													</a>
 												</td>
 											</tr>
 										</c:forEach>
