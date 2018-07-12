@@ -295,7 +295,7 @@
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-open-file"></i>
 							</span>
-    						<input id="output" name="output" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt">
+    						<input id="output" name="output" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.dlv">
 						</div>
 			  		</div>
 			  		<div class="form-check generate-group hidden">

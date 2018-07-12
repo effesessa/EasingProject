@@ -236,6 +236,7 @@ public class ProblemController
 			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 			final Contest contest = contestDAO.getContestByName(problemForm.getContestName());
 			problem.setId_contest(contest);
+			problem.setJury(contest.getJury());
 			problemDAO.create(problem);
 
 			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");

@@ -7,7 +7,7 @@ function init()
 	var fileExtension;
 	$("#testcase").on('change',function(){
 		fileExtension = $(this).val();
-		if(/\.txt$/gmi.test(fileExtension))
+		if(/\.(txt|dlv)$/gmi.test(fileExtension))
 		{
 			$('#output').closest('.form-group').removeClass('hidden');
 			$('#type').val("1");
