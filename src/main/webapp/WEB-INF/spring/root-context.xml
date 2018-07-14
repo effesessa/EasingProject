@@ -92,6 +92,26 @@
 	<bean id="tagDAO" class="it.unical.dao.TagDAOImpl">
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
+	
+	<bean id="quizDAO" class="it.unical.dao.QuizDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="questionDAO" class="it.unical.dao.QuestionDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="quizQuestionDAO" class="it.unical.dao.QuizQuestionDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="answerDAO" class="it.unical.dao.AnswerDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<!-- <bean id="QuestionAnswerDAO" class="it.unical.dao.QuestionAnswerDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean> -->
 
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
