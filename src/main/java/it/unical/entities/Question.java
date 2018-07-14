@@ -31,6 +31,9 @@ public class Question implements Serializable {
 	@Column(name = "question", nullable = false)
 	private String question;
 
+	@Column(name = "points")
+	private Integer points;
+	
 	@ManyToOne
 	@JoinColumn(name = "correctAnswer", nullable = true)
 	private Answer correctAnswer;
@@ -74,6 +77,14 @@ public class Question implements Serializable {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+	
+	public Integer getPoints() {
+		return points;
+	}
+	
+	public void setPoints(Integer points) {
+		this.points = points;
 	}
 
 }

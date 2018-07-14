@@ -19,15 +19,12 @@ public class Answer implements Serializable {
 	}
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer id;
 	
 	@Column(name = "type")
 	private String type;
-	
-	@Column(name = "points")
-	private Integer points;
 	
 	@Column(name = "text")
 	private String text;
@@ -54,14 +51,6 @@ public class Answer implements Serializable {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public Integer getPoints() {
-		return points;
-	}
-
-	public void setPoints(Integer points) {
-		this.points = points;
 	}
 	
 }
