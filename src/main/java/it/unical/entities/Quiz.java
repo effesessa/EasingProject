@@ -1,6 +1,7 @@
 package it.unical.entities;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +29,9 @@ public class Quiz implements Serializable {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
+	@Column(name = "points", nullable = true)
+	private Integer points;
+	
 	@ManyToOne
 	@JoinColumn(name = "idcontest", nullable = false)
 	private Contest contest;
@@ -36,7 +40,7 @@ public class Quiz implements Serializable {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -44,7 +48,7 @@ public class Quiz implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -52,8 +56,16 @@ public class Quiz implements Serializable {
 		return contest;
 	}
 
-	public void setContest(Contest contest) {
+	public void setContest(final Contest contest) {
 		this.contest = contest;
+	}
+
+	public Integer getPoints() {
+		return points;
+	}
+
+	public void setPoints(final Integer points) {
+		this.points = points;
 	}
 	
 }
