@@ -11,4 +11,6 @@ public interface AnswerDAO {
 	void update(Answer answer);
 
 	Answer get(Integer id);
+	
+	boolean exists(Answer answer);
 }

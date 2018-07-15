@@ -28,8 +28,8 @@ public class Question implements Serializable {
  	@Column(name = "id")
 	private Integer id;
 	
-	@Column(name = "question", nullable = false)
-	private String question;
+	@Column(name = "text", nullable = false)
+	private String text;
 
 	@Column(name = "points")
 	private Integer points;
@@ -51,23 +51,23 @@ public class Question implements Serializable {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
-	public String getQuestion() {
-		return question;
+	public String getText() {
+		return text;
 	}
 
-	public void setQuestion(String question) {
-		this.question = question;
+	public void setText(final String text) {
+		this.text = text;
 	}
 
 	public Answer getCorrectAnswer() {
 		return correctAnswer;
 	}
 
-	public void setCorrectAnswer(Answer correctAnswer) {
+	public void setCorrectAnswer(final Answer correctAnswer) {
 		this.correctAnswer = correctAnswer;
 	}
 
@@ -75,7 +75,7 @@ public class Question implements Serializable {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setType(final Type type) {
 		this.type = type;
 	}
 	
@@ -83,7 +83,7 @@ public class Question implements Serializable {
 		return points;
 	}
 	
-	public void setPoints(Integer points) {
+	public void setPoints(final Integer points) {
 		this.points = points;
 	}
 

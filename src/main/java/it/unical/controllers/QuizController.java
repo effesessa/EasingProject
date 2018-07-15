@@ -1,5 +1,9 @@
 package it.unical.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
 
+import it.unical.dao.AnswerDAO;
 import it.unical.dao.ContestDAO;
+import it.unical.dao.QuestionAnswerDAO;
+import it.unical.dao.QuestionDAO;
 import it.unical.dao.QuizDAO;
+import it.unical.dao.QuizQuestionDAO;
 import it.unical.dao.UserDAO;
+import it.unical.entities.Answer;
 import it.unical.entities.Contest;
+import it.unical.entities.Question;
+import it.unical.entities.QuestionAnswer;
 import it.unical.entities.Quiz;
+import it.unical.entities.QuizQuestion;
 import it.unical.entities.User;
+import it.unical.forms.AddQuestionsAndAnswersForm;
 import it.unical.forms.AddQuizForm;
 import it.unical.utils.SessionUtils;
 
@@ -49,5 +62,56 @@ public class QuizController {
 		quizDAO.create(quiz);
 		return "redirect:/";
 	}
-
+	
+	@RequestMapping(value="/fillQuiz",  method = RequestMethod.POST)
+	public String fillQuiz(final HttpSession session, @ModelAttribute final AddQuestionsAndAnswersForm addQuestionsAndAnswersForm, final Model model) {
+		_setAccountAttribute(session, model);
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
+		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
+		final QuizQuestionDAO quizQuestionDAO = (QuizQuestionDAO) context.getBean("quizQuestionDAO");
+		final QuestionAnswerDAO questionAnswerDAO = (QuestionAnswerDAO) context.getBean("questionAnswerDAO");
+		
+		final Quiz quiz = quizDAO.getByName(addQuestionsAndAnswersForm.getQuizName());
+		final List<Question> questions = new ArrayList<>();
+		for (int i = 0; i < addQuestionsAndAnswersForm.getQuestions().size(); i++) {
+			final Question question = new Question();
+			question.setPoints(addQuestionsAndAnswersForm.getPoints().get(i));
+			question.setText(addQuestionsAndAnswersForm.getQuestions().get(i));
+			questionDAO.create(question);
+			questions.add(question);
+			final QuizQuestion quizQuestion = new QuizQuestion();
+			quizQuestion.setQuiz(quiz);
+			quizQuestion.setQuestion(question);
+			quizQuestionDAO.create(quizQuestion);
+		}
+		
+		int indexCorrectAnswer = -1;
+		for (final Entry<String, List<String>> entry : addQuestionsAndAnswersForm.getQuestions_answers().entrySet()) {
+			Question findQuestion = null;
+			for (int i = 0; i < questions.size(); i++) {
+				if(questions.get(i).getText().equals(entry.getKey())) {
+					findQuestion = questions.get(i);
+					indexCorrectAnswer = i;
+					break;
+				}
+			}
+			for (final String textAnswer : entry.getValue()) {
+				Answer answer = new Answer();
+				answer.setText(textAnswer);
+				if(!answerDAO.exists(answer))
+					answerDAO.create(answer);
+				if(addQuestionsAndAnswersForm.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText())) {
+					findQuestion.setCorrectAnswer(answer);
+					questionDAO.update(findQuestion);
+				}
+				QuestionAnswer questionAnswer = new QuestionAnswer();
+				questionAnswer.setAnswer(answer);
+				questionAnswer.setQuestion(findQuestion);
+				questionAnswerDAO.create(questionAnswer);
+			}
+		}
+		
+		return "redirect:/";
+	}
 }

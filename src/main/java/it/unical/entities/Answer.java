@@ -1,6 +1,7 @@
 package it.unical.entities;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class Answer implements Serializable {
 	@Column(name = "id")
 	private Integer id;
 	
-	@Column(name = "type")
+	@Column(name = "type", nullable = true)
 	private String type;
 	
 	@Column(name = "text")
@@ -33,7 +34,7 @@ public class Answer implements Serializable {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -41,7 +42,7 @@ public class Answer implements Serializable {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -49,7 +50,7 @@ public class Answer implements Serializable {
 		return text;
 	}
 
-	public void setText(String text) {
+	public void setText(final String text) {
 		this.text = text;
 	}
 	

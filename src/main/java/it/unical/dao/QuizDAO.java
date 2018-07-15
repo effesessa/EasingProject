@@ -13,4 +13,6 @@ public interface QuizDAO {
 	Quiz get(Integer id);
 	
 	Quiz getByContest(Integer id);
+	
+	Quiz getByName(String name);
 }
