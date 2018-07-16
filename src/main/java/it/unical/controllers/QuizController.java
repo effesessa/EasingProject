@@ -28,7 +28,6 @@ import it.unical.entities.QuestionAnswer;
 import it.unical.entities.Quiz;
 import it.unical.entities.QuizQuestion;
 import it.unical.entities.User;
-import it.unical.forms.AddQuestionsAndAnswersForm;
 import it.unical.forms.AddQuizForm;
 import it.unical.utils.SessionUtils;
 
@@ -52,32 +51,24 @@ public class QuizController {
 	@RequestMapping(value="/addQuiz",  method = RequestMethod.POST)
 	public String addQuiz(final HttpSession session, @ModelAttribute final AddQuizForm addQuizForm, final Model model) {
 		_setAccountAttribute(session, model);
-		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-		final Contest contest = contestDAO.getContestByName(addQuizForm.getContestName());
-		final Quiz quiz = new Quiz();
-		quiz.setName(addQuizForm.getName());
-		quiz.setContest(contest);
-		quiz.setPoints(addQuizForm.getPoints());
-		quizDAO.create(quiz);
-		return "redirect:/";
-	}
-	
-	@RequestMapping(value="/fillQuiz",  method = RequestMethod.POST)
-	public String fillQuiz(final HttpSession session, @ModelAttribute final AddQuestionsAndAnswersForm addQuestionsAndAnswersForm, final Model model) {
-		_setAccountAttribute(session, model);
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
 		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
 		final QuizQuestionDAO quizQuestionDAO = (QuizQuestionDAO) context.getBean("quizQuestionDAO");
 		final QuestionAnswerDAO questionAnswerDAO = (QuestionAnswerDAO) context.getBean("questionAnswerDAO");
 		
-		final Quiz quiz = quizDAO.getByName(addQuestionsAndAnswersForm.getQuizName());
+		final Contest contest = contestDAO.get(addQuizForm.getContestId());
+		Quiz quiz = new  Quiz();
+		quiz.setContest(contest);
+		quiz.setName(addQuizForm.getQuizName());
+		quiz.setPoints(addQuizForm.getQuizPoints());
+		quizDAO.create(quiz);
 		final List<Question> questions = new ArrayList<>();
-		for (int i = 0; i < addQuestionsAndAnswersForm.getQuestions().size(); i++) {
+		for (int i = 0; i < addQuizForm.getQuestions().size(); i++) {
 			final Question question = new Question();
-			question.setPoints(addQuestionsAndAnswersForm.getPoints().get(i));
-			question.setText(addQuestionsAndAnswersForm.getQuestions().get(i));
+			question.setPoints(addQuizForm.getPoints().get(i));
+			question.setText(addQuizForm.getQuestions().get(i));
 			questionDAO.create(question);
 			questions.add(question);
 			final QuizQuestion quizQuestion = new QuizQuestion();
@@ -87,7 +78,7 @@ public class QuizController {
 		}
 		
 		int indexCorrectAnswer = -1;
-		for (final Entry<String, List<String>> entry : addQuestionsAndAnswersForm.getQuestions_answers().entrySet()) {
+		for (final Entry<String, List<String>> entry : addQuizForm.getQuestions_answers().entrySet()) {
 			Question findQuestion = null;
 			for (int i = 0; i < questions.size(); i++) {
 				if(questions.get(i).getText().equals(entry.getKey())) {
@@ -101,7 +92,7 @@ public class QuizController {
 				answer.setText(textAnswer);
 				if(!answerDAO.exists(answer))
 					answerDAO.create(answer);
-				if(addQuestionsAndAnswersForm.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText())) {
+				if(addQuizForm.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText())) {
 					findQuestion.setCorrectAnswer(answer);
 					questionDAO.update(findQuestion);
 				}
