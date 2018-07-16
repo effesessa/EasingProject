@@ -84,6 +84,9 @@
 					<li><a href="#" data-toggle="modal" data-target="#myModal3" onclick="getContests()">
 							<i class="material-icons">note_add</i> <span>Add Problem</span>
 					</a></li>
+					<li><a href="createQuiz">
+							<i class="material-icons">list_alt</i> <span>Add Quiz</span>
+					</a></li>
 					<li><a href="myProblems">
 							<i class="material-icons">view_list</i> <span>My Problems</span>
 					</a></li>

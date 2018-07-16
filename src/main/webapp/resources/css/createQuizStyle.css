@@ -55,6 +55,10 @@ i.delQuestionBtn:hover, #newQuestionBtn
 	width: auto;
 }
 
+#createQuizBtn
+{
+	margin-bottom: 2%;
+}
 
 @media only screen and (max-width: 700px)
 {

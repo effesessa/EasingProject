@@ -33,27 +33,6 @@ var newAnswer = '<div class="answer" id="q1a1"> \
 					</div> \
 				</div>';
 
-function formSubmit(path, parameters)
-{
-    var form = $('<form></form>');
-
-    form.attr("method", "post");
-    form.attr("action", path);
-
-    $.each(parameters, function(key, value)
-	{
-        var field = $('<input></input>');
-        field.attr("type", "hidden");
-        field.attr("name", key);
-        field.attr("value", value);
-
-        form.append(field);
-    });
-    
-    $(document.body).append(form);
-    form.submit();
-}
-
 function init()
 {
 //	$('input[name="question1_type"]').on('change', toggleForm);
@@ -79,6 +58,8 @@ function init()
 	$('#quizForm').submit(function(e)
 	{
 	    e.preventDefault();
+	    
+	    // Manage input data to send
 	    var quiz = $(".quizQuestions");
 	    
 	    var contestId = $("#nQuiz_contest").val();
@@ -143,21 +124,38 @@ function init()
 	        console.log(questions_answers[i]);
 	    }
 	    console.log("==============================");
-
-//	    var parameters = [contestId, quizName, quizPoints, questions, points, types, correctAnswers, questions_answers];
-	    var parameters = {};
-	    parameters["contestId"] = contestId;
-	    parameters["quizName"] = quizName;
-	    parameters["quizPoints"] = quizPoints;
-	    parameters["questions"] = questions;
-	    parameters["points"] = points;
-	    parameters["types"] = types;
-	    parameters["correctAnswers"] = correctAnswers;
-	    parameters["questions_answers"] = questions_answers;
 	    
-	    console.log(parameters);
-	    formSubmit("addQuiz", parameters);
-//	    this.submit();
+	    // Create Quiz DTO
+	    var quiz =
+    	{
+	    	"contestName" : contestId,
+	    	"quizName" : quizName,
+	    	"quizPoints" : quizPoints,
+	    	"questions" : questions,
+	    	"types" : types,
+	    	"points" : points,
+	    	"correctAnswers" : correctAnswers,
+	    	"questions_answers": questions_answers
+    	}
+	    
+	    // Disable Submit button until Ajax call callback
+	    $("#createQuizBtn").prop("disabled", true);
+	    $.ajax(
+	    {
+	        type: "POST",
+	        contentType : 'application/json; charset=utf-8',
+	        url: "addQuiz",
+	        data: JSON.stringify(quiz),
+	        success :function(result)
+	        {
+	        	window.location.replace("/");
+	        	$("#createQuizBtn").prop("disabled", false);
+	        }
+	    }).fail(function(jqXHR, textStatus)
+	    {
+	        console.log(textStatus);
+	        $("#createQuizBtn").prop("disabled", false);
+	    });
 	});
 }
 
@@ -223,6 +221,7 @@ function addAnswer(questionID)
 {
 	var lastAnswerID = $("#question"+questionID).find(".answer").last().attr("id");
 	
+	// If there are no answers, initialize lastAnswerID
 	if(typeof lastAnswerID == "undefined")
 	{
 		lastAnswerID = 0;

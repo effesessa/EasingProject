@@ -109,9 +109,9 @@
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 	
-	<!-- <bean id="QuestionAnswerDAO" class="it.unical.dao.QuestionAnswerDAOImpl">
+	<bean id="questionAnswerDAO" class="it.unical.dao.QuestionAnswerDAOImpl">
 		<property name="databaseHandler" ref="databaseHandler" />
-	</bean> -->
+	</bean>
 
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">

@@ -80,9 +80,10 @@
 								</div>
 							</div>
 						</div>
-						<i id="newQuestionBtn" class="material-icons md-36">add</i>
-						<button class="btn">Crea Quiz</button>
-						
+						<i id="newQuestionBtn" class="material-icons md-36">add</i><br>
+						<div class="text-center">
+							<button id="createQuizBtn" class="btn btn-lg btn-primary">Crea Quiz</button>
+						</div>
 					</form:form>
 				</div>
 			</div>

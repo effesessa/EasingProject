@@ -559,7 +559,7 @@ public class ProblemController
 		System.out.println(submitForm.getSolution().getOriginalFilename());
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
-		DirFilesManager dirFilesManager = new DirFilesManager();
+		final DirFilesManager dirFilesManager = new DirFilesManager();
 		final Verdict verdict = typeContext.submit(problem, submitForm, dirFilesManager);
 		System.out.println(verdict.getStatus());
 		SubmissionHandler.save(context, problem, submitForm, verdict, dirFilesManager);

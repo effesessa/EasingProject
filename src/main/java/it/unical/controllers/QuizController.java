@@ -2,14 +2,19 @@ package it.unical.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
@@ -29,11 +34,13 @@ import it.unical.entities.Quiz;
 import it.unical.entities.QuizQuestion;
 import it.unical.entities.User;
 import it.unical.forms.AddQuizForm;
+import it.unical.forms.QuizDTO;
 import it.unical.utils.SessionUtils;
 
 @Controller
 public class QuizController
 {
+	private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
 
 	@Autowired
 	private WebApplicationContext context;
@@ -53,8 +60,10 @@ public class QuizController
 	}
 
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
-	public String addQuiz(final HttpSession session, @ModelAttribute final AddQuizForm addQuizForm, final Model model)
+	public String addQuiz(final HttpSession session, @RequestBody QuizDTO quizDTO, final Model model,
+			HttpServletResponse response)
 	{
+		logger.info(quizDTO.toString());
 		_setAccountAttribute(session, model);
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
@@ -63,18 +72,20 @@ public class QuizController
 		final QuizQuestionDAO quizQuestionDAO = (QuizQuestionDAO) context.getBean("quizQuestionDAO");
 		final QuestionAnswerDAO questionAnswerDAO = (QuestionAnswerDAO) context.getBean("questionAnswerDAO");
 
-		final Contest contest = contestDAO.get(addQuizForm.getContestId());
+		logger.info(quizDTO.toString());
+
+		final Contest contest = contestDAO.getContestByName(quizDTO.getContestName());
 		final Quiz quiz = new Quiz();
 		quiz.setContest(contest);
-		quiz.setName(addQuizForm.getQuizName());
-		quiz.setPoints(addQuizForm.getQuizPoints());
+		quiz.setName(quizDTO.getQuizName());
+		quiz.setPoints(quizDTO.getQuizPoints());
 		quizDAO.create(quiz);
 		final List<Question> questions = new ArrayList<>();
-		for (int i = 0; i < addQuizForm.getQuestions().size(); i++)
+		for (int i = 0; i < quizDTO.getQuestions().size(); i++)
 		{
 			final Question question = new Question();
-			question.setPoints(addQuizForm.getPoints().get(i));
-			question.setText(addQuizForm.getQuestions().get(i));
+			question.setPoints(quizDTO.getPoints().get(i));
+			question.setText(quizDTO.getQuestions().get(i));
 			questionDAO.create(question);
 			questions.add(question);
 			final QuizQuestion quizQuestion = new QuizQuestion();
@@ -84,7 +95,7 @@ public class QuizController
 		}
 
 		int indexCorrectAnswer = -1;
-		for (final Entry<String, List<String>> entry : addQuizForm.getQuestions_answers().entrySet())
+		for (final Entry<String, List<String>> entry : quizDTO.getQuestions_answers().entrySet())
 		{
 			Question findQuestion = null;
 			for (int i = 0; i < questions.size(); i++)
@@ -100,7 +111,7 @@ public class QuizController
 				answer.setText(textAnswer);
 				if (!answerDAO.exists(answer))
 					answerDAO.create(answer);
-				if (addQuizForm.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText()))
+				if (quizDTO.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText()))
 				{
 					findQuestion.setCorrectAnswer(answer);
 					questionDAO.update(findQuestion);
@@ -111,7 +122,30 @@ public class QuizController
 				questionAnswerDAO.create(questionAnswer);
 			}
 		}
+		return "redirect:/";
+	}
 
+	@RequestMapping(value = "/addQuizFake", method = RequestMethod.POST)
+	public String addQuizFake(final HttpSession session, @RequestBody QuizDTO quiz, final Model model)
+	{
+		System.out.println(quiz.getContestName());
+		System.out.println(quiz.getQuizName());
+		System.out.println(quiz.getQuizPoints());
+		System.out.println("DOMANDE:");
+		for (final String string : quiz.getQuestions())
+			System.out.println(string);
+		System.out.println("PUNTI:");
+		for (final Integer string : quiz.getPoints())
+			System.out.println(string);
+		System.out.println("TIPOLOGIA:");
+		for (final String string : quiz.getTypes())
+			System.out.println(string);
+		System.out.println("RISPOSTE CORRETTE:");
+		for (final String string : quiz.getCorrectAnswers())
+			System.out.println(string);
+		System.out.println("RISPOSTE");
+		for (final Map.Entry<String, List<String>> entry : quiz.getQuestions_answers().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
 		return "redirect:/";
 	}
 
