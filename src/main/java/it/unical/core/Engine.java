@@ -93,7 +93,8 @@ public class Engine {
 		debugMatch(verdict.getStatus(), correctSolution);
 		if(!verdict.getStatus().equals(correctSolution))
 			verdict.setStatus(Status.WRONG_ANSWER);
-		verdict.setStatus(Status.CORRECT);
+		else
+			verdict.setStatus(Status.CORRECT);
 	}
 	
 	private static void debugMatch(String r, String c) {

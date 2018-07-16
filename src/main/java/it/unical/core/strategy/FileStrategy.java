@@ -1,8 +1,9 @@
 package it.unical.core.strategy;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import it.unical.core.DirFilesManager;
 import it.unical.core.Engine;
 import it.unical.core.Verdict;
 import it.unical.entities.Problem;
@@ -35,12 +36,13 @@ public class FileStrategy extends AbstractStrategy {
 	}
 	
 	@Override
-	public Verdict process(Problem problem, File submittedFile, File testCaseFile, String teamName) throws IOException {
-		Verdict verdict = Engine.compile(submittedFile.getName());
+	public Verdict process(Problem problem, DirFilesManager dirFilesManager) throws IOException {
+		Verdict verdict = Engine.compile(dirFilesManager.getParentAndName(DirFilesManager.SUBMITTED_FILE));
 		if(verdict.getStatus().equals(Status.COMPILE_ERROR))
 			return verdict;
 		long timeLimit = TimeUnit.SECONDS.toMillis((long)(float)problem.getTimelimit());
-		verdict = Engine.run(submittedFile.getName(), timeLimit, testCaseFile.getName());
+		verdict = Engine.run(dirFilesManager.getParentAndName(DirFilesManager.SUBMITTED_FILE), timeLimit,
+				dirFilesManager.getParentAndName(DirFilesManager.TEST_CASE_FILE));
 		if(Status.statusList.contains(verdict.getStatus()))
 			return verdict;
 		String correctSolution = new String(problem.getSol(),"UTF-8");

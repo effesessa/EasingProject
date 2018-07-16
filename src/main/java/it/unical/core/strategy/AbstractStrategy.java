@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import it.unical.core.DirFilesManager;
 import it.unical.core.Engine;
 import it.unical.core.Verdict;
 import it.unical.entities.Problem;
 import it.unical.forms.AddProblemForm;
 import it.unical.forms.SubmitForm;
 import it.unical.utils.FFileUtils;
-import it.unical.utils.MultipartFileUtils;
 import it.unical.utils.Status;
 import it.unical.utils.StringUtils;
 
@@ -59,7 +59,7 @@ public abstract class AbstractStrategy
 		return problem;
 	}
 
-	public abstract Verdict process(Problem problem, File submittedFile, File testCaseFile, String teamName)
+	public abstract Verdict process(Problem problem, DirFilesManager dirFilesManager)
 			throws IOException;
 
 	/**
@@ -69,21 +69,23 @@ public abstract class AbstractStrategy
 	 * DB
 	 */
 	// template method submit
-	public Verdict submit(Problem problem, SubmitForm submitDTO)
+	public Verdict submit(Problem problem, SubmitForm submitDTO, DirFilesManager dirFilesManager)
 	{
-		final File submittedFile = MultipartFileUtils.convert(submitDTO.getSolution());
+		System.out.println(dirFilesManager.getRandomDirectory().getAbsolutePath());
+		final File submittedFile = dirFilesManager.convert(submitDTO.getSolution());
+		System.out.println(submittedFile.getAbsolutePath());
 		File testCaseFile = null;
 		if (problem.getTest() != null)
 		{
-			final String fileName = Engine.BASE_NAME_INPUT + submitDTO.getTeam() + Engine.DOT + problem.getType();
+			final String fileName = Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType();
 			System.out.println(fileName);
-			testCaseFile = FFileUtils.createNewFile(fileName);
+			testCaseFile = dirFilesManager.createTestCaseFile(fileName);
 			System.out.println(testCaseFile.getName());
 			FFileUtils.writeByteArrayToFile(testCaseFile, problem.getTest());
 		}
 		try
 		{
-			return process(problem, submittedFile, testCaseFile, submitDTO.getTeam());
+			return process(problem, dirFilesManager);
 		}
 		catch (final IOException e)
 		{

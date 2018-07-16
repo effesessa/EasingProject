@@ -259,19 +259,25 @@
 			<version>2.4</version>
 		</dependency>
 
-		<!-- Zip4j  -->
+		<!-- Zip4j -->
 		<dependency>
 			<groupId>net.lingala.zip4j</groupId>
 			<artifactId>zip4j</artifactId>
 			<version>1.3.2</version>
 		</dependency>
-		
+
 		<!-- Bootstrap-TagsInput - https://mvnrepository.com/artifact/org.webjars/bootstrap-tagsinput -->
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>bootstrap-tagsinput</artifactId>
-		    <version>0.8.0</version>
-		</dependency>		
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap-tagsinput</artifactId>
+			<version>0.8.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.7</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>EasingProject</finalName>

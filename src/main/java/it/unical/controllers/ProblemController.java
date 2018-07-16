@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
+import it.unical.core.DirFilesManager;
 import it.unical.core.Engine;
 import it.unical.core.SubmissionHandler;
 import it.unical.core.Verdict;
@@ -483,7 +484,7 @@ public class ProblemController
 		ZipInputStream zipIs = null;
 		ZipEntry zEntry = null;
 		boolean found = false;
-		final ArrayList<String> info = new ArrayList<String>();
+		final ArrayList<String> info = new ArrayList<>();
 		try
 		{
 			fis = new ByteArrayInputStream(data);
@@ -582,9 +583,10 @@ public class ProblemController
 		System.out.println(submitForm.getSolution().getOriginalFilename());
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
-		final Verdict verdict = typeContext.submit(problem, submitForm);
+		DirFilesManager dirFilesManager = new DirFilesManager();
+		final Verdict verdict = typeContext.submit(problem, submitForm, dirFilesManager);
 		System.out.println(verdict.getStatus());
-		SubmissionHandler.save(context, problem, submitForm, verdict);
+		SubmissionHandler.save(context, problem, submitForm, verdict, dirFilesManager);
 		System.out.println("********************submit*********************");
 		return "redirect:/";
 	}

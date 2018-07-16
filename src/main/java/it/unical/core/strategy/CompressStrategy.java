@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.io.FileUtils;
+
+import it.unical.core.DirFilesManager;
 import it.unical.core.Engine;
 import it.unical.core.Verdict;
 import it.unical.entities.Problem;
 import it.unical.forms.AddProblemForm;
-import it.unical.utils.FFileUtils;
 import it.unical.utils.Status;
 import it.unical.utils.StringUtils;
 import net.lingala.zip4j.core.ZipFile;
@@ -39,26 +41,29 @@ public class CompressStrategy extends AbstractStrategy {
 	}
 	
 	@Override
-	public Verdict process(Problem problem, File submittedFile, File testCaseFile, String teamName) throws IOException {
+	public Verdict process(Problem problem, DirFilesManager dirFilesManager) throws IOException {
 		Verdict verdict = new Verdict();
-		String nameArchive = StringUtils.getBaseName(testCaseFile.getName());
+		String nameArchive = StringUtils.getBaseName(dirFilesManager.getTestCaseFile().getName());
+		System.out.println("name archive:" + nameArchive);
 		try {
-			ZipFile archive = new ZipFile(testCaseFile);
-			archive.extractAll(System.getProperty(Engine.WORKING_DIRECTORY) + nameArchive);
+			ZipFile archive = new ZipFile(dirFilesManager.getTestCaseFile());
+			System.out.println(dirFilesManager.getPathArchive(nameArchive));
+			archive.extractAll(dirFilesManager.getPathArchive(nameArchive));
 		} 
 		catch (ZipException e) {
 			e.printStackTrace();
 		}
-		File directory = new File(System.getProperty(Engine.WORKING_DIRECTORY) + nameArchive);
+		File directory = new File(dirFilesManager.getPathArchive(nameArchive));
 		File[] files = directory.listFiles();
 		Arrays.sort(files);
 		for (int i = 0; i < files.length; i+=2) {
 			File file = files[i];
-			verdict = Engine.compile(submittedFile.getName());
+			verdict = Engine.compile(dirFilesManager.getParentAndName(DirFilesManager.SUBMITTED_FILE));
 			if(verdict.getStatus().equals(Status.COMPILE_ERROR))
 				return verdict;
 			long timeLimit = TimeUnit.SECONDS.toMillis((long)(float)problem.getTimelimit());
-			verdict = Engine.run(submittedFile.getName(), timeLimit, nameArchive + "\\" + file.getName());
+			verdict = Engine.run(dirFilesManager.getParentAndName(DirFilesManager.SUBMITTED_FILE), timeLimit, 
+					dirFilesManager.getPathArchiveNoWorkingDir(file.getName()));
 			if(Status.statusList.contains(verdict.getStatus()))
 				return verdict;
 			String correctSolution = FileUtils.readFileToString(files[i+1],"UTF-8");
@@ -68,7 +73,7 @@ public class CompressStrategy extends AbstractStrategy {
 			if(verdict.getStatus().equals(Status.WRONG_ANSWER))
 				return verdict;
 		}
-		FFileUtils.deleteDirectory(directory);
+		//FFileUtils.deleteDirectory(directory);
 		return verdict;
 	}
 

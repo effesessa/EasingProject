@@ -1,5 +1,6 @@
 package it.unical.core.strategy;
 
+import it.unical.core.DirFilesManager;
 import it.unical.core.Verdict;
 import it.unical.entities.Problem;
 import it.unical.forms.AddProblemForm;
@@ -53,8 +54,8 @@ public class TypeContext {
 		return problem;
 	}
 	
-	public Verdict submit(Problem problem, SubmitForm submitDTO) {
-		return abstractStrategy.submit(problem, submitDTO);
+	public Verdict submit(Problem problem, SubmitForm submitDTO, DirFilesManager dirFilesManager) {
+		return abstractStrategy.submit(problem, submitDTO, dirFilesManager);
 	}
 	
 	public Verdict getVerdict() {
