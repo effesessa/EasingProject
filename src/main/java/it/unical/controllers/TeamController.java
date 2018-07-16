@@ -1,7 +1,12 @@
 package it.unical.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,12 +25,17 @@ import org.springframework.web.context.WebApplicationContext;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.MembershipDAO;
 import it.unical.dao.PartecipationDAO;
+import it.unical.dao.ProblemDAO;
+import it.unical.dao.RegistrationDAO;
+import it.unical.dao.SubjectDAO;
 import it.unical.dao.SubmitDAO;
 import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Contest;
 import it.unical.entities.Membership;
 import it.unical.entities.Partecipation;
+import it.unical.entities.Registration;
+import it.unical.entities.Subject;
 import it.unical.entities.Submit;
 import it.unical.entities.Team;
 import it.unical.entities.User;
@@ -142,33 +152,6 @@ public class TeamController
 			model.addAttribute("typeSession", "Login");
 	}
 
-	@RequestMapping(value = "/teamview", method = RequestMethod.GET)
-	public String subscribeContest(@RequestParam String name, HttpSession session, Model model)
-	{
-
-		setAccountAttribute(session, model);
-		final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
-		final Team team = teamDAO.getByName(name);
-		final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
-		final List<Membership> students = membershipDAO.getStudentsByTeam(team.getId());
-		final PartecipationDAO partecipationDAO = (PartecipationDAO) context.getBean("partecipationDAO");
-		final List<Partecipation> contests = partecipationDAO.getContestByTeam(team.getId());
-		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-		final ArrayList<Contest> contest = new ArrayList<Contest>(contests.size());
-		for (int i = 0; i < contests.size(); i++)
-			contest.add(contestDAO.get(contests.get(i).getId()));
-
-		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-		final List<Submit> submits = submitDAO.getAllSubmitByTeam(team.getId());
-
-		model.addAttribute("students", students);
-		model.addAttribute("submits", submits);
-		model.addAttribute("contests", contest);
-		model.addAttribute("team", team);
-		// TODO Vista mancante
-		return "/team";
-	}
-
 	// Visualizza i Team
 	@RequestMapping(value = "/createteam", method = RequestMethod.GET)
 	public String teamMainView(HttpSession session, Model model)
@@ -185,5 +168,58 @@ public class TeamController
 		model.addAttribute("teams", teams);
 		return "teamviews";
 
+	}
+
+	@RequestMapping(value = "/viewTeam", method = RequestMethod.GET)
+	public String viewTeam(@RequestParam String name, HttpSession session, Model model)
+	{
+		setAccountAttribute(session, model);
+		final User user = (User) model.asMap().get("user");
+		final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
+		final SubjectDAO subjectDAO = (SubjectDAO) context.getBean("subjectDAO");
+		final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
+		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+
+		// Logged check
+		if (user == null)
+			return "redirect:/";
+
+		// If Student, check if can view Team Page
+		if (!user.isProfessor())
+		{
+			final List<Membership> teams = membershipDAO.getTeamByStudent(user.getId());
+			for (final Membership member : teams)
+			{
+				if (member.getTeam().getName().equals(name))
+				{
+					final Team team = teamDAO.getByName(name);
+					final List<Membership> students = membershipDAO.getStudentsByTeam(team.getId());
+
+					model.addAttribute("team", team);
+					model.addAttribute("students", students);
+					return "viewTeam";
+				}
+				return "redirect:/";
+			}
+		}
+
+		// Load Professor view
+		if (user.isProfessor())
+		{
+
+			final Team team = teamDAO.getByName(name);
+			final List<Membership> students = membershipDAO.getStudentsByTeam(team.getId());
+			final List<Subject> subjectFromProfessor = subjectDAO.getAllSubjectFromProfessor(user.getId());
+			final List<Contest> contestsByProfessor = contestDAO.getContestsByProfessor(user.getId());
+			final List<Submit> submits = submitDAO.getAllSubmitByTeam(team.getId());
+
+			model.addAttribute("team", team);
+			model.addAttribute("students", students);
+			model.addAttribute("subjects", subjectFromProfessor);
+			model.addAttribute("contests", contestsByProfessor);
+			model.addAttribute("submits", submits);
+		}
+		return "viewTeam";
 	}
 }

@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -389,41 +390,6 @@ public class ProblemController
 		final Problem problem = problemDAO.get(Integer.parseInt(id));
 		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
 
-		// if (userID != null &&
-		// userID.equals(problem.getJury().getProfessor().getId()))
-		// if (op != null && op.equals("deleteProblem"))
-		// problemDAO.delete(problem);
-		// else if(op != null && op.equals("editProblem"))
-		// try
-		// {
-		// problem.setName(problemForm.getName());
-		// problem.setDescription(problemForm.getDescription());
-		// if (problemForm.getDownload() != null)
-		// problem.setDownload(problemForm.getDownload().getBytes());
-		// final Contest newContest =
-		// contestDAO.getContestByName(problemForm.getContestName());
-		// problem.setId_contest(newContest);
-		// problem.setTimelimit((float)
-		// TimeUnit.SECONDS.toMillis(problemForm.getTimeout()));
-		// problem.setShow_testcase(problemForm.isShow_testcase());
-		//
-		// final String[] tags = problemForm.getProblemTags().split(",");
-		//
-		// problemDAO.update(problem);
-		// final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
-		// tagDAO.deleteAllTagsByProblem(problem.getId_problem());
-		// for (final String tag : tags)
-		// {
-		// final Tag t = new Tag();
-		// t.setProblem(problem);
-		// t.setValue(tag);
-		// tagDAO.create(t);
-		// }
-		// }
-		// catch (final IOException e)
-		// {
-		// e.printStackTrace();
-		// }
 		if (op != null && userID != null && userID.equals(problem.getJury().getProfessor().getId()))
 			switch (op)
 			{
@@ -463,9 +429,19 @@ public class ProblemController
 			case "cloneProblem":
 				final Contest newContest = contestDAO.getContestByName(contestName);
 				problem.setId_contest(newContest);
+				problem.setTags(null);
 				// TODO Effettuare controlli (es. Evitare più Problemi con lo
 				// stesso Nome in un Contest)
+				final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
 				problemDAO.create(problem);
+
+				final List<Tag> problemTags = tagDAO.getAllTagsByProblem(Integer.parseInt(id));
+				for (final Tag tag : problemTags)
+				{
+					tag.setProblem(problem);
+					tagDAO.create(tag);
+				}
+
 				break;
 			default:
 				// Operation not supported

@@ -33,24 +33,29 @@ import it.unical.forms.AddQuizForm;
 import it.unical.utils.SessionUtils;
 
 @Controller
-public class QuizController {
+public class QuizController
+{
 
 	@Autowired
 	private WebApplicationContext context;
 
-	private void _setAccountAttribute(final HttpSession session, final Model model) {
-		if (SessionUtils.isUser(session)) {
+	private void _setAccountAttribute(final HttpSession session, final Model model)
+	{
+		if (SessionUtils.isUser(session))
+		{
 			final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 			final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
 			model.addAttribute("user", user);
 			model.addAttribute("typeSession", "Account");
 			model.addAttribute("userLogged", true);
-		} else
+		}
+		else
 			model.addAttribute("typeSession", "Login");
 	}
-	
-	@RequestMapping(value="/addQuiz",  method = RequestMethod.POST)
-	public String addQuiz(final HttpSession session, @ModelAttribute final AddQuizForm addQuizForm, final Model model) {
+
+	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
+	public String addQuiz(final HttpSession session, @ModelAttribute final AddQuizForm addQuizForm, final Model model)
+	{
 		_setAccountAttribute(session, model);
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
@@ -62,19 +67,34 @@ public class QuizController {
 		quizDAO.create(quiz);
 		return "redirect:/";
 	}
-	
-	@RequestMapping(value="/fillQuiz",  method = RequestMethod.POST)
-	public String fillQuiz(final HttpSession session, @ModelAttribute final AddQuestionsAndAnswersForm addQuestionsAndAnswersForm, final Model model) {
+
+	@RequestMapping(value = "/createQuiz", method = RequestMethod.GET)
+	public String createQuiz(HttpSession session, Model model)
+	{
+		_setAccountAttribute(session, model);
+		final User user = (User) model.asMap().get("user");
+
+		if (user == null || !user.isProfessor())
+			return "redirect:/";
+		else
+			return "createQuiz";
+	}
+
+	@RequestMapping(value = "/fillQuiz", method = RequestMethod.POST)
+	public String fillQuiz(final HttpSession session,
+			@ModelAttribute final AddQuestionsAndAnswersForm addQuestionsAndAnswersForm, final Model model)
+	{
 		_setAccountAttribute(session, model);
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
 		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
 		final QuizQuestionDAO quizQuestionDAO = (QuizQuestionDAO) context.getBean("quizQuestionDAO");
 		final QuestionAnswerDAO questionAnswerDAO = (QuestionAnswerDAO) context.getBean("questionAnswerDAO");
-		
+
 		final Quiz quiz = quizDAO.getByName(addQuestionsAndAnswersForm.getQuizName());
 		final List<Question> questions = new ArrayList<>();
-		for (int i = 0; i < addQuestionsAndAnswersForm.getQuestions().size(); i++) {
+		for (int i = 0; i < addQuestionsAndAnswersForm.getQuestions().size(); i++)
+		{
 			final Question question = new Question();
 			question.setPoints(addQuestionsAndAnswersForm.getPoints().get(i));
 			question.setText(addQuestionsAndAnswersForm.getQuestions().get(i));
@@ -85,33 +105,36 @@ public class QuizController {
 			quizQuestion.setQuestion(question);
 			quizQuestionDAO.create(quizQuestion);
 		}
-		
+
 		int indexCorrectAnswer = -1;
-		for (final Entry<String, List<String>> entry : addQuestionsAndAnswersForm.getQuestions_answers().entrySet()) {
+		for (final Entry<String, List<String>> entry : addQuestionsAndAnswersForm.getQuestions_answers().entrySet())
+		{
 			Question findQuestion = null;
-			for (int i = 0; i < questions.size(); i++) {
-				if(questions.get(i).getText().equals(entry.getKey())) {
+			for (int i = 0; i < questions.size(); i++)
+				if (questions.get(i).getText().equals(entry.getKey()))
+				{
 					findQuestion = questions.get(i);
 					indexCorrectAnswer = i;
 					break;
 				}
-			}
-			for (final String textAnswer : entry.getValue()) {
-				Answer answer = new Answer();
+			for (final String textAnswer : entry.getValue())
+			{
+				final Answer answer = new Answer();
 				answer.setText(textAnswer);
-				if(!answerDAO.exists(answer))
+				if (!answerDAO.exists(answer))
 					answerDAO.create(answer);
-				if(addQuestionsAndAnswersForm.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText())) {
+				if (addQuestionsAndAnswersForm.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText()))
+				{
 					findQuestion.setCorrectAnswer(answer);
 					questionDAO.update(findQuestion);
 				}
-				QuestionAnswer questionAnswer = new QuestionAnswer();
+				final QuestionAnswer questionAnswer = new QuestionAnswer();
 				questionAnswer.setAnswer(answer);
 				questionAnswer.setQuestion(findQuestion);
 				questionAnswerDAO.create(questionAnswer);
 			}
 		}
-		
+
 		return "redirect:/";
 	}
 }

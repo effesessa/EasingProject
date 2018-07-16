@@ -3,6 +3,7 @@ package it.unical.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import it.unical.dao.PartecipationDAO;
 import it.unical.dao.ProblemDAO;
 import it.unical.dao.RegistrationDAO;
 import it.unical.dao.SubjectDAO;
+import it.unical.dao.SubmitDAO;
 import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Contest;
@@ -39,6 +41,7 @@ import it.unical.entities.Membership;
 import it.unical.entities.Partecipation;
 import it.unical.entities.Problem;
 import it.unical.entities.Subject;
+import it.unical.entities.Submit;
 import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.SubscribeForm;
@@ -105,6 +108,7 @@ public class ContestController
 		setAccountAttribute(session, model);
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final Contest contest = contestDAO.getContestByName(name);
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
 
 		final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
 		final List<Membership> memberships = membershipDAO
@@ -112,17 +116,26 @@ public class ContestController
 		final ArrayList<Team> teams = new ArrayList<Team>(memberships.size());
 		for (int i = 0; i < memberships.size(); i++)
 			teams.add(memberships.get(i).getTeam());
+
+		final List<Submit> submitsByAllJoinedTeams = new LinkedList<>();
+		for (final Team team : teams)
+		{
+			final List<Submit> submitByTeam = submitDAO.getAllSubmitByTeam(team.getId());
+			submitsByAllJoinedTeams.addAll(submitByTeam);
+		}
+
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 		final List<Problem> problems = problemDAO.getProblemOfAContest(contest.getIdcontest());
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll("\r\n", "<br />"));
-		logger.info("contesttttt " + problems.size());
+		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);
 		if (!problems.isEmpty())
 			model.addAttribute("problems", problems);
 		else
 			model.addAttribute("problems", "");
 		model.addAttribute("contest", contest.getIdcontest());
+
 		return "contest";
 
 	}

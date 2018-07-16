@@ -72,7 +72,7 @@
 										<tbody>
 											<c:forEach items="${teams}" var="team">
 												<tr>
-													<td><a href="teamview?name=${team.name}">${team.name}</a></td>
+													<td><a href="viewTeam?name=${team.name}">${team.name}</a></td>
 												</tr>
 											</c:forEach>
 										</tbody>

@@ -36,7 +36,7 @@
 							<c:forEach var="team" items="${submitsPerTeam}" varStatus="teamIndex">
 								<tr id=${team.key.name }>
 									<th scope="row">${teamIndex.count}</th>
-									<th>${team.key.name}</th>
+									<th><a href="viewTeam?name=${team.key.name }">${team.key.name}</a></th>
 									<c:set var = "emptySubmits" value = "${5-fn:length(team.value)}"/>
 									<c:forEach var="submit" items="${team.value}" varStatus="submitIndex">
 										<td>

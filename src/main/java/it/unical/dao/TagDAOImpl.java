@@ -34,12 +34,22 @@ public class TagDAOImpl implements TagDAO
 		databaseHandler.delete(tag);
 	}
 
+	@Override
+	public void deleteAllTagsByProblem(Integer id_problem)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("DELETE FROM Tag T WHERE T.problem.id_problem = :id_problem");
+		query.setParameter("id_problem", id_problem);
+		query.executeUpdate();
+		session.close();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Tag> getAllTagsByProblem(Integer problem)
 	{
 		final Session session = databaseHandler.getSessionFactory().openSession();
-		final Query query = session.createQuery("from Tag where problem = :problem order by value asc");
+		final Query query = session.createQuery("from Tag T where T.problem.id_problem = :problem order by value asc");
 		query.setParameter("problem", problem);
 		final List<Tag> tags = query.list();
 		session.close();
@@ -95,16 +105,6 @@ public class TagDAOImpl implements TagDAO
 	public void update(Tag tag)
 	{
 		databaseHandler.update(tag);
-	}
-
-	@Override
-	public void deleteAllTagsByProblem(Integer id_problem)
-	{
-		final Session session = databaseHandler.getSessionFactory().openSession();
-		final Query query = session.createQuery("DELETE FROM Tag T WHERE T.problem.id_problem = :id_problem");
-		query.setParameter("id_problem", id_problem);
-		query.executeUpdate();
-		session.close();
 	}
 
 }

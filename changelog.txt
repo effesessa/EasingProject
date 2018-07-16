@@ -111,7 +111,15 @@
 		- Creata "viewSubmit"
 		- Utilizzata libreria prismJS
 	- Aggiunta possibilità di scaricare le proprie Submit (Student) dalla Home
-	
+
+13-07-2018
+	- Creata Vista per il Team, consente al Prof di vedere le Sottomissioni di quel Team per i propri Problemi
+		- Modificato "TeamController", "SubmitDAO", "SubmitDAOImpl", "TagDAOImpl"
+		- Creata "viewTeam.jsp" (e CSS), modificato "teamviews.jsp", "viewProblemSubmit.jsp" e "viewSubmit.jsp"
+	- Aggiunti Submit alla Vista "contest.jsp" dei Problemi
+		- Modificato "ProblemController", "contest.jsp"
+	- Creata Vista per creare un Quiz
+		- Creata "createQuiz.jsp" (JS e CSS)
 	
 	
 	

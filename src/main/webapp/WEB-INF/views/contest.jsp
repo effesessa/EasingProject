@@ -12,21 +12,14 @@
 	<!-- Favicon-->
 	<link rel="icon" href="favicon.ico" type="image/x-icon">
 	<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-	<!-- Bootstrap Core Css -->
-	<link href="resources/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 	<!-- Animation Css -->
 	<link href="resources/plugins/animate-css/animate.css" rel="stylesheet" />
 	<!-- Morris Chart Css-->
 	<link href="resources/plugins/morrisjs/morris.css" rel="stylesheet" />
-	<!-- Custom Css -->
+	
+	<%@ include file="includes/header.jsp" %>
 	<link href="resources/css/style.css" rel="stylesheet">
 	<link href="resources/css/contest.css" rel="stylesheet">
-	<!-- Jquery Core Js -->
-	<script src="resources/plugins/jquery/jquery.min.js"></script>
-	<!-- Bootstrap Core Js -->
-	<script src="resources/plugins/bootstrap/js/bootstrap.js"></script>
 </head>
 <body>
 	<jsp:include page="includes/navbarStudent.jsp"></jsp:include>
@@ -80,16 +73,70 @@
 									<br>
 								</div><br>
 								<c:if test="${not empty submits}">
-									<div class="bubble">
-										<h4><span class="label label-info">Submit</span></h4>
-										<div class="bubble-title">Submit:</div>
-										<c:forEach items="${submits}" var="submit">
-											<div class="submit">
-												<div class="submit">
-													<div>Team: ${submit.team.name}</div>
-													<div>Score: ${submit.score}</div>
+									<div class="panel-group" id="prob${problem.id_problem }accordion" style="margin-top: 16px;">
+										<c:forEach var="team" items="${teams}" varStatus="index">
+											<div class="panel panel-default">
+												<div class="panel-heading">
+													<h4 class="panel-title">
+														<a data-toggle="collapse" data-parent="#prob${problem.id_problem }accordion" href="#prob${problem.id_problem }team${team.id }"> ${team.name }</a>
+													</h4>
 												</div>
-												<br>
+												<div id="prob${problem.id_problem }team${team.id }" class="panel-collapse collapse ${index.first ? 'in' : ''}">
+													<table class="table table-hover table-responsive">
+														<thead class="headTable">
+													  		<tr>
+															    <th>Info</th>
+															    <th class="hidden-xs">Score</th>
+															    <th>Problema</th>
+															    <th class="hidden-xs">Linguaggio</th>
+													  		</tr>
+														</thead>
+														<tbody id="table_prob${problem.id_problem }_team${team.id }">
+															<c:forEach items="${submits}" var="submit">
+																<c:if test="${team.id == submit.team.id && submit.problem.id_problem == problem.id_problem }">
+																	<tr id="table_prob${problem.id_problem }_team${team.id }_sub${submit.id }">
+																		<td>
+																			<a href="viewSubmit?submitId=${submit.id }">
+																				<c:choose>
+																					<c:when test="${submit.info=='CORRECT'}">
+																						<span class="label label-success">CORRECT</span>
+																					</c:when>
+																					<c:when test="${submit.info=='WRONG_ANSWER'}">
+																						<span class="label label-danger">WRONG_ANSWER</span>
+																					</c:when>
+																					<c:when test="${submit.info=='COMPILE_ERROR'}">
+																						<span class="label label-danger">COMPILE_ERROR</span>
+																					</c:when>
+																					<c:when test="${submit.info=='TIME_LIMIT_EXIT'}">
+																						<span class="label label-warning">TIME_LIMIT_EXIT</span>
+																					</c:when>
+																					<c:when test="${submit.info=='RUN_TIME_ERROR'}">
+																						<span class="label label-default">RUN_TIME_ERROR</span>
+																					</c:when>
+																					<c:when test="${submit.info=='EXECUTION_ERROR'}">
+																						<span class="label label-default">EXECUTION_ERROR</span>
+																					</c:when>
+																					<c:otherwise>
+																						<span class="label label-info">UNKNOWN_ERROR</span>
+																					</c:otherwise>
+																				</c:choose>
+																			</a>
+																		</td>
+																		<td class="hidden-xs">
+																			${submit.score }
+																		</td>
+																		<td>
+																			${submit.problem.name }
+																		</td>
+																		<td class="hidden-xs">
+																			${submit.type }
+																		</td>
+																	</tr>
+																</c:if>
+															</c:forEach>
+														</tbody>
+													</table>
+												</div>
 											</div>
 										</c:forEach>
 									</div>
@@ -131,11 +178,6 @@
 	</section>
 
 	<script src="resources/js/contest.js" type="text/javascript"></script>
-	<!-- Jquery Core Js -->
-	<script src="resources/plugins/jquery/jquery.min.js"></script>
-
-	<!-- Bootstrap Core Js -->
-	<script src="resources/plugins/bootstrap/js/bootstrap.js"></script>
 	<script src="resources/plugins/node-waves/waves.js"></script>
 	<script src="resources/js/admin.js"></script>
 	<!-- ?? -->

@@ -5,6 +5,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Easing - I miei Problemi</title>
 	<%@ include file="includes/header.jsp" %>
 	<link href="resources/css/style.css" rel="stylesheet">
@@ -21,14 +22,14 @@
 						<h2>I miei Problemi</h2>
 						Verranno visualizzati solo i Problemi creati da una Giuria di cui sei leader.
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
-							<c:forEach var="contest" items="${contests}">
+							<c:forEach var="contest" items="${contests}" varStatus="index">
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#${contest.name }"> ${contest.name }</a>
+											<a data-toggle="collapse" data-parent="#accordion" href="#${contest.idcontest }"> ${contest.name }</a>
 										</h4>
 									</div>
-									<div id="${contest.name }" class="panel-collapse collapse in">
+									<div id="${contest.idcontest }" class="panel-collapse collapse ${index.first ? 'in' : ''}">
 										<div class="panel-body">
 											<ul class="list-group">
 												<c:forEach items="${problems}" var="problem">

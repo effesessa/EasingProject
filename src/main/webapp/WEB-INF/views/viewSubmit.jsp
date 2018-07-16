@@ -12,7 +12,14 @@
 	<link href="resources/css/viewSubmitStyle.css" rel="stylesheet" />
 </head>
 <body>
-	<jsp:include page="includes/navbarTeacher.jsp"></jsp:include>
+	<!-- navbar -->
+	<c:if test="${user.professor == false}">
+		<jsp:include page="includes/navbarStudent.jsp"></jsp:include>
+	</c:if>
+	<c:if test="${user.professor == true}">
+		<jsp:include page="includes/navbarTeacher.jsp"></jsp:include>
+	</c:if>
+	<!-- end navbar -->
 	
 	<section class="content">
 		<div class="container-fluid">

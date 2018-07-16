@@ -1,0 +1,13 @@
+@charset "ISO-8859-1";
+
+#accordion2 > .panel
+{
+	width: 50%;
+	margin: auto;
+	text-align: center;
+}
+
+h1, h2, h4, h3
+{
+	text-align: center;
+}
