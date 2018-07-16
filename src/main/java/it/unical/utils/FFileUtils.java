@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import it.unical.core.Engine;
 
@@ -41,6 +42,17 @@ public class FFileUtils {
 		return file;
 	}
 	
+	public static File createNewFile(String fileName, String directory) {
+		File file = new File(directory + System.getProperty("file.separator") + fileName);
+		try {
+			file.createNewFile();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
 	public static boolean writeByteArrayToFile(File file, byte data[]) {
 		try {
 			FileUtils.writeByteArrayToFile(file,data);
@@ -61,5 +73,11 @@ public class FFileUtils {
 			e.printStackTrace();
 		}
 		return bytes;
+	}
+	
+	public static File makeRandomDirectory() {
+		File file = new File(System.getProperty(Engine.WORKING_DIRECTORY) + System.getProperty("file.separator") + RandomStringUtils.randomAlphanumeric(8));
+		file.mkdir();
+		return file;
 	}
 }

@@ -3,8 +3,10 @@ package it.unical.core.strategy;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
 import org.springframework.web.multipart.MultipartFile;
 
+import it.unical.core.DirFilesManager;
 import it.unical.core.Engine;
 import it.unical.core.Verdict;
 import it.unical.entities.Problem;
@@ -50,7 +52,7 @@ public class AlgorithmStrategy extends AbstractStrategy {
 	}
 	
 	@Override
-	public Verdict process(Problem problem, File submittedFile, File testCaseFile, String teamName) throws IOException {
+	public Verdict process(Problem problem, DirFilesManager dirFilesManager) throws IOException {
 		return null;
 	}
 }

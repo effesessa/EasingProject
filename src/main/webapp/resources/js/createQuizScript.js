@@ -33,6 +33,27 @@ var newAnswer = '<div class="answer" id="q1a1"> \
 					</div> \
 				</div>';
 
+function formSubmit(path, parameters)
+{
+    var form = $('<form></form>');
+
+    form.attr("method", "post");
+    form.attr("action", path);
+
+    $.each(parameters, function(key, value)
+	{
+        var field = $('<input></input>');
+        field.attr("type", "hidden");
+        field.attr("name", key);
+        field.attr("value", value);
+
+        form.append(field);
+    });
+    
+    $(document.body).append(form);
+    form.submit();
+}
+
 function init()
 {
 //	$('input[name="question1_type"]').on('change', toggleForm);
@@ -60,6 +81,8 @@ function init()
 	    e.preventDefault();
 	    var quiz = $(".quizQuestions");
 	    
+	    var contestId = $("#nQuiz_contest").val();
+	    var quizName = $("#nQuiz_name").val();
 	    var questions = [];
 	    var points = [];
 	    var types = [];
@@ -101,6 +124,10 @@ function init()
 	    	}
 		});
 	    console.log("==============================");
+	    console.log("ID CONTEST");
+	    console.log(contestId);
+	    console.log("NOME QUIZ");
+	    console.log(quizName);
 	    console.log("PUNTI TOTALI");
 	    console.log(quizPoints);
 	    console.log("DOMANDE");
@@ -117,8 +144,20 @@ function init()
 	    }
 	    console.log("==============================");
 
-//	    this.submit(); // call the submit function on the element rather than 
-	                   // the jQuery selection to avoid an infinite loop
+//	    var parameters = [contestId, quizName, quizPoints, questions, points, types, correctAnswers, questions_answers];
+	    var parameters = {};
+	    parameters["contestId"] = contestId;
+	    parameters["quizName"] = quizName;
+	    parameters["quizPoints"] = quizPoints;
+	    parameters["questions"] = questions;
+	    parameters["points"] = points;
+	    parameters["types"] = types;
+	    parameters["correctAnswers"] = correctAnswers;
+	    parameters["questions_answers"] = questions_answers;
+	    
+	    console.log(parameters);
+	    formSubmit("addQuiz", parameters);
+//	    this.submit();
 	});
 }
 
