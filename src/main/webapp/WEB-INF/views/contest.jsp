@@ -31,8 +31,10 @@
 						<nav id="pnProductNav" class="pn-ProductNav">
 							<div id="pnProductNavContents" class="pn-ProductNav_Contents">
 								<c:forEach items="${problems}" var="problem" varStatus="status">
-									<a href="#" class="pn-ProductNav_Link"
-										${status.first ? 'aria-selected="true"' : ''}>${problem.name }</a>
+									<a href="#" class="pn-ProductNav_Link" ${status.first ? 'aria-selected="true"' : ''}>${problem.name }</a>
+								</c:forEach>
+								<c:forEach items="${quizs}" var="quiz" varStatus="status">
+									<a href="#" class="pn-ProductNav_Link">${quiz.name }</a>
 								</c:forEach>
 								<span id="pnIndicator" class="pn-ProductNav_Indicator"></span>
 							</div>
@@ -169,6 +171,49 @@
 										<input type="submit" class="btn btn-primary btn-lg button-login" value="Invia" />
 									</div>
 								</form:form>
+							</div>
+						</c:forEach>
+						<c:forEach items="${quizs}" var="quiz" varStatus="status">
+							<c:set var="bodyID" value="${fn:replace(quiz.name,' ', '')}" />
+							<div id="body-${bodyID }" style="display:none">
+								<h3><span class="label label-primary">${quiz.name}</span></h3><br>
+								<c:forEach items="${quiz.questions}" var="question">
+									<c:choose>
+										<c:when test="${question.type == 'OPEN' }">
+											<div class="form-group">
+										  		<label class="col-sm-1 control-label">Domanda</label>
+										  		<div class="col-sm-11">
+									    			<p class="form-control-static">${question.text }</p>
+										  		</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-1 control-label" for="questionID-${question.id}">Risposta</label>
+												<div class="col-sm-11">
+													<input type="text" class="form-control" name="name" id="questionID-${question.id}" placeholder="Risposta" required autofocus>
+												</div>
+											</div>
+										</c:when>
+										<c:otherwise>
+											<div class="form-group">
+										  		<label class="col-sm-1 control-label">Domanda</label>
+										  		<div class="col-sm-11">
+									    			<p class="form-control-static">${question.text }</p>
+										  		</div>
+											</div>
+											<div class="answers">
+												<c:forEach items="${question.answers}" var="answer">
+													<div class="form-check">
+														<input class="form-check-input" type="radio" name="answersQuestionID-${question.id}" id="answerID-${answer.id }">
+													  	<label class="form-check-label" for="answerID-${answer.id }">${answer.text }</label>
+													</div>
+												</c:forEach>
+											</div>
+										</c:otherwise>
+									</c:choose>
+									<br/>
+									<br/>
+								</c:forEach>
+								<input type="submit" class="btn btn-primary btn-lg" value="Invia" />
 							</div>
 						</c:forEach>
 					</div>

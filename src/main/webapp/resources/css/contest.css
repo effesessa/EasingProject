@@ -141,3 +141,8 @@ span>a, span>a:hover
 {
 	font-weight: bold;
 }
+
+.answers
+{
+	padding-left: 8vw;
+}

@@ -120,6 +120,12 @@
 		- Modificato "ProblemController", "contest.jsp"
 	- Creata Vista per creare un Quiz
 		- Creata "createQuiz.jsp" (JS e CSS)
+		
+17-07-2018
+	- Aggiunta lista di Quiz nella Vista "contest.jsp"
+		- Aggiunto Fetch Join per i Quiz
+		- Modificati i tipi di questions (in Quiz) e answers in Set
+		
 	
 	
 	

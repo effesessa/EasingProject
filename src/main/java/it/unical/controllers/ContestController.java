@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -131,6 +132,7 @@ public class ContestController
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
 		final List<Quiz> quizs = quizDAO.getAllQuizByContest(contest.getIdcontest());
+
 		model.addAttribute("quizs", quizs);
 		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);

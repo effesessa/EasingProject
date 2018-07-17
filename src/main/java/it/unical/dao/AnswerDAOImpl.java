@@ -1,5 +1,7 @@
 package it.unical.dao;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -33,21 +35,11 @@ public class AnswerDAOImpl implements AnswerDAO
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from Answer where text = :text");
 		query.setParameter("text", textAnswer);
-		Answer existingAnswer = (Answer) query.uniqueResult();
+		final Answer existingAnswer = (Answer) query.uniqueResult();
 		session.close();
 		if (existingAnswer == null)
 			return false;
 		return true;
-	}
-	
-	@Override
-	public Answer getByText(String text) {
-		final Session session = databaseHandler.getSessionFactory().openSession();
-		final Query query = session.createQuery("from Answer where text = :text");
-		query.setParameter("text", text);
-		final Answer answer = (Answer) query.uniqueResult();
-		session.close();
-		return answer;
 	}
 
 	@Override
@@ -56,6 +48,29 @@ public class AnswerDAOImpl implements AnswerDAO
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from Answer where id = :id");
 		query.setParameter("id", id);
+		final Answer answer = (Answer) query.uniqueResult();
+		session.close();
+		return answer;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Answer> getAnswersByQuestion(Integer id)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Answer A where A.questions.id = :id");
+		query.setParameter("id", id);
+		final List<Answer> answers = query.list();
+		session.close();
+		return answers;
+	}
+
+	@Override
+	public Answer getByText(String text)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Answer where text = :text");
+		query.setParameter("text", text);
 		final Answer answer = (Answer) query.uniqueResult();
 		session.close();
 		return answer;

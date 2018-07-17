@@ -1,18 +1,23 @@
 package it.unical.dao;
 
+import java.util.List;
+
 import it.unical.entities.Answer;
 
-public interface AnswerDAO {
-	
+public interface AnswerDAO
+{
+
 	void create(Answer answer);
 
 	void delete(Answer answer);
-	
-	void update(Answer answer);
+
+	boolean exists(String textAnswer);
 
 	Answer get(Integer id);
-	
-	boolean exists(String textAnswer);
-	
+
+	List<Answer> getAnswersByQuestion(Integer id);
+
 	Answer getByText(String text);
+
+	void update(Answer answer);
 }
