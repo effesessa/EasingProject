@@ -12,5 +12,7 @@ public interface AnswerDAO {
 
 	Answer get(Integer id);
 	
-	boolean exists(Answer answer);
+	boolean exists(String textAnswer);
+	
+	Answer getByText(String text);
 }

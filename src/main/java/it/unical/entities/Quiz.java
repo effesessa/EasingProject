@@ -67,5 +67,11 @@ public class Quiz implements Serializable {
 	public void setPoints(final Integer points) {
 		this.points = points;
 	}
+
+	@Override
+	public String toString() {
+		return "Quiz [id=" + id + ", name=" + name + ", points=" + points + ", contest=" + contest + "]";
+	}
+	
 	
 }

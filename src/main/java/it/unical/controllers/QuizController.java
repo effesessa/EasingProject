@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,11 +28,11 @@ import it.unical.dao.UserDAO;
 import it.unical.entities.Answer;
 import it.unical.entities.Contest;
 import it.unical.entities.Question;
+import it.unical.entities.Question.Type;
 import it.unical.entities.QuestionAnswer;
 import it.unical.entities.Quiz;
 import it.unical.entities.QuizQuestion;
 import it.unical.entities.User;
-import it.unical.forms.AddQuizForm;
 import it.unical.forms.QuizDTO;
 import it.unical.utils.SessionUtils;
 
@@ -63,8 +62,27 @@ public class QuizController
 	public String addQuiz(final HttpSession session, @RequestBody QuizDTO quizDTO, final Model model,
 			HttpServletResponse response)
 	{
-		logger.info(quizDTO.toString());
 		_setAccountAttribute(session, model);
+		System.out.println(quizDTO.getContestName());
+		System.out.println(quizDTO.getQuizName());
+		System.out.println(quizDTO.getQuizPoints());
+		System.out.println("DOMANDE:");
+		for (final String string : quizDTO.getQuestions())
+			System.out.println(string);
+		System.out.println("PUNTI:");
+		for (final Integer string : quizDTO.getPoints())
+			System.out.println(string);
+		System.out.println("TIPOLOGIA:");
+		for (final String string : quizDTO.getTypes())
+			System.out.println(string);
+		System.out.println("RISPOSTE CORRETTE:");
+		for (final String string : quizDTO.getCorrectAnswers())
+			System.out.println(string);
+		System.out.println("RISPOSTE");
+		for (final Map.Entry<String, List<String>> entry : quizDTO.getQuestions_answers().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
+		
+		
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
@@ -72,20 +90,20 @@ public class QuizController
 		final QuizQuestionDAO quizQuestionDAO = (QuizQuestionDAO) context.getBean("quizQuestionDAO");
 		final QuestionAnswerDAO questionAnswerDAO = (QuestionAnswerDAO) context.getBean("questionAnswerDAO");
 
-		logger.info(quizDTO.toString());
-
 		final Contest contest = contestDAO.getContestByName(quizDTO.getContestName());
 		final Quiz quiz = new Quiz();
 		quiz.setContest(contest);
 		quiz.setName(quizDTO.getQuizName());
 		quiz.setPoints(quizDTO.getQuizPoints());
 		quizDAO.create(quiz);
+		System.out.println(quiz.toString());
 		final List<Question> questions = new ArrayList<>();
 		for (int i = 0; i < quizDTO.getQuestions().size(); i++)
 		{
 			final Question question = new Question();
 			question.setPoints(quizDTO.getPoints().get(i));
 			question.setText(quizDTO.getQuestions().get(i));
+			question.setType(getType(quizDTO.getTypes().get(i)));
 			questionDAO.create(question);
 			questions.add(question);
 			final QuizQuestion quizQuestion = new QuizQuestion();
@@ -107,10 +125,12 @@ public class QuizController
 				}
 			for (final String textAnswer : entry.getValue())
 			{
-				final Answer answer = new Answer();
+				Answer answer = new Answer();
 				answer.setText(textAnswer);
-				if (!answerDAO.exists(answer))
+				if (!answerDAO.exists(textAnswer))
 					answerDAO.create(answer);
+				else
+					answer = answerDAO.getByText(textAnswer);
 				if (quizDTO.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText()))
 				{
 					findQuestion.setCorrectAnswer(answer);
@@ -159,5 +179,16 @@ public class QuizController
 			return "redirect:/";
 		else
 			return "createQuiz";
+	}
+	
+	private Question.Type getType(String typeFrontEnd) {
+		switch (typeFrontEnd) {
+		case "closed":
+			return Type.MULTIPLE;
+		case "open":
+			return Type.OPEN;
+		default:
+			return null;
+		}
 	}
 }

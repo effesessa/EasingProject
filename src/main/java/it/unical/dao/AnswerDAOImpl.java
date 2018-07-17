@@ -28,16 +28,25 @@ public class AnswerDAOImpl implements AnswerDAO
 	}
 
 	@Override
-	public boolean exists(Answer answer)
+	public boolean exists(String textAnswer)
 	{
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from Answer where text = :text");
-		query.setParameter("text", answer.getText());
-		final Answer existingAnswer = (Answer) query.uniqueResult();
+		query.setParameter("text", textAnswer);
+		Answer existingAnswer = (Answer) query.uniqueResult();
 		if (existingAnswer == null)
 			return false;
-		answer = existingAnswer;
 		return true;
+	}
+	
+	@Override
+	public Answer getByText(String text) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Answer where text = :text");
+		query.setParameter("text", text);
+		final Answer answer = (Answer) query.uniqueResult();
+		session.close();
+		return answer;
 	}
 
 	@Override
