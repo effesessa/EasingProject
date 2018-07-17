@@ -130,7 +130,8 @@ public class ContestController
 		final List<Problem> problems = problemDAO.getProblemOfAContest(contest.getIdcontest());
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
-		final List<Quiz> quizs = (List<Quiz>) quizDAO.getByContest(contest.getIdcontest());
+		final List<Quiz> quizs = quizDAO.getAllQuizByContest(contest.getIdcontest());
+		model.addAttribute("quizs", quizs);
 		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);
 		if (!problems.isEmpty())
@@ -138,9 +139,7 @@ public class ContestController
 		else
 			model.addAttribute("problems", "");
 		model.addAttribute("contest", contest.getIdcontest());
-
 		return "contest";
-
 	}
 
 	// Iscrizione a un Contest

@@ -1,5 +1,7 @@
 package it.unical.dao;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -46,14 +48,15 @@ public class QuizDAOImpl implements QuizDAO {
 		return quiz;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Quiz getByContest(final Integer contest) {
+	public List<Quiz> getAllQuizByContest(final Integer contest) {
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from Quiz where idcontest = :contest");
 		query.setParameter("contest", contest);
-		final Quiz quiz = (Quiz) query.uniqueResult();
+		final List<Quiz> quizs = query.list();
 		session.close();
-		return quiz;
+		return quizs;
 	}
 
 	@Override

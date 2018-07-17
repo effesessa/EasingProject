@@ -1,5 +1,7 @@
 package it.unical.dao;
 
+import java.util.List;
+
 import it.unical.entities.Quiz;
 
 public interface QuizDAO {
@@ -12,7 +14,7 @@ public interface QuizDAO {
 
 	Quiz get(Integer id);
 	
-	Quiz getByContest(Integer id);
+	List<Quiz> getAllQuizByContest(Integer id);
 	
 	Quiz getByName(String name);
 }
