@@ -20,111 +20,79 @@ import org.springframework.web.context.WebApplicationContext;
 
 import it.unical.dao.AnswerDAO;
 import it.unical.dao.ContestDAO;
-import it.unical.dao.QuestionAnswerDAO;
 import it.unical.dao.QuestionDAO;
 import it.unical.dao.QuizDAO;
-import it.unical.dao.QuizQuestionDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Answer;
 import it.unical.entities.Contest;
 import it.unical.entities.Question;
 import it.unical.entities.Question.Type;
-import it.unical.entities.QuestionAnswer;
 import it.unical.entities.Quiz;
-import it.unical.entities.QuizQuestion;
 import it.unical.entities.User;
 import it.unical.forms.QuizDTO;
 import it.unical.utils.SessionUtils;
 
 @Controller
-public class QuizController
-{
+public class QuizController {
 	private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
 
 	@Autowired
 	private WebApplicationContext context;
 
-	private void _setAccountAttribute(final HttpSession session, final Model model)
-	{
-		if (SessionUtils.isUser(session))
-		{
+	private void _setAccountAttribute(final HttpSession session, final Model model) {
+		if (SessionUtils.isUser(session)) {
 			final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 			final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
 			model.addAttribute("user", user);
 			model.addAttribute("typeSession", "Account");
 			model.addAttribute("userLogged", true);
-		}
-		else
+		} else
 			model.addAttribute("typeSession", "Login");
 	}
 
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
 	public String addQuiz(final HttpSession session, @RequestBody QuizDTO quizDTO, final Model model,
-			HttpServletResponse response)
-	{
+			HttpServletResponse response) {
 		_setAccountAttribute(session, model);
-		System.out.println(quizDTO.getContestName());
-		System.out.println(quizDTO.getQuizName());
-		System.out.println(quizDTO.getQuizPoints());
-		System.out.println("DOMANDE:");
-		for (final String string : quizDTO.getQuestions())
-			System.out.println(string);
-		System.out.println("PUNTI:");
-		for (final Integer string : quizDTO.getPoints())
-			System.out.println(string);
-		System.out.println("TIPOLOGIA:");
-		for (final String string : quizDTO.getTypes())
-			System.out.println(string);
-		System.out.println("RISPOSTE CORRETTE:");
-		for (final String string : quizDTO.getCorrectAnswers())
-			System.out.println(string);
-		System.out.println("RISPOSTE");
-		for (final Map.Entry<String, List<String>> entry : quizDTO.getQuestions_answers().entrySet())
-			System.out.println(entry.getKey() + "/" + entry.getValue());
-		
-		
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
 		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
-		final QuizQuestionDAO quizQuestionDAO = (QuizQuestionDAO) context.getBean("quizQuestionDAO");
-		final QuestionAnswerDAO questionAnswerDAO = (QuestionAnswerDAO) context.getBean("questionAnswerDAO");
-
 		final Contest contest = contestDAO.getContestByName(quizDTO.getContestName());
+		//create quiz
 		final Quiz quiz = new Quiz();
 		quiz.setContest(contest);
 		quiz.setName(quizDTO.getQuizName());
 		quiz.setPoints(quizDTO.getQuizPoints());
 		quizDAO.create(quiz);
-		System.out.println(quiz.toString());
+		//create questions
 		final List<Question> questions = new ArrayList<>();
-		for (int i = 0; i < quizDTO.getQuestions().size(); i++)
-		{
+		final List<Quiz> quizs = new ArrayList<>();
+		quizs.add(quiz);
+		for (int i = 0; i < quizDTO.getQuestions().size(); i++) {
 			final Question question = new Question();
 			question.setPoints(quizDTO.getPoints().get(i));
 			question.setText(quizDTO.getQuestions().get(i));
 			question.setType(getType(quizDTO.getTypes().get(i)));
+			question.setQuizs(quizs);
 			questionDAO.create(question);
 			questions.add(question);
-			final QuizQuestion quizQuestion = new QuizQuestion();
-			quizQuestion.setQuiz(quiz);
-			quizQuestion.setQuestion(question);
-			quizQuestionDAO.create(quizQuestion);
 		}
-
+		//update quiz
+		quiz.setQuestions(questions);
+		quizDAO.update(quiz);
+		
 		int indexCorrectAnswer = -1;
-		for (final Entry<String, List<String>> entry : quizDTO.getQuestions_answers().entrySet())
-		{
+		for (final Entry<String, List<String>> entry : quizDTO.getQuestions_answers().entrySet()) {
 			Question findQuestion = null;
 			for (int i = 0; i < questions.size(); i++)
-				if (questions.get(i).getText().equals(entry.getKey()))
-				{
+				if (questions.get(i).getText().equals(entry.getKey())) {
 					findQuestion = questions.get(i);
 					indexCorrectAnswer = i;
 					break;
 				}
-			for (final String textAnswer : entry.getValue())
-			{
+			final List<Answer> answers = new ArrayList<>();
+			for (final String textAnswer : entry.getValue()) {
 				Answer answer = new Answer();
 				answer.setText(textAnswer);
 				if (!answerDAO.exists(textAnswer))
@@ -132,22 +100,17 @@ public class QuizController
 				else
 					answer = answerDAO.getByText(textAnswer);
 				if (quizDTO.getCorrectAnswers().get(indexCorrectAnswer).equals(answer.getText()))
-				{
 					findQuestion.setCorrectAnswer(answer);
-					questionDAO.update(findQuestion);
-				}
-				final QuestionAnswer questionAnswer = new QuestionAnswer();
-				questionAnswer.setAnswer(answer);
-				questionAnswer.setQuestion(findQuestion);
-				questionAnswerDAO.create(questionAnswer);
+				answers.add(answer);
 			}
+			findQuestion.setAnswers(answers);
+			questionDAO.update(findQuestion);
 		}
 		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/addQuizFake", method = RequestMethod.POST)
-	public String addQuizFake(final HttpSession session, @RequestBody QuizDTO quiz, final Model model)
-	{
+	public String addQuizFake(final HttpSession session, @RequestBody QuizDTO quiz, final Model model) {
 		System.out.println(quiz.getContestName());
 		System.out.println(quiz.getQuizName());
 		System.out.println(quiz.getQuizPoints());
@@ -170,8 +133,7 @@ public class QuizController
 	}
 
 	@RequestMapping(value = "/createQuiz", method = RequestMethod.GET)
-	public String createQuiz(HttpSession session, Model model)
-	{
+	public String createQuiz(HttpSession session, Model model) {
 		_setAccountAttribute(session, model);
 		final User user = (User) model.asMap().get("user");
 
@@ -180,7 +142,7 @@ public class QuizController
 		else
 			return "createQuiz";
 	}
-	
+
 	private Question.Type getType(String typeFrontEnd) {
 		switch (typeFrontEnd) {
 		case "closed":

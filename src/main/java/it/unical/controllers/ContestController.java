@@ -30,6 +30,7 @@ import it.unical.dao.JuryMemberDAO;
 import it.unical.dao.MembershipDAO;
 import it.unical.dao.PartecipationDAO;
 import it.unical.dao.ProblemDAO;
+import it.unical.dao.QuizDAO;
 import it.unical.dao.RegistrationDAO;
 import it.unical.dao.SubjectDAO;
 import it.unical.dao.SubmitDAO;
@@ -40,6 +41,7 @@ import it.unical.entities.JuryMember;
 import it.unical.entities.Membership;
 import it.unical.entities.Partecipation;
 import it.unical.entities.Problem;
+import it.unical.entities.Quiz;
 import it.unical.entities.Subject;
 import it.unical.entities.Submit;
 import it.unical.entities.Team;
@@ -109,11 +111,11 @@ public class ContestController
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final Contest contest = contestDAO.getContestByName(name);
 		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
 		final List<Membership> memberships = membershipDAO
 				.getTeamByStudent(SessionUtils.getUserIdFromSessionOrNull(session));
-		final ArrayList<Team> teams = new ArrayList<Team>(memberships.size());
+		final ArrayList<Team> teams = new ArrayList<>(memberships.size());
 		for (int i = 0; i < memberships.size(); i++)
 			teams.add(memberships.get(i).getTeam());
 
@@ -127,7 +129,8 @@ public class ContestController
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 		final List<Problem> problems = problemDAO.getProblemOfAContest(contest.getIdcontest());
 		for (final Problem p : problems)
-			p.setDescription(p.getDescription().replaceAll("\r\n", "<br />"));
+			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
+		final List<Quiz> quizs = (List<Quiz>) quizDAO.getByContest(contest.getIdcontest());
 		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);
 		if (!problems.isEmpty())

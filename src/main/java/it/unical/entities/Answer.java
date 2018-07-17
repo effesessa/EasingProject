@@ -1,12 +1,15 @@
 package it.unical.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -29,6 +32,9 @@ public class Answer implements Serializable {
 	
 	@Column(name = "text")
 	private String text;
+	
+	@ManyToMany(mappedBy="answers")
+	private List<Question> questions = new ArrayList<>();
 
 	public Integer getId() {
 		return id;
@@ -52,6 +58,14 @@ public class Answer implements Serializable {
 
 	public void setText(final String text) {
 		this.text = text;
+	}
+
+	public List<Question> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<Question> questions) {
+		this.questions = questions;
 	}
 	
 }

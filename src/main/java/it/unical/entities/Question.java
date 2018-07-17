@@ -1,6 +1,8 @@
 package it.unical.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -41,7 +45,16 @@ public class Question implements Serializable {
 	@Column(name = "type", nullable = false)
 	@Enumerated(EnumType.STRING)
 	public Type type = Type.OPEN;
+	
+	@ManyToMany(mappedBy="questions")
+	private List<Quiz> quizs = new ArrayList<>();
 
+	@ManyToMany
+	@JoinTable(name = "question_answer",
+			joinColumns = { @JoinColumn(name = "idquestion") },
+			inverseJoinColumns = { @JoinColumn(name = "idanswer") })
+	private List<Answer> answers = new ArrayList<>();
+	
 	public static enum Type {
 		OPEN,
 		MULTIPLE
@@ -87,4 +100,20 @@ public class Question implements Serializable {
 		this.points = points;
 	}
 
+	public List<Quiz> getQuizs() {
+		return quizs;
+	}
+
+	public void setQuizs(List<Quiz> quizs) {
+		this.quizs = quizs;
+	}
+
+	public List<Answer> getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(List<Answer> answers) {
+		this.answers = answers;
+	}
+	
 }
