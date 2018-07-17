@@ -34,6 +34,7 @@ public class AnswerDAOImpl implements AnswerDAO
 		final Query query = session.createQuery("from Answer where text = :text");
 		query.setParameter("text", textAnswer);
 		Answer existingAnswer = (Answer) query.uniqueResult();
+		session.close();
 		if (existingAnswer == null)
 			return false;
 		return true;
