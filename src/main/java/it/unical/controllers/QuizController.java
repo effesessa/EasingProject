@@ -105,13 +105,13 @@ public class QuizController
 				}
 				i++;
 			}
-			// for (int i = 0; i < questions.size(); i++)
-			// if (questions.get(i).getText().equals(entry.getKey()))
-			// {
-			// findQuestion = questions.get(i);
-			// indexCorrectAnswer = i;
-			// break;
-			// }
+//			for (int i = 0; i < questions.size(); i++)
+//				if (questions.get(i).getText().equals(entry.getKey()))
+//				{
+//					findQuestion = questions.get(i);
+//					indexCorrectAnswer = i;
+//					break;
+//				}
 			final Set<Answer> answers = new HashSet<>();
 			for (final String textAnswer : entry.getValue())
 			{
