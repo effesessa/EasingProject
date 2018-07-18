@@ -38,7 +38,7 @@ public class SubmitAnswer implements Serializable {
 	private String openAnswer;
 	
 	@Column(name = "points", nullable = false, columnDefinition = "TINYINT default 0")
-	private Integer points;
+	private Integer points = 0;
 	
 	public SubmitAnswer() {
 

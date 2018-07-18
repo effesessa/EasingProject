@@ -31,7 +31,7 @@ public class SubmitQuiz implements Serializable {
 	private Quiz quiz;
 	
 	@Column(name = "total_score", nullable = false, columnDefinition = "TINYINT default 0")
-	private Integer totalScore;
+	private Integer totalScore = 0;
 	
 	@Column(name = "open_score", nullable = true, columnDefinition = "TINYINT")
 	private Integer openScore;
