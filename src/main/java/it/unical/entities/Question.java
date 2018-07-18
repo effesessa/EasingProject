@@ -2,7 +2,7 @@ package it.unical.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -56,7 +56,7 @@ public class Question implements Serializable
 	@ManyToMany
 	@JoinTable(name = "question_answer", joinColumns = { @JoinColumn(name = "idquestion") }, inverseJoinColumns = {
 			@JoinColumn(name = "idanswer") })
-	private Set<Answer> answers = new HashSet<>();
+	private Set<Answer> answers = new LinkedHashSet<>();
 
 	public Question()
 	{
