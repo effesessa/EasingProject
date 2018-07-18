@@ -26,12 +26,18 @@ import it.unical.dao.AnswerDAO;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.QuestionDAO;
 import it.unical.dao.QuizDAO;
+import it.unical.dao.SubmitAnswerDAO;
+import it.unical.dao.SubmitQuizDAO;
+import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Answer;
 import it.unical.entities.Contest;
 import it.unical.entities.Question;
 import it.unical.entities.Question.Type;
 import it.unical.entities.Quiz;
+import it.unical.entities.SubmitAnswer;
+import it.unical.entities.SubmitQuiz;
+import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.QuizDTO;
 import it.unical.forms.SubmitQuizForm;
@@ -209,14 +215,14 @@ public class QuizController
 	}
 
 	@RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
-	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm,
-			final Model model)
-	{
-		// TODO implementation to save submit quiz, first i have to design the
-		// database
+	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm, final Model model) {
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+		final SubmitQuizDAO submitQuizDAO = (SubmitQuizDAO) context.getBean("submitQuizDAO");
+		final SubmitAnswerDAO submitAnswerDAO = (SubmitAnswerDAO) context.getBean("submitAnswerDAO");
+		final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
 		final Quiz quiz = quizDAO.get(submitQuizForm.getQuizID());
-
+		final Team team = teamDAO.getByName(submitQuizForm.getTeamName());
+		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
 		System.out.println("===============");
 		System.out.println("NOME QUIZ");
 		System.out.println(submitQuizForm.getQuizID() + " : " + quiz.getName());
@@ -226,6 +232,37 @@ public class QuizController
 		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet())
 			System.out.println(entry.getKey() + "/" + entry.getValue());
 		System.out.println("===============");
+		
+		SubmitQuiz submitQuiz = new SubmitQuiz();
+		submitQuiz.setQuiz(quiz);
+		submitQuiz.setTeam(team);
+		submitQuizDAO.create(submitQuiz);
+		Set<Question> questions = quiz.getQuestions();
+		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet()) {
+			Question findQuestion = null;
+			for (Question question : questions) {
+				if(question.getText().equals(entry.getKey())) {
+					findQuestion = question;
+					break;
+				}
+			}
+			SubmitAnswer submitAnswer = new SubmitAnswer();
+			submitAnswer.setSubmitQuiz(submitQuiz);
+			submitAnswer.setQuestion(findQuestion);
+			if(findQuestion.getType() == Question.Type.OPEN)
+				submitAnswer.setOpenAnswer(entry.getValue());
+			else {
+				final Set<Answer> answers = findQuestion.getAnswers();
+				for (Answer answer : answers) {
+					if(answer.getText().equals(entry.getValue())) {
+						submitAnswer.setAnswer(answer);
+						break;
+					}
+				}
+			}
+			submitAnswerDAO.create(submitAnswer);
+		}
+		//TODO compute score
 		return "redirect:/";
 	}
 }
