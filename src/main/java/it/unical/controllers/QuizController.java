@@ -15,9 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 import it.unical.dao.AnswerDAO;
@@ -32,6 +34,7 @@ import it.unical.entities.Question.Type;
 import it.unical.entities.Quiz;
 import it.unical.entities.User;
 import it.unical.forms.QuizDTO;
+import it.unical.forms.SubmitQuizForm;
 import it.unical.utils.SessionUtils;
 
 @Controller
@@ -56,6 +59,32 @@ public class QuizController
 			model.addAttribute("typeSession", "Login");
 	}
 
+	@RequestMapping(value = "/showQuiz", method = RequestMethod.GET)
+	public String showQuiz(@RequestParam String quizName, final HttpSession session, final Model model) {
+		//if you want pass quizId, change @RequestParam String quizId and use quizDAO.get(Integer.parseInt(quizId));
+		_setAccountAttribute(session, model);
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+		Quiz quiz = quizDAO.getByName(quizName); //quizDAO.get(Integer.parseInt(quizId));
+		model.addAttribute("questions", quiz.getQuestions());
+		
+		//ALE: the answers you should get from the questions objects without problems but
+		//if there are problems or you are more comfortable, then, it uncomment below to pass answers directly
+		
+		/*Map<Question,Set<Answer>> question_answers = new HashMap<>();
+		for (Question question : quiz.getQuestions()) {
+			question_answers.put(question, question.getAnswers());
+		}
+		model.addAttribute("question_answers", question_answers);*/
+		
+		return "nomePaginaPerMostrareilQuiz";
+	}
+	
+	@RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
+	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm, final Model model) {
+		// TODO implementation to save submit quiz, first i have to design the database
+		return "redirect:/";
+	}
+	
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
 	public String addQuiz(final HttpSession session, @RequestBody QuizDTO quizDTO, final Model model,
 			HttpServletResponse response)
