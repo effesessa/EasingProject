@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +34,7 @@ import it.unical.entities.Question.Type;
 import it.unical.entities.Quiz;
 import it.unical.entities.User;
 import it.unical.forms.QuizDTO;
+import it.unical.forms.SubmitQuizForm;
 import it.unical.utils.SessionUtils;
 
 @Controller
@@ -74,8 +76,13 @@ public class QuizController
 		}
 		model.addAttribute("question_answers", question_answers);*/
 		
-		return quizName;
-		
+		return "nomePaginaPerMostrareilQuiz";
+	}
+	
+	@RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
+	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm, final Model model) {
+		// TODO implementation to save submit quiz, first i have to design the database
+		return "redirect:/";
 	}
 	
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
