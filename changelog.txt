@@ -125,7 +125,11 @@
 	- Aggiunta lista di Quiz nella Vista "contest.jsp"
 		- Aggiunto Fetch Join per i Quiz
 		- Modificati i tipi di questions (in Quiz) e answers in Set
-		
+
+18-07-2018
+	- Aggiunto form per la submit dei Quiz nella Vista "contest.jsp"
+		- Mappati gli input da passare al form in back-end
+		- Cambiato quizName in quizID in "SubmitQuizForm"
 	
 	
 	

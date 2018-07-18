@@ -177,7 +177,21 @@
 							<c:set var="bodyID" value="${fn:replace(quiz.name,' ', '')}" />
 							<div id="body-${bodyID }" style="display:none">
 								<h3><span class="label label-primary">${quiz.name}</span></h3><br>
-								<form action="submitQuiz" method="post" modelAttribute="submitQuiz">
+								<form action="submitQuiz" method="post" modelAttribute="submitQuizForm">
+									<input type="hidden" name="quizID" id="quizID" value="${quiz.id}"/> 
+									<div class="form-group">
+										<label for="team">Nome del Team</label>
+										<div class="input-group">
+											<span class="input-group-addon">
+												<i class="glyphicon glyphicon-education"></i>
+											</span>
+											<select class="form-control" id="quizTeam" name="teamName" required>
+												<c:forEach items="${teams}" var="team">
+													<option value="${team.name}">${team.name}</option>
+												</c:forEach>
+											</select>
+										</div>
+									</div>
 									<c:forEach items="${quiz.questions}" var="question">
 										<c:choose>
 											<c:when test="${question.type == 'OPEN' }">
@@ -190,7 +204,7 @@
 												<div class="form-group">
 													<label class="col-sm-1 control-label" for="questionID-${question.id}">Risposta</label>
 													<div class="col-sm-11">
-														<input type="text" class="form-control" name="name" id="questionID-${question.id}" placeholder="Risposta" required autofocus>
+														<input type="text" class="form-control" name="question_answer['${question.id}']" id="questionID-${question.id}" placeholder="Risposta" required autofocus>
 													</div>
 												</div>
 											</c:when>
@@ -204,7 +218,7 @@
 												<div class="answers">
 													<c:forEach items="${question.answers}" var="answer">
 														<div class="form-check">
-															<input class="form-check-input" type="radio" name="answersQuestionID-${question.id}" id="answerID-${answer.id }">
+															<input class="form-check-input" type="radio" name="question_answer['${question.id}']" id="answerID-${answer.id }" value="${answer.id}" required>
 														  	<label class="form-check-label" for="answerID-${answer.id }">${answer.text }</label>
 														</div>
 													</c:forEach>

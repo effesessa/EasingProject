@@ -59,32 +59,6 @@ public class QuizController
 			model.addAttribute("typeSession", "Login");
 	}
 
-	@RequestMapping(value = "/showQuiz", method = RequestMethod.GET)
-	public String showQuiz(@RequestParam String quizName, final HttpSession session, final Model model) {
-		//if you want pass quizId, change @RequestParam String quizId and use quizDAO.get(Integer.parseInt(quizId));
-		_setAccountAttribute(session, model);
-		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
-		Quiz quiz = quizDAO.getByName(quizName); //quizDAO.get(Integer.parseInt(quizId));
-		model.addAttribute("questions", quiz.getQuestions());
-		
-		//ALE: the answers you should get from the questions objects without problems but
-		//if there are problems or you are more comfortable, then, it uncomment below to pass answers directly
-		
-		/*Map<Question,Set<Answer>> question_answers = new HashMap<>();
-		for (Question question : quiz.getQuestions()) {
-			question_answers.put(question, question.getAnswers());
-		}
-		model.addAttribute("question_answers", question_answers);*/
-		
-		return "nomePaginaPerMostrareilQuiz";
-	}
-	
-	@RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
-	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm, final Model model) {
-		// TODO implementation to save submit quiz, first i have to design the database
-		return "redirect:/";
-	}
-	
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
 	public String addQuiz(final HttpSession session, @RequestBody QuizDTO quizDTO, final Model model,
 			HttpServletResponse response)
@@ -134,13 +108,13 @@ public class QuizController
 				}
 				i++;
 			}
-//			for (int i = 0; i < questions.size(); i++)
-//				if (questions.get(i).getText().equals(entry.getKey()))
-//				{
-//					findQuestion = questions.get(i);
-//					indexCorrectAnswer = i;
-//					break;
-//				}
+			// for (int i = 0; i < questions.size(); i++)
+			// if (questions.get(i).getText().equals(entry.getKey()))
+			// {
+			// findQuestion = questions.get(i);
+			// indexCorrectAnswer = i;
+			// break;
+			// }
 			final Set<Answer> answers = new HashSet<>();
 			for (final String textAnswer : entry.getValue())
 			{
@@ -207,5 +181,51 @@ public class QuizController
 		default:
 			return null;
 		}
+	}
+
+	@RequestMapping(value = "/showQuiz", method = RequestMethod.GET)
+	public String showQuiz(@RequestParam String quizName, final HttpSession session, final Model model)
+	{
+		// if you want pass quizId, change @RequestParam String quizId and use
+		// quizDAO.get(Integer.parseInt(quizId));
+		_setAccountAttribute(session, model);
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+		final Quiz quiz = quizDAO.getByName(quizName); // quizDAO.get(Integer.parseInt(quizId));
+		model.addAttribute("questions", quiz.getQuestions());
+
+		// ALE: the answers you should get from the questions objects without
+		// problems but
+		// if there are problems or you are more comfortable, then, it uncomment
+		// below to pass answers directly
+
+		/*
+		 * Map<Question,Set<Answer>> question_answers = new HashMap<>(); for
+		 * (Question question : quiz.getQuestions()) {
+		 * question_answers.put(question, question.getAnswers()); }
+		 * model.addAttribute("question_answers", question_answers);
+		 */
+
+		return "nomePaginaPerMostrareilQuiz";
+	}
+
+	@RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
+	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm,
+			final Model model)
+	{
+		// TODO implementation to save submit quiz, first i have to design the
+		// database
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+		final Quiz quiz = quizDAO.get(submitQuizForm.getQuizID());
+
+		System.out.println("===============");
+		System.out.println("NOME QUIZ");
+		System.out.println(submitQuizForm.getQuizID() + " : " + quiz.getName());
+		System.out.println("TEAM");
+		System.out.println(submitQuizForm.getTeamName());
+		System.out.println("RISPOSTE");
+		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
+		System.out.println("===============");
+		return "redirect:/";
 	}
 }
