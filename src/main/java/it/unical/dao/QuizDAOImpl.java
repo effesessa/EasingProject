@@ -37,7 +37,8 @@ public class QuizDAOImpl implements QuizDAO
 	public Quiz get(final Integer id)
 	{
 		final Session session = databaseHandler.getSessionFactory().openSession();
-		final Query query = session.createQuery("from Quiz where id = :id");
+		final Query query = session
+				.createQuery("from Quiz Q join fetch Q.questions QE left join fetch QE.answers where Q.id = :id");
 		query.setParameter("id", id);
 		final Quiz quiz = (Quiz) query.uniqueResult();
 		session.close();

@@ -130,6 +130,8 @@
 	- Aggiunto form per la submit dei Quiz nella Vista "contest.jsp"
 		- Mappati gli input da passare al form in back-end
 		- Cambiato quizName in quizID in "SubmitQuizForm"
+	- Fixata LazyInitializationException in QuizDAO (Fetch Join)
+	- Fixati bug minori in "QuizController" (due IF confrontavano Nome==ID invece di ID1==ID2)
 	
 	
 	

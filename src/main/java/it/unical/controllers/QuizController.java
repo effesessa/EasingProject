@@ -215,7 +215,9 @@ public class QuizController
 	}
 
 	@RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
-	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm, final Model model) {
+	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm,
+			final Model model)
+	{
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final SubmitQuizDAO submitQuizDAO = (SubmitQuizDAO) context.getBean("submitQuizDAO");
 		final SubmitAnswerDAO submitAnswerDAO = (SubmitAnswerDAO) context.getBean("submitAnswerDAO");
@@ -232,37 +234,39 @@ public class QuizController
 		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet())
 			System.out.println(entry.getKey() + "/" + entry.getValue());
 		System.out.println("===============");
-		
-		SubmitQuiz submitQuiz = new SubmitQuiz();
+
+		final SubmitQuiz submitQuiz = new SubmitQuiz();
 		submitQuiz.setQuiz(quiz);
 		submitQuiz.setTeam(team);
 		submitQuizDAO.create(submitQuiz);
-		Set<Question> questions = quiz.getQuestions();
-		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet()) {
+		final Set<Question> questions = quiz.getQuestions();
+		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet())
+		{
 			Question findQuestion = null;
-			for (Question question : questions) {
-				if(question.getText().equals(entry.getKey())) {
+			for (final Question question : questions)
+				if (question.getId().equals(Integer.parseInt(entry.getKey())))
+				{
 					findQuestion = question;
 					break;
 				}
-			}
-			SubmitAnswer submitAnswer = new SubmitAnswer();
+			final SubmitAnswer submitAnswer = new SubmitAnswer();
 			submitAnswer.setSubmitQuiz(submitQuiz);
 			submitAnswer.setQuestion(findQuestion);
-			if(findQuestion.getType() == Question.Type.OPEN)
+			if (findQuestion.getType() == Question.Type.OPEN)
 				submitAnswer.setOpenAnswer(entry.getValue());
-			else {
+			else
+			{
 				final Set<Answer> answers = findQuestion.getAnswers();
-				for (Answer answer : answers) {
-					if(answer.getText().equals(entry.getValue())) {
+				for (final Answer answer : answers)
+					if (answer.getId().equals(Integer.parseInt(entry.getValue())))
+					{
 						submitAnswer.setAnswer(answer);
 						break;
 					}
-				}
 			}
 			submitAnswerDAO.create(submitAnswer);
 		}
-		//TODO compute score
+		// TODO compute score
 		return "redirect:/";
 	}
 }
