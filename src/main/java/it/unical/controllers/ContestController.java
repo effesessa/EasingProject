@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -37,11 +36,13 @@ import it.unical.dao.SubjectDAO;
 import it.unical.dao.SubmitDAO;
 import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
+import it.unical.entities.Answer;
 import it.unical.entities.Contest;
 import it.unical.entities.JuryMember;
 import it.unical.entities.Membership;
 import it.unical.entities.Partecipation;
 import it.unical.entities.Problem;
+import it.unical.entities.Question;
 import it.unical.entities.Quiz;
 import it.unical.entities.Subject;
 import it.unical.entities.Submit;
@@ -132,7 +133,7 @@ public class ContestController
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
 		final List<Quiz> quizs = quizDAO.getAllQuizByContest(contest.getIdcontest());
-
+		debugQuiz(quizs);
 		model.addAttribute("quizs", quizs);
 		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);
@@ -142,6 +143,21 @@ public class ContestController
 			model.addAttribute("problems", "");
 		model.addAttribute("contest", contest.getIdcontest());
 		return "contest";
+	}
+	
+	public void debugQuiz(List<Quiz> quizs) {
+		System.out.println("**************************debug quiz**************************");
+		for (Quiz quiz : quizs) {
+			System.out.println("Quiz:" + quiz.getName());
+			for (Question question : quiz.getQuestions()) {
+				System.out.println("Question:" + question.getText());
+				for (Answer answer : question.getAnswers()) {
+					System.out.println("Answer:" + answer.getText());
+				}
+			}
+			System.out.println("__________________________________________________________");
+		}
+		System.out.println("**************************debug quiz**************************");
 	}
 
 	// Iscrizione a un Contest
