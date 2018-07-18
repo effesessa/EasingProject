@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -40,6 +41,7 @@ public class Quiz implements Serializable
 	@ManyToMany
 	@JoinTable(name = "quiz_question", joinColumns = { @JoinColumn(name = "idquiz") }, inverseJoinColumns = {
 			@JoinColumn(name = "idquestion") })
+	@OrderBy("id DESC")
 	private Set<Question> questions = new LinkedHashSet<>();
 
 	public Quiz()

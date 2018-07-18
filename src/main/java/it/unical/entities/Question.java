@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -56,6 +57,7 @@ public class Question implements Serializable
 	@ManyToMany
 	@JoinTable(name = "question_answer", joinColumns = { @JoinColumn(name = "idquestion") }, inverseJoinColumns = {
 			@JoinColumn(name = "idanswer") })
+	@OrderBy("id DESC")
 	private Set<Answer> answers = new LinkedHashSet<>();
 
 	public Question()
