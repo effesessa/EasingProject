@@ -37,6 +37,9 @@ public class SubmitAnswer implements Serializable {
 	@Column(name = "open_answer", nullable = true)
 	private String openAnswer;
 	
+	@Column(name = "points", nullable = false, columnDefinition = "TINYINT default 0")
+	private Integer points;
+	
 	public SubmitAnswer() {
 
 	}
@@ -79,6 +82,14 @@ public class SubmitAnswer implements Serializable {
 
 	public void setOpenAnswer(String openAnswer) {
 		this.openAnswer = openAnswer;
+	}
+
+	public Integer getPoints() {
+		return points;
+	}
+
+	public void setPoints(Integer points) {
+		this.points = points;
 	}
 	
 }

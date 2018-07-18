@@ -30,7 +30,7 @@ public class SubmitQuiz implements Serializable {
 	@JoinColumn(name = "idquiz")
 	private Quiz quiz;
 	
-	@Column(name = "total_score", nullable = true, columnDefinition = "TINYINT")
+	@Column(name = "total_score", nullable = false, columnDefinition = "TINYINT default 0")
 	private Integer totalScore;
 	
 	@Column(name = "open_score", nullable = true, columnDefinition = "TINYINT")
@@ -65,6 +65,30 @@ public class SubmitQuiz implements Serializable {
 
 	public void setQuiz(Quiz quiz) {
 		this.quiz = quiz;
+	}
+
+	public Integer getTotalScore() {
+		return totalScore;
+	}
+
+	public void setTotalScore(Integer totalScore) {
+		this.totalScore = totalScore;
+	}
+
+	public Integer getOpenScore() {
+		return openScore;
+	}
+
+	public void setOpenScore(Integer openScore) {
+		this.openScore = openScore;
+	}
+
+	public Integer getMultipleScore() {
+		return multipleScore;
+	}
+
+	public void setMultipleScore(Integer multipleScore) {
+		this.multipleScore = multipleScore;
 	}
 	
 }

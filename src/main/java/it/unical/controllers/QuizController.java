@@ -224,8 +224,7 @@ public class QuizController
 		final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
 		final Quiz quiz = quizDAO.get(submitQuizForm.getQuizID());
 		final Team team = teamDAO.getByName(submitQuizForm.getTeamName());
-		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
-		System.out.println("===============");
+		/*System.out.println("===============");
 		System.out.println("NOME QUIZ");
 		System.out.println(submitQuizForm.getQuizID() + " : " + quiz.getName());
 		System.out.println("TEAM");
@@ -233,13 +232,15 @@ public class QuizController
 		System.out.println("RISPOSTE");
 		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet())
 			System.out.println(entry.getKey() + "/" + entry.getValue());
-		System.out.println("===============");
+		System.out.println("==============="); */
 
 		final SubmitQuiz submitQuiz = new SubmitQuiz();
 		submitQuiz.setQuiz(quiz);
 		submitQuiz.setTeam(team);
 		submitQuizDAO.create(submitQuiz);
 		final Set<Question> questions = quiz.getQuestions();
+		
+		int multipleScore = 0;
 		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet())
 		{
 			Question findQuestion = null;
@@ -261,12 +262,18 @@ public class QuizController
 					if (answer.getId().equals(Integer.parseInt(entry.getValue())))
 					{
 						submitAnswer.setAnswer(answer);
+						if(answer.getId().equals(findQuestion.getCorrectAnswer().getId())) {
+							multipleScore+=findQuestion.getPoints();
+							submitAnswer.setPoints(findQuestion.getPoints());
+						}
 						break;
 					}
 			}
 			submitAnswerDAO.create(submitAnswer);
 		}
-		// TODO compute score
+		submitQuiz.setMultipleScore(multipleScore);
+		submitQuiz.setTotalScore(submitQuiz.getTotalScore() + multipleScore);
+		submitQuizDAO.update(submitQuiz);
 		return "redirect:/";
 	}
 }
