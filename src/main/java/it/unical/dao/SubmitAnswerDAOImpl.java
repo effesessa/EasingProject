@@ -1,5 +1,7 @@
 package it.unical.dao;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -47,24 +49,26 @@ public class SubmitAnswerDAOImpl implements SubmitAnswerDAO {
 		return submitAnswer;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public SubmitAnswer getBySubmitQuiz(Integer idSubmitQuiz) {
+	public List<SubmitAnswer> getBySubmitQuiz(Integer idSubmitQuiz) {
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from SubmitAnswer where idsubmitquiz = :idSubmitQuiz");
 		query.setParameter("idSubmitQuiz", idSubmitQuiz);
-		final SubmitAnswer submitAnswer = (SubmitAnswer) query.uniqueResult();
+		final List<SubmitAnswer> submitAnswers = query.list();
 		session.close();
-		return submitAnswer;
+		return submitAnswers;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public SubmitAnswer getBySubmitQuiz(SubmitQuiz submitQuiz) {
+	public List<SubmitAnswer> getBySubmitQuiz(SubmitQuiz submitQuiz) {
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from SubmitAnswer where idsubmitquiz = :idSubmitQuiz");
 		query.setParameter("idSubmitQuiz", submitQuiz.getId());
-		final SubmitAnswer submitAnswer = (SubmitAnswer) query.uniqueResult();
+		final List<SubmitAnswer> submitAnswers = query.list();
 		session.close();
-		return submitAnswer;
+		return submitAnswers;
 	}
 
 }

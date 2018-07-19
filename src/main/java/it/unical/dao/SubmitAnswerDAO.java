@@ -1,5 +1,7 @@
 package it.unical.dao;
 
+import java.util.List;
+
 import it.unical.entities.SubmitAnswer;
 import it.unical.entities.SubmitQuiz;
 
@@ -13,7 +15,7 @@ public interface SubmitAnswerDAO {
 	
 	SubmitAnswer get(Integer id);
 	
-	SubmitAnswer getBySubmitQuiz(Integer idSubmitQuiz);
+	List<SubmitAnswer> getBySubmitQuiz(Integer idSubmitQuiz);
 	
-	SubmitAnswer getBySubmitQuiz(SubmitQuiz submitQuiz);
+	List<SubmitAnswer> getBySubmitQuiz(SubmitQuiz submitQuiz);
 }

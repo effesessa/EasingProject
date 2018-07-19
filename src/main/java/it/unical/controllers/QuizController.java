@@ -1,6 +1,7 @@
 package it.unical.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Answer;
 import it.unical.entities.Contest;
+import it.unical.entities.Jury;
 import it.unical.entities.Question;
 import it.unical.entities.Question.Type;
 import it.unical.entities.Quiz;
@@ -224,15 +226,6 @@ public class QuizController
 		final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
 		final Quiz quiz = quizDAO.get(submitQuizForm.getQuizID());
 		final Team team = teamDAO.getByName(submitQuizForm.getTeamName());
-		/*System.out.println("===============");
-		System.out.println("NOME QUIZ");
-		System.out.println(submitQuizForm.getQuizID() + " : " + quiz.getName());
-		System.out.println("TEAM");
-		System.out.println(submitQuizForm.getTeamName());
-		System.out.println("RISPOSTE");
-		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet())
-			System.out.println(entry.getKey() + "/" + entry.getValue());
-		System.out.println("==============="); */
 
 		final SubmitQuiz submitQuiz = new SubmitQuiz();
 		submitQuiz.setQuiz(quiz);
@@ -276,4 +269,59 @@ public class QuizController
 		submitQuizDAO.update(submitQuiz);
 		return "redirect:/";
 	}
+	
+	@RequestMapping(value = "/getAllQuizSubmit", method = RequestMethod.GET)
+	public String getAllQuizSubmit(@RequestParam String idProfessor, final HttpSession session, final Model model) {
+		_setAccountAttribute(session, model);
+		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+		final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
+		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+		final SubmitQuizDAO submitQuizDAO = (SubmitQuizDAO) context.getBean("submitQuizDAO");
+		final SubmitAnswerDAO submitAnswerDAO = (SubmitAnswerDAO) context.getBean("submitAnswerDAO");
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+		
+		Map<Contest, List<Quiz>> contestQuizsMap = new HashMap<>();
+		Map<Quiz, List<SubmitQuiz>> quizSubmitQuizsMap = new HashMap<>();
+		Map<SubmitQuiz, List<SubmitAnswer>> submitQuizSubmitAnswersMap = new HashMap<>();
+		
+		if(user != null && user.isProfessor()) {
+			List<Contest> contests = contestDAO.getContestsByProfessor(Integer.parseInt(idProfessor));
+			for (Contest contest : contests) {
+				final Jury jury = contest.getJury();
+				if(jury.getProfessor().getId().equals(Integer.parseInt(idProfessor))) {
+					final List<Quiz> quizs = quizDAO.getAllQuizByContest(contest.getIdcontest());
+					contestQuizsMap.put(contest, quizs);
+					for (final Quiz quiz : quizs) {
+						final List<SubmitQuiz> submitQuizs = submitQuizDAO.getAllByQuiz(quiz);
+						quizSubmitQuizsMap.put(quiz, submitQuizs);
+						for (SubmitQuiz submitQuiz : submitQuizs) {
+							final List<SubmitAnswer> submitAnswers = submitAnswerDAO.getBySubmitQuiz(submitQuiz);
+							submitQuizSubmitAnswersMap.put(submitQuiz, submitAnswers);
+						}
+					}
+					
+				}
+			}
+		}
+		
+		model.addAttribute("contestQuizsMap", contestQuizsMap);
+		model.addAttribute("quizSubmitQuizsMap", quizSubmitQuizsMap);
+		model.addAttribute("submitQuizSubmitAnswersMap", submitQuizSubmitAnswersMap);
+		return "MyQuizs";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

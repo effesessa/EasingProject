@@ -1,5 +1,7 @@
 package it.unical.dao;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -68,5 +70,27 @@ public class SubmitQuizDAOImpl implements SubmitQuizDAO {
 		final SubmitQuiz submitQuiz = (SubmitQuiz) query.uniqueResult();
 		session.close();
 		return submitQuiz;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SubmitQuiz> getAllByQuiz(Integer idQuiz) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from SubmitQuiz where idquiz = :idQuiz");
+		query.setParameter("idQuiz", idQuiz);
+		final List<SubmitQuiz> submitQuizs =  query.list();
+		session.close();
+		return submitQuizs;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SubmitQuiz> getAllByQuiz(Quiz quiz) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from SubmitQuiz where idquiz = :idQuiz");
+		query.setParameter("idQuiz", quiz.getId());
+		final List<SubmitQuiz> submitQuizs =  query.list();
+		session.close();
+		return submitQuizs;
 	}
 }
