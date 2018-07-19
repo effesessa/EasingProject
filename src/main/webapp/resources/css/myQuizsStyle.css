@@ -1,0 +1,10 @@
+@charset "ISO-8859-1";
+.toRight
+{
+  float:right;
+}
+.toRight .btn
+{
+  margin-top: -5%;
+  margin-left: 10px;
+}

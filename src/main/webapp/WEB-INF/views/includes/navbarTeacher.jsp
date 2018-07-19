@@ -90,6 +90,9 @@
 					<li><a href="myProblems">
 							<i class="material-icons">view_list</i> <span>My Problems</span>
 					</a></li>
+					<li><a href="myQuizs">
+							<i class="material-icons">list</i> <span>My Quizs</span>
+					</a></li>
 					<hr />
 					<li><a href="logout"> <i class="fas fa-sign-out-alt"
 							style="font-size: 1.5em;"></i> <span
