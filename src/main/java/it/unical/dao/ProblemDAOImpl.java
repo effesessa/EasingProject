@@ -61,6 +61,7 @@ public class ProblemDAOImpl implements ProblemDAO {
 		return databaseHandler;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Problem> getProblemOfAContest(Integer contest) {
 		final Session session = databaseHandler.getSessionFactory().openSession();
@@ -95,15 +96,17 @@ public class ProblemDAOImpl implements ProblemDAO {
 		databaseHandler.update(problem);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Problem> getAllProblemsByLikeTagOrLikeName(String word) {
-		/*final Session session = databaseHandler.getSessionFactory().openSession();
-		final Query query = session.createQuery("from Problem where contest_idcontest = :contest");
-		query.setParameter("contest", contest);
+	public List<Problem> getAllProblemsByTagOrLikeName(String word) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		String hql = "from Problem P left join fetch P.tags T where P.name like :word OR T.value = :value group by P.id";
+		final Query query = session.createQuery(hql);
+		query.setParameter("value", word);
+		query.setParameter("word", "%" + word + "%");
 		final List<Problem> problems = query.list();
 		session.close();
-		return problems;*/
-		return null;
+		return problems;
 	}
 
 }

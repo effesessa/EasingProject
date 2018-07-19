@@ -22,5 +22,5 @@ public interface ProblemDAO {
 
 	void update(Problem problem);
 	
-	List<Problem> getAllProblemsByLikeTagOrLikeName(String word);
+	List<Problem> getAllProblemsByTagOrLikeName(String word);
 }

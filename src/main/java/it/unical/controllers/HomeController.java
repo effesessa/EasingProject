@@ -1,9 +1,7 @@
 package it.unical.controllers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -266,52 +264,18 @@ public class HomeController
 
 		return "searchResults";
 	}
-
-	// Migliorare, così trova solo con il nome completo
+	
 	@RequestMapping(value = "/searchProblem", method = RequestMethod.POST)
-	public String searchProblem(@ModelAttribute SearchForm form, HttpSession session, Model model)
-	{
-		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		final List<Problem> problems = problemDAO.getByName(form.getWord());
-		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-		List<Submit> submit;
-		final Map<String, List<Submit>> submits = new HashMap<>();
-		
-		for (int i = 0; i < problems.size(); i++)
-		{
-			submit = submitDAO.getAllSubmitByProblem(problems.get(i).getId_problem());
-			for (final Submit s : submit)
-				logger.info(s.getInfo());
-			final Contest contest = contestDAO.get(problems.get(i).getId_contest().getIdcontest());
-			submits.put(contest.getName(), submit);
-			System.out.println(submit.size());
-		}
+	public String searchProblem(@ModelAttribute SearchForm form, HttpSession session, Model model) {
 		setAccountAttribute(session, model);
-		model.addAttribute("submits", submits);
-		model.addAttribute("word", form.getWord());
-		// for (Iterator it = submits.keySet().iterator(); it.hasNext();)
-		// {
-		// Submit submit2 = (Submit) it.next();
-		//
-		// }
-		System.out.println(submits.size());
-		for (final String s : submits.keySet())
-		{
-			logger.info("ENTRATO");
-			final List<Submit> ls = submits.get(s);
-			System.out.println(ls.size());
-			for (final Submit s2 : ls)
-				logger.info(s2.getInfo());
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final List<Problem> problems = problemDAO.getAllProblemsByTagOrLikeName(form.getWord());
+		System.out.println("word:" + form.getWord());
+		System.out.println("getAllProblemsByLikeTagOrLikeName:" +  problems.size());
+		for (Problem problem : problems) {
+			System.out.println(problem.getName());
 		}
-		System.out.println("=========");
-		for (final Map.Entry<String, List<Submit>> entry : submits.entrySet())
-		{
-			System.out.println(entry.getKey() + "/" + entry.getValue().toString());
-			for (final Submit s : entry.getValue())
-				System.out.println(s.getInfo());
-		}
-
+		model.addAttribute("problems", problems);
 		return "submitResults";
 	}
 
