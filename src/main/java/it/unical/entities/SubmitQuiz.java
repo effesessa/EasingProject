@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "submit_quiz")
 public class SubmitQuiz implements Serializable {
@@ -38,6 +40,10 @@ public class SubmitQuiz implements Serializable {
 	
 	@Column(name = "multiple_score", nullable = true, columnDefinition = "TINYINT")
 	private Integer multipleScore;
+	
+	@Column(name = "correction", nullable = false, columnDefinition = "TINYINT")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
+	private boolean correction;
 	
 	public SubmitQuiz() {
 
@@ -89,6 +95,14 @@ public class SubmitQuiz implements Serializable {
 
 	public void setMultipleScore(Integer multipleScore) {
 		this.multipleScore = multipleScore;
+	}
+
+	public boolean isCorrection() {
+		return correction;
+	}
+
+	public void setCorrection(boolean correction) {
+		this.correction = correction;
 	}
 	
 }

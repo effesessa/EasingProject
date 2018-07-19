@@ -93,4 +93,15 @@ public class SubmitQuizDAOImpl implements SubmitQuizDAO {
 		session.close();
 		return submitQuizs;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SubmitQuiz> getAllToBeCorrectionByQuiz(Quiz quiz) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from SubmitQuiz where idquiz = :idQuiz and correction = true");
+		query.setParameter("idQuiz", quiz.getId());
+		final List<SubmitQuiz> submitQuizs =  query.list();
+		session.close();
+		return submitQuizs;
+	}
 }

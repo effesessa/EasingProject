@@ -231,10 +231,10 @@ public class HomeController
 		final List<Subject> subjects = subjectDAO.getAll();
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final List<Contest> contests = contestDAO.getAll();
-		final List<User> result = new ArrayList<User>();
-		final List<Subject> result2 = new ArrayList<Subject>();
-		final List<Contest> result3 = new ArrayList<Contest>();
-		final List<Team> result4 = new ArrayList<Team>();
+		final List<User> result = new ArrayList<>();
+		final List<Subject> result2 = new ArrayList<>();
+		final List<Contest> result3 = new ArrayList<>();
+		final List<Team> result4 = new ArrayList<>();
 		final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
 		final List<Membership> memberships = membershipDAO
 				.getTeamByStudent(SessionUtils.getUserIdFromSessionOrNull(session));
@@ -272,19 +272,18 @@ public class HomeController
 	public String searchProblem(@ModelAttribute SearchForm form, HttpSession session, Model model)
 	{
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-		Contest contest;
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 		final List<Problem> problems = problemDAO.getByName(form.getWord());
 		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
 		List<Submit> submit;
-		final Map<String, List<Submit>> submits = new HashMap<String, List<Submit>>();
-
+		final Map<String, List<Submit>> submits = new HashMap<>();
+		
 		for (int i = 0; i < problems.size(); i++)
 		{
 			submit = submitDAO.getAllSubmitByProblem(problems.get(i).getId_problem());
 			for (final Submit s : submit)
 				logger.info(s.getInfo());
-			contest = contestDAO.get(problems.get(i).getId_contest().getIdcontest());
+			final Contest contest = contestDAO.get(problems.get(i).getId_contest().getIdcontest());
 			submits.put(contest.getName(), submit);
 			System.out.println(submit.size());
 		}

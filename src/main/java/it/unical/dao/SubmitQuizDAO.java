@@ -23,5 +23,6 @@ public interface SubmitQuizDAO {
 	List<SubmitQuiz> getAllByQuiz(Integer idQuiz);
 	
 	List<SubmitQuiz> getAllByQuiz(Quiz quiz);
-	
+
+	List<SubmitQuiz> getAllToBeCorrectionByQuiz(Quiz quiz);
 }
