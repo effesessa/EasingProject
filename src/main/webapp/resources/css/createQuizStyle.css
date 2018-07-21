@@ -25,17 +25,17 @@ h2
 	padding-left: 5em;
 }
 
-i.delQuestionBtn
+i.delQuestionBtn, i.delArgumentBtn
 {
  	color: red;
 }
 
-#newQuestionBtn
+#newQuestionBtn, #generate_newArg
 {
 	color: green;
 }
 
-i.delQuestionBtn:hover, #newQuestionBtn
+i.delQuestionBtn:hover, #newQuestionBtn, i.delArgumentBtn:hover, #generate_newArg
 {
  	cursor: pointer;
 }
@@ -58,6 +58,37 @@ i.delQuestionBtn:hover, #newQuestionBtn
 #createQuizBtn
 {
 	margin-bottom: 2%;
+}
+
+#generateQuizBtn
+{
+	float:right;
+}
+
+.delArgumentBtn
+{
+	margin-top: 1.7em;
+}
+
+.questionArgument .row .col-md-2 .form-group
+{
+	text-align: center;
+}
+
+.questionArgument .row .col-md-1
+{
+	width: 0;
+}
+
+#generate_form > .form-control-static
+{
+	font-weight: bold;
+}
+
+#totalArgsNumber
+{
+	margin-left: 4.5%;
+	margin-top: -3%;
 }
 
 @media only screen and (max-width: 700px)

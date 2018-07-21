@@ -3,7 +3,7 @@
  */
 
 var lastQuestionID = 1;
-
+var tagsnames = "";
 var newAnswer = '<div class="answer" id="q1a1"> \
 					<div class="row">\
 						<div class="form-check col-md-1"> \
@@ -24,23 +24,8 @@ var newAnswer = '<div class="answer" id="q1a1"> \
 
 function init()
 {
-	$("#question1 .questionTags input").tagsinput({
-//		typeaheadjs: [{
-//			minLength: 1,
-//			highlight: true,
-//		},{
-//			minlength: 1,
-//			name: 'tagsnames',
-//			displayKey: 'name',
-//			valueKey: 'name',
-//			source: tagsnames.ttAdapter()
-//		}],
-		freeInput: true,
-		confirmKeys: [13, 44, 32],
-		trimValue: true
-	});
-	
 	$('#newQuestionBtn').click(addQuestion);
+	$('#generate_newArg').click(gen_addArg);
 	
 	$.ajax(
 	{
@@ -56,6 +41,64 @@ function init()
 			})
 			$('#nQuiz_contest').append(contests);
 		}
+	});
+	
+	$.ajax(
+	{
+		type : "GET", url : "quiz?req=tags", datatype : "json",
+		success : function(data)
+		{
+			data = $.parseJSON(data);
+			var tags = [];
+			$.each(data, function(key, val)
+			{
+				tags.push(val);
+			})
+			
+			tagsnames = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				local: $.map(tags, function (tag) {
+					return {
+						name: tag
+					};
+				})
+			});
+			tagsnames.initialize();
+			
+			$("#question1 .questionTags input").tagsinput({
+				typeaheadjs: [{
+					minLength: 1,
+					highlight: true,
+				},{
+					minlength: 1,
+					name: 'tagsnames',
+					displayKey: 'name',
+					valueKey: 'name',
+					source: tagsnames.ttAdapter()
+				}],
+				freeInput: true,
+				confirmKeys: [13, 44, 32],
+				trimValue: true
+			});
+		}
+	});
+	
+	$("#generate_arg1").tagsinput({
+//		typeaheadjs: [{
+//			minLength: 1,
+//			highlight: true,
+//		},{
+//			minlength: 1,
+//			name: 'tagsnames',
+//			displayKey: 'name',
+//			valueKey: 'name',
+//			source: tagsnames.ttAdapter()
+//		}],
+		freeInput: true,
+		confirmKeys: [13, 44, 32],
+		trimValue: true,
+		maxTags: 1
 	});
 	
 	$('#quizForm').submit(function(e)
@@ -182,6 +225,56 @@ function init()
 //	});
 }
 
+function gen_addArg()
+{
+	// Clone Argument HTML
+	var newArg = $('.questionArgument:first').clone();
+	// Get last Argument ID
+	var lastArg = $(".questionArgument").last();
+	var lastArgID = lastArg.find("input").last().attr("id");
+	lastArgID = parseInt(lastArgID.replace("generate_arg",""));
+	lastArgID++;
+	
+	newArg.insertBefore($("#generateModal").find(".form-control-static").first().prev());
+	lastArg = $(".questionArgument").last();
+	
+	// Set IDs and Values for new Argument
+	lastArg.find("label").first().attr("for","generate_nArg"+lastArgID);
+	lastArg.find("input").first().attr("id","generate_nArg"+lastArgID);
+	lastArg.find("#generate_nArg"+lastArgID).val("1");
+
+	lastArg.find("label").last().attr("for","generate_arg"+lastArgID);
+	lastArg.find("input").last().attr("id","generate_arg"+lastArgID);
+	lastArg.find("#generate_arg"+lastArgID).val("");
+	
+	lastArg.find(".bootstrap-tagsinput").remove();
+	lastArg.find("#generate_arg"+lastArgID).css('display', '');
+	// Add Typeahead for Tags in new Question
+	$("#generate_arg"+lastArgID).tagsinput({
+//		typeaheadjs: [{
+//			minLength: 1,
+//			highlight: true,
+//		},{
+//			minlength: 1,
+//			name: 'tagsnames',
+//			displayKey: 'name',
+//			valueKey: 'name',
+//			source: tagsnames.ttAdapter()
+//		}],
+		freeInput: true,
+		confirmKeys: [13, 44, 32],
+		trimValue: true,
+		maxTags: 1
+	});
+	
+	// Add Delete button to the new Argument
+	$("#generate_arg"+lastArgID).closest(".row").prepend('<div class="col-md-1"><i class="material-icons md-18 delArgumentBtn">remove</i></div>');
+//	$('<i class="material-icons md-24 delArgumentBtn">remove</i>').insertBefore()
+	
+	// Calculate new Total
+	gen_CalculateTotalQuestions();
+}
+
 function addQuestion()
 {
 	var isFirstQuestionClosed = $("#question1_closed").prop("checked");
@@ -240,17 +333,18 @@ function addQuestion()
 		$("#question1_open").prop("checked", true);
 	}
 	
-	$("#question"+lastQuestionID+' .questionTags input').tagsinput({
-//		typeaheadjs: [{
-//			minLength: 1,
-//			highlight: true,
-//		},{
-//			minlength: 1,
-//			name: 'tagsnames',
-//			displayKey: 'name',
-//			valueKey: 'name',
-//			source: tagsnames.ttAdapter()
-//		}],
+	// Add Typeahead for Tags in new Question
+	$("#question"+lastQuestionID+" .questionTags input").tagsinput({
+		typeaheadjs: [{
+			minLength: 1,
+			highlight: true,
+		},{
+			minlength: 1,
+			name: 'tagsnames',
+			displayKey: 'name',
+			valueKey: 'name',
+			source: tagsnames.ttAdapter()
+		}],
 		freeInput: true,
 		confirmKeys: [13, 44, 32],
 		trimValue: true
@@ -258,6 +352,12 @@ function addQuestion()
 	
 	// Add Delete button to the new Question
 	$("#question"+lastQuestionID).prepend('<i class="material-icons md-36 delQuestionBtn">remove</i>');
+}
+
+function removeArgument()
+{
+	$(this).closest('.questionArgument').remove();
+	gen_CalculateTotalQuestions();
 }
 
 function removeQuestion()
@@ -316,7 +416,19 @@ function setCorrectValue()
 	$(this).attr("value","correct");
 }
 
+function gen_CalculateTotalQuestions()
+{
+	var total = 0;
+    $(".questionArgument").find(".nArgs").each(function(idx, val)
+	{
+    	total += parseInt($(this).val());
+	});
+    $("#totalArgsNumber").html(total);
+}
+
 $(document).ready(init);
+$(document).on('click','i.delArgumentBtn',removeArgument);
 $(document).on('click','i.delQuestionBtn',removeQuestion);
 $(document).on('change','input.questionType',toggleForm);
 $(document).on('change','input.correctAnswer',setCorrectValue);
+$(document).on('change','input.nArgs',gen_CalculateTotalQuestions);

@@ -21,8 +21,9 @@
 					<div class="header">
 						<h2>Create Quiz</h2>
 					</div>
-					<form:form id="quizForm" class="form-horizontal" action="addQuizFake" method="post" modelAttribute="addQuizForm">
+					<form:form id="quizForm" class="form-horizontal" action="addQuiz" method="post" modelAttribute="addQuizForm">
 						<input type="hidden" id="quizPoints" name="quizPoints" />
+						<a id="generateQuizBtn" type="button" class="btn btn-default btn-sm" href="#" data-toggle="modal" data-target="#generateModal">Generate Quiz</a><br><br>
 						<div class="border">
 							<div class="form-group">
 								<label for="nQuiz_contest">Contest Name</label>
@@ -102,6 +103,51 @@
 			</div>
 		</div>
 	</section>
+	
+	
+	<div id="generateModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title">Generate Quiz</h3>
+				</div>
+				<form:form id="generate_form" action="" method="post">
+			    	<label>How many Questions?</label>
+				  	<div class="questionArgument">
+					  	<div class="row">
+							<div class="col-md-2">
+								<div class="form-group">
+							    	<label for="generate_nArg1">#</label>
+									<div class="input-group">
+										<input class="form-control nArgs" id="generate_nArg1" name="generate_nArg" type="number" min=1 step=1 value="1" required />
+									</div>
+							  	</div>
+							</div>
+							<div class="col-md-7">
+								<div class="form-group">
+									<label for="generate_arg1">Tag</label>
+									<div class="input-group">
+										<span class="input-group-addon">
+											<i class="glyphicon glyphicon-tags"></i>
+										</span>
+										<input type="text" class="form-control" name="generate_arg" id="generate_arg1" placeholder="Insert one Tag" required autofocus>
+									</div>
+								</div>
+							</div>
+						</div>
+				  	</div>
+				  	<hr/>
+				  	<p class="form-control-static">TOTALE</p>
+				  	<p id="totalArgsNumber" class="form-control-static">1</p><br>
+					<i id="generate_newArg" class="material-icons md-24">add</i><br>
+					<div class="modal-footer">
+						<input type="submit" class="btn btn-primary button-login" value="Generate Quiz" />
+					</div>
+				</form:form>
+			</div>
+		</div>
+	</div>
 	
 	<!-- Waves Effect Plugin Js -->
 	<script src="resources/plugins/node-waves/waves.js"></script>

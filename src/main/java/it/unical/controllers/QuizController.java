@@ -1,5 +1,6 @@
 package it.unical.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,12 +24,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.unical.dao.AnswerDAO;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.QuestionDAO;
 import it.unical.dao.QuizDAO;
 import it.unical.dao.SubmitAnswerDAO;
 import it.unical.dao.SubmitQuizDAO;
+import it.unical.dao.TagDAO;
 import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Answer;
@@ -168,6 +172,29 @@ public class QuizController
 		for (final Map.Entry<String, String> entry : quiz.getQuestions_tags().entrySet())
 			System.out.println(entry.getKey() + "/" + entry.getValue());
 		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/quiz", method = RequestMethod.GET)
+	public void ajaxRequest(@RequestParam String req, HttpSession session, Model model, HttpServletResponse response)
+	{
+		response.setContentType("text/html; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		final ObjectMapper mapper = new ObjectMapper();
+		final int userID = SessionUtils.getUserIdFromSessionOrNull(session);
+		if (SessionUtils.isLoggedIn(session) && req.equals("tags"))
+		{
+			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			final List<String> tags = tagDAO.getAllTagValues();
+			try
+			{
+				mapper.writeValue(response.getOutputStream(), tags);
+			}
+			catch (final IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@RequestMapping(value = "/createQuiz", method = RequestMethod.GET)
