@@ -27,8 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unical.dao.AnswerDAO;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.QuestionDAO;
+import it.unical.dao.QuestionTagDAO;
 import it.unical.dao.QuizDAO;
-import it.unical.dao.QuizTagDAO;
 import it.unical.dao.SubmitAnswerDAO;
 import it.unical.dao.SubmitQuizDAO;
 import it.unical.dao.TeamDAO;
@@ -38,8 +38,8 @@ import it.unical.entities.Contest;
 import it.unical.entities.Jury;
 import it.unical.entities.Question;
 import it.unical.entities.Question.Type;
+import it.unical.entities.QuestionTag;
 import it.unical.entities.Quiz;
-import it.unical.entities.QuizTag;
 import it.unical.entities.SubmitAnswer;
 import it.unical.entities.SubmitQuiz;
 import it.unical.entities.Team;
@@ -69,6 +69,8 @@ public class QuizController
 		else
 			model.addAttribute("typeSession", "Login");
 	}
+	
+	
 
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
 	public String addQuiz(final HttpSession session, @ModelAttribute AddQuizForm addQuizForm, final Model model,
@@ -80,7 +82,7 @@ public class QuizController
 		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
 		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
 		final Contest contest = contestDAO.getContestByName(addQuizForm.getContestName());
-		final QuizTagDAO quizTagDAO = (QuizTagDAO) context.getBean("quizTagDAO");
+		final QuestionTagDAO questionTagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
 
 		// create quiz
 		final Quiz quiz = new Quiz();
@@ -136,12 +138,14 @@ public class QuizController
 			if (addQuizForm.getQuestions_tags().containsKey(questionKey))
 			{
 				final String tagsToSplitted = addQuizForm.getQuestions_tags().get(questionKey);
-				for (final String quizTagValue : tagsToSplitted.split(","))
+				for (final String questionTagValue : tagsToSplitted.split(","))
 				{
-					final QuizTag quizTag = new QuizTag();
-					quizTag.setQuiz(quiz);
-					quizTag.setValue(quizTagValue);
-					quizTagDAO.create(quizTag);
+					if(questionTagValue.equals(""))
+						continue;
+					final QuestionTag quizTag = new QuestionTag();
+					quizTag.setQuestion(question);
+					quizTag.setValue(questionTagValue);
+					questionTagDAO.create(quizTag);
 				}
 			}
 			i++;
@@ -185,7 +189,7 @@ public class QuizController
 		final int userID = SessionUtils.getUserIdFromSessionOrNull(session);
 		if (SessionUtils.isLoggedIn(session) && req.equals("tags"))
 		{
-			final QuizTagDAO tagDAO = (QuizTagDAO) context.getBean("quizTagDAO");
+			final QuestionTagDAO tagDAO = (QuestionTagDAO) context.getBean("quizTagDAO");
 			final List<String> tags = tagDAO.getAllTagValues();
 			try
 			{

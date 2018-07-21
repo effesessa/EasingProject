@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+
 import it.unical.entities.Question;
 
 public class QuestionDAOImpl implements QuestionDAO {
@@ -57,6 +58,14 @@ public class QuestionDAOImpl implements QuestionDAO {
 		final List<Question> questions = query.list();
 		session.close();
 		return questions;
+	}
+	
+	public List<Question> getRandomQuestions(String tagValue, Integer limit) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		String hql = "from Question Q group by Q.text order by rand()";
+		final Query query = session.createQuery(hql);
+		query.setMaxResults(limit);
+		return null;
 	}
 
 }

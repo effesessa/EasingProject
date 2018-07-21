@@ -10,21 +10,21 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity 
-@Table(name = "quiz_tag")
-public class QuizTag {
+@Table(name = "question_tag")
+public class QuestionTag {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@Column(name = "id")
 	private Integer id;
 	
 	@ManyToOne 
-	@JoinColumn(name = "quiz")
-	private Quiz quiz;
+	@JoinColumn(name = "question")
+	private Question question;
 	
 	@Column(name = "value")
 	private String value;
 
-	public QuizTag() {
+	public QuestionTag() {
 		
 	}
 
@@ -44,12 +44,11 @@ public class QuizTag {
 		this.value = value;
 	}
 
-	public Quiz getQuiz() {
-		return quiz;
+	public Question getQuestion() {
+		return question;
 	}
 
-	public void setQuiz(Quiz quiz) {
-		this.quiz = quiz;
+	public void setQuestion(Question question) {
+		this.question = question;
 	}
-	
 }
