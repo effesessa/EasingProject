@@ -15,4 +15,6 @@ public interface QuestionDAO {
 	Question get(Integer id);
 	
 	List<Question> getQuestionsByQuiz(Integer idQuiz);
+
+	List<Question> getRandomQuestions(String tagValue, Integer limit);
 }

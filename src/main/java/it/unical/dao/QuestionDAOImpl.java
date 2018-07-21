@@ -60,12 +60,28 @@ public class QuestionDAOImpl implements QuestionDAO {
 		return questions;
 	}
 	
+	/*
+	 *  funzionante su mysql 
+	 *  select q.*
+		from question q, question_tag qt
+		where q.id = qt.question and qt.value = 'java'
+		group by q.text
+		order by rand()
+		limit 4;
+		
+		da provare con hibernate hql
+	 * */
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<Question> getRandomQuestions(String tagValue, Integer limit) {
 		final Session session = databaseHandler.getSessionFactory().openSession();
-		String hql = "from Question Q group by Q.text order by rand()";
-		final Query query = session.createQuery(hql);
+		//String hql = "select Q from Question Q left join fetch Q.tags where and Q.tags.value = :tagValue group by Q.text order by rand()";
+		final Query query = session.createQuery("");
+		query.setParameter("tagValue", tagValue);
 		query.setMaxResults(limit);
-		return null;
+		List<Question> questions = query.list();
+		session.close();
+		return questions;
 	}
 
 }

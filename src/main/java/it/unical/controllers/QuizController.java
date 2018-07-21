@@ -138,15 +138,19 @@ public class QuizController
 			if (addQuizForm.getQuestions_tags().containsKey(questionKey))
 			{
 				final String tagsToSplitted = addQuizForm.getQuestions_tags().get(questionKey);
+				final Set<QuestionTag> tags = new LinkedHashSet<>();
 				for (final String questionTagValue : tagsToSplitted.split(","))
 				{
 					if(questionTagValue.equals(""))
 						continue;
-					final QuestionTag quizTag = new QuestionTag();
-					quizTag.setQuestion(question);
-					quizTag.setValue(questionTagValue);
-					questionTagDAO.create(quizTag);
+					final QuestionTag questionTag = new QuestionTag();
+					questionTag.setQuestion(question);
+					questionTag.setValue(questionTagValue);
+					questionTagDAO.create(questionTag);
+					tags.add(questionTag);
 				}
+				question.setTags(tags);
+				questionDAO.update(question);
 			}
 			i++;
 		}
@@ -189,7 +193,7 @@ public class QuizController
 		final int userID = SessionUtils.getUserIdFromSessionOrNull(session);
 		if (SessionUtils.isLoggedIn(session) && req.equals("tags"))
 		{
-			final QuestionTagDAO tagDAO = (QuestionTagDAO) context.getBean("quizTagDAO");
+			final QuestionTagDAO tagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
 			final List<String> tags = tagDAO.getAllTagValues();
 			try
 			{
@@ -219,6 +223,14 @@ public class QuizController
 	public String getAllQuizs(final HttpSession session, final Model model)
 	{
 		_setAccountAttribute(session, model);
+		
+		System.out.println("*****************************");
+		QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
+		List<Question> questions = questionDAO.getRandomQuestions("java", 3);
+		for (Question question : questions) {
+			System.out.println(question.getText());
+		}
+		System.out.println("*****************************");
 		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
