@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,15 +50,15 @@ import it.unical.core.strategy.TypeContext;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.MembershipDAO;
 import it.unical.dao.ProblemDAO;
+import it.unical.dao.ProblemTagDAO;
 import it.unical.dao.SubmitDAO;
-import it.unical.dao.TagDAO;
 import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Contest;
 import it.unical.entities.Membership;
 import it.unical.entities.Problem;
+import it.unical.entities.ProblemTag;
 import it.unical.entities.Submit;
-import it.unical.entities.Tag;
 import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.AddProblemForm;
@@ -79,12 +78,12 @@ public class ProblemController
 	@Autowired
 	private WebApplicationContext context;
 
-	private void _addTags(AddProblemForm problemForm, final Problem problem, final TagDAO tagDAO)
+	private void _addTags(AddProblemForm problemForm, final Problem problem, final ProblemTagDAO tagDAO)
 	{
 		final String[] tags = problemForm.getProblemTags().split(",");
 		for (final String tag : tags)
 		{
-			final Tag t = new Tag();
+			final ProblemTag t = new ProblemTag();
 			t.setProblem(problem);
 			t.setValue(tag);
 			tagDAO.create(t);
@@ -241,7 +240,7 @@ public class ProblemController
 			problem.setJury(contest.getJury());
 			problemDAO.create(problem);
 
-			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			final ProblemTagDAO tagDAO = (ProblemTagDAO) context.getBean("problemTagDAO");
 			_addTags(problemForm, problem, tagDAO);
 		}
 		else
@@ -294,7 +293,7 @@ public class ProblemController
 		}
 		else if (SessionUtils.isLoggedIn(session) && req.equals("tags"))
 		{
-			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			final ProblemTagDAO tagDAO = (ProblemTagDAO) context.getBean("problemTagDAO");
 			final List<String> tags = tagDAO.getAllTagValues();
 			try
 			{
@@ -308,7 +307,7 @@ public class ProblemController
 		}
 		else if (SessionUtils.isLoggedIn(session) && req.equals("popularTags"))
 		{
-			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			final ProblemTagDAO tagDAO = (ProblemTagDAO) context.getBean("problemTagDAO");
 			final List<String> tags = tagDAO.getMostPopularTags();
 			try
 			{
@@ -418,7 +417,7 @@ public class ProblemController
 
 					problemDAO.update(problem);
 
-					final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+					final ProblemTagDAO tagDAO = (ProblemTagDAO) context.getBean("problemTagDAO");
 					tagDAO.deleteAllTagsByProblem(problem.getId_problem());
 					_addTags(problemForm, problem, tagDAO);
 				}
@@ -433,11 +432,11 @@ public class ProblemController
 				problem.setTags(null);
 				// TODO Effettuare controlli (es. Evitare più Problemi con lo
 				// stesso Nome in un Contest)
-				final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+				final ProblemTagDAO tagDAO = (ProblemTagDAO) context.getBean("problemTagDAO");
 				problemDAO.create(problem);
 
-				final List<Tag> problemTags = tagDAO.getAllTagsByProblem(Integer.parseInt(id));
-				for (final Tag tag : problemTags)
+				final List<ProblemTag> problemTags = tagDAO.getAllTagsByProblem(Integer.parseInt(id));
+				for (final ProblemTag tag : problemTags)
 				{
 					tag.setProblem(problem);
 					tagDAO.create(tag);
