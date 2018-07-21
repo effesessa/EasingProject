@@ -122,11 +122,12 @@ public class QuizController
 					if (!answerDAO.exists(textAnswer))
 						answerDAO.create(answer);
 					else
-					{
 						answer = answerDAO.getByText(textAnswer);
-						question.setCorrectAnswer(answer);
-					}
 					answers.add(answer);
+				}
+				if(addQuizForm.getCorrectAnswers().containsKey(questionKey)) {
+					final Answer correctAnswer = answerDAO.getByText(addQuizForm.getCorrectAnswers().get(questionKey));
+					question.setCorrectAnswer(correctAnswer);
 				}
 				question.setAnswers(answers);
 				questionDAO.update(question);

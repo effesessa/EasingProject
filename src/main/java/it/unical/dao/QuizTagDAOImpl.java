@@ -31,6 +31,14 @@ private static final int POPULAR_TAGS = 5;
 	public void update(QuizTag quizTag) {
 		databaseHandler.update(quizTag);
 	}
+	
+	public void setDatabaseHandler(DatabaseHandler databaseHandler) {
+		this.databaseHandler = databaseHandler;
+	}
+	
+	public DatabaseHandler getDatabaseHandler() {
+		return databaseHandler;
+	}
 
 	@Override
 	public void deleteAllTagsByQuiz(Integer idQuiz) {
@@ -94,5 +102,4 @@ private static final int POPULAR_TAGS = 5;
 		session.close();
 		return quizTags;
 	}
-	
 }

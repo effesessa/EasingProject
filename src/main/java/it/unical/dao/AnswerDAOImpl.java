@@ -71,7 +71,7 @@ public class AnswerDAOImpl implements AnswerDAO
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from Answer where text = :text");
 		query.setParameter("text", text);
-		final Answer answer = (Answer) query.uniqueResult();
+		Answer answer = (Answer) query.uniqueResult();
 		session.close();
 		return answer;
 	}
