@@ -4,17 +4,6 @@
 
 var lastQuestionID = 1;
 
-var answer = '<div class="answer" id="q1a1"> \
-				<div class="form-group"> \
-					<label for=""></label> \
-					<div class="input-group"> \
-						<span class="input-group-addon"> \
-							<i class="glyphicon glyphicon-chevron-right"></i> \
-						</span> \
-						<input type="text" class="form-control input-sm" name="answer" id="" placeholder="Inserisci la risposta" required> \
-					</div> \
-				</div> \
-			</div>';
 var newAnswer = '<div class="answer" id="q1a1"> \
 					<div class="row">\
 						<div class="form-check col-md-1"> \
@@ -27,7 +16,7 @@ var newAnswer = '<div class="answer" id="q1a1"> \
 								<span class="input-group-addon"> \
 									<i class="glyphicon glyphicon-chevron-right"></i> \
 								</span> \
-								<input type="text" class="form-control input-sm" name="answer" id="" placeholder="Inserisci la risposta" required> \
+								<input type="text" class="form-control input-sm" name="" id="" placeholder="Insert answer" required> \
 							</div> \
 						</div> \
 					</div> \
@@ -35,8 +24,22 @@ var newAnswer = '<div class="answer" id="q1a1"> \
 
 function init()
 {
-//	$('input[name="question1_type"]').on('change', toggleForm);
-
+	$("#question1 .questionTags input").tagsinput({
+//		typeaheadjs: [{
+//			minLength: 1,
+//			highlight: true,
+//		},{
+//			minlength: 1,
+//			name: 'tagsnames',
+//			displayKey: 'name',
+//			valueKey: 'name',
+//			source: tagsnames.ttAdapter()
+//		}],
+		freeInput: true,
+		confirmKeys: [13, 44, 32],
+		trimValue: true
+	});
+	
 	$('#newQuestionBtn').click(addQuestion);
 	
 	$.ajax(
@@ -58,105 +61,125 @@ function init()
 	$('#quizForm').submit(function(e)
 	{
 	    e.preventDefault();
-	    
-	    // Manage input data to send
+	
 	    var quiz = $(".quizQuestions");
-	    
-	    var contestId = $("#nQuiz_contest").val();
-	    var quizName = $("#nQuiz_name").val();
-	    var questions = [];
-	    var points = [];
-	    var types = [];
-	    var correctAnswers = [];
-	    var questions_answers = {};
+	    quiz.find(".answer").each(function(idx, val)
+		{
+	    	var answer = $(this).find("input").last().val();
+	    	$(this).find("input").first().val(answer);
+		});
 	    var quizPoints = 0;
-	    quiz.find(".questionName").each(function(idx, val)
-	    {
-    	   questions.push($(this).val());
-    	});
 	    quiz.find(".questionPoints").each(function(idx, val)
 		{
-	    	points.push($(this).val());
 	    	quizPoints += parseInt($(this).val());
 		});
-	    quiz.find(".questionType[value='open']").each(function(idx, val)
-		{
-	    	if($(this).prop("checked"))
-	    	{
-	    		types.push("open");
-	    		correctAnswers.push("");
-	    	}
-	    	else
-	    	{
-	    		types.push("closed");
-	    		var correctAnswerID = $("#"+val.id).closest(".quizQuestion").find(".correctAnswer[value='correct']").attr("id");
-	    		correctAnswerID = correctAnswerID.replace("_correct","");
-	    		correctAnswers.push($("#"+correctAnswerID).val());
-	    		
-	    		var currentQuestion = $("#"+val.id).closest(".quizQuestion");
-	    		var questionName = currentQuestion.find(".questionName").val();
-	    		var currentQuestion_answers = [];
-	    		currentQuestion.find(".correctAnswer").each(function(idx, val)
-			    {
-		    	   currentQuestion_answers.push($(this).closest(".answer").find("input").last().val());
-		    	});
-	    		questions_answers[questionName] = currentQuestion_answers;
-	    		
-	    	}
-		});
-	    console.log("==============================");
-	    console.log("ID CONTEST");
-	    console.log(contestId);
-	    console.log("NOME QUIZ");
-	    console.log(quizName);
-	    console.log("PUNTI TOTALI");
-	    console.log(quizPoints);
-	    console.log("DOMANDE");
-	    console.log(questions);
-	    console.log("PUNTI");
-	    console.log(points);
-	    console.log("TIPOLOGIA");
-	    console.log(types);
-	    console.log("RISPOSTA CORRETTA");
-	    console.log(correctAnswers);
-	    console.log("RISPOSTE");
-	    for (var i in questions_answers) {
-	        console.log(questions_answers[i]);
-	    }
-	    console.log("==============================");
-	    
-	    // Create Quiz DTO
-	    var quiz =
-    	{
-	    	"contestName" : contestId,
-	    	"quizName" : quizName,
-	    	"quizPoints" : quizPoints,
-	    	"questions" : questions,
-	    	"types" : types,
-	    	"points" : points,
-	    	"correctAnswers" : correctAnswers,
-	    	"questions_answers": questions_answers
-    	}
-	    
-	    // Disable Submit button until Ajax call callback
-	    $("#createQuizBtn").prop("disabled", true);
-	    $.ajax(
-	    {
-	        type: "POST",
-	        contentType : 'application/json; charset=utf-8',
-	        url: "addQuiz",
-	        data: JSON.stringify(quiz),
-	        success :function(result)
-	        {
-	        	window.location.replace("/");
-	        	$("#createQuizBtn").prop("disabled", false);
-	        }
-	    }).fail(function(jqXHR, textStatus)
-	    {
-	        console.log(textStatus);
-	        $("#createQuizBtn").prop("disabled", false);
-	    });
+	    $("#quizPoints").val(quizPoints);
+
+	    this.submit();
 	});
+	
+//	$('#quizForm').submit(function(e)
+//	{
+//	    e.preventDefault();
+//	    
+//	    // Manage input data to send
+//	    var quiz = $(".quizQuestions");
+//	    
+//	    var contestId = $("#nQuiz_contest").val();
+//	    var quizName = $("#nQuiz_name").val();
+//	    var questions = [];
+//	    var points = [];
+//	    var types = [];
+//	    var correctAnswers = [];
+//	    var questions_answers = {};
+//	    var quizPoints = 0;
+//	    quiz.find(".questionName").each(function(idx, val)
+//	    {
+//    	   questions.push($(this).val());
+//    	});
+//	    quiz.find(".questionPoints").each(function(idx, val)
+//		{
+//	    	points.push($(this).val());
+//	    	quizPoints += parseInt($(this).val());
+//		});
+//	    quiz.find(".questionType[value='open']").each(function(idx, val)
+//		{
+//	    	if($(this).prop("checked"))
+//	    	{
+//	    		types.push("open");
+//	    		correctAnswers.push("");
+//	    	}
+//	    	else
+//	    	{
+//	    		types.push("closed");
+//	    		var correctAnswerID = $("#"+val.id).closest(".quizQuestion").find(".correctAnswer[value='correct']").attr("id");
+//	    		correctAnswerID = correctAnswerID.replace("_correct","");
+//	    		correctAnswers.push($("#"+correctAnswerID).val());
+//	    		
+//	    		var currentQuestion = $("#"+val.id).closest(".quizQuestion");
+//	    		var questionName = currentQuestion.find(".questionName").val();
+//	    		var currentQuestion_answers = [];
+//	    		currentQuestion.find(".correctAnswer").each(function(idx, val)
+//			    {
+//		    	   currentQuestion_answers.push($(this).closest(".answer").find("input").last().val());
+//		    	});
+//	    		questions_answers[questionName] = currentQuestion_answers;
+//	    		
+//	    	}
+//		});
+//	    console.log("==============================");
+//	    console.log("ID CONTEST");
+//	    console.log(contestId);
+//	    console.log("NOME QUIZ");
+//	    console.log(quizName);
+//	    console.log("PUNTI TOTALI");
+//	    console.log(quizPoints);
+//	    console.log("DOMANDE");
+//	    console.log(questions);
+//	    console.log("PUNTI");
+//	    console.log(points);
+//	    console.log("TIPOLOGIA");
+//	    console.log(types);
+//	    console.log("RISPOSTA CORRETTA");
+//	    console.log(correctAnswers);
+//	    console.log("RISPOSTE");
+//	    for (var i in questions_answers) {
+//	        console.log(questions_answers[i]);
+//	    }
+//	    console.log("==============================");
+//	    
+//	    // Create Quiz DTO
+//	    var quiz =
+//    	{
+//	    	"contestName" : contestId,
+//	    	"quizName" : quizName,
+//	    	"quizPoints" : quizPoints,
+//	    	"questions" : questions,
+//	    	"types" : types,
+//	    	"points" : points,
+//	    	"correctAnswers" : correctAnswers,
+//	    	"questions_answers": questions_answers
+//    	}
+//	    
+//	    // Disable Submit button until Ajax call callback
+//	    $("#createQuizBtn").prop("disabled", true);
+//	    $.ajax(
+//	    {
+//	        type: "POST",
+//	        contentType : 'application/json; charset=utf-8',
+//	        url: "addQuiz",
+//	        data: JSON.stringify(quiz),
+//	        success :function(result)
+//	        {
+//	        	window.location.replace("/");
+//	        	$("#createQuizBtn").prop("disabled", false);
+//	        }
+//	    }).fail(function(jqXHR, textStatus)
+//	    {
+//	        console.log(textStatus);
+//	        $("#createQuizBtn").prop("disabled", false);
+//	    });
+//	});
 }
 
 function addQuestion()
@@ -173,11 +196,11 @@ function addQuestion()
 	lastQuestion.attr("id","question"+lastQuestionID);
 	
 	lastQuestion.find("#question1_open").next().attr("for","question"+lastQuestionID+"_open");
-	lastQuestion.find("#question1_open").attr("name","question"+lastQuestionID+"_type");
+	lastQuestion.find("#question1_open").attr("name","question_types[question"+lastQuestionID+"]");
 	lastQuestion.find("#question1_open").attr("id","question"+lastQuestionID+"_open");
 	
 	lastQuestion.find("#question1_closed").next().attr("for","question"+lastQuestionID+"_closed");
-	lastQuestion.find("#question1_closed").attr("name","question"+lastQuestionID+"_type");
+	lastQuestion.find("#question1_closed").attr("name","question_types[question"+lastQuestionID+"]");
 	lastQuestion.find("#question1_closed").attr("id","question"+lastQuestionID+"_closed");
 	
 	// Set default Question Type (open)
@@ -192,6 +215,14 @@ function addQuestion()
 	lastQuestion.find("#question1_points").val("5");
 	lastQuestion.find("#question1_points").attr("id","question"+lastQuestionID+"_points");
 	
+	// Set Tags input for new Question
+	lastQuestion.find(".bootstrap-tagsinput").remove();
+	lastQuestion.find("#question1_tags").css('display', '');
+	lastQuestion.find("#question1_tags").closest("div.form-group").find("label").attr("for","question"+lastQuestionID+"_tags");
+	lastQuestion.find("#question1_tags").val("");
+	lastQuestion.find("#question1_tags").attr("name","questions_tags[question"+lastQuestionID+"]");
+	lastQuestion.find("#question1_tags").attr("id","question"+lastQuestionID+"_tags");
+
 	// Reset first Question correct answer to previous state
 	var FirstQuestionCorrectAnswer = $(".quizQuestion").first().find(".correctAnswer[value='correct']").attr("id");
 	$("#"+FirstQuestionCorrectAnswer).prop("checked", true);
@@ -208,6 +239,23 @@ function addQuestion()
 	{
 		$("#question1_open").prop("checked", true);
 	}
+	
+	$("#question"+lastQuestionID+' .questionTags input').tagsinput({
+//		typeaheadjs: [{
+//			minLength: 1,
+//			highlight: true,
+//		},{
+//			minlength: 1,
+//			name: 'tagsnames',
+//			displayKey: 'name',
+//			valueKey: 'name',
+//			source: tagsnames.ttAdapter()
+//		}],
+		freeInput: true,
+		confirmKeys: [13, 44, 32],
+		trimValue: true
+	});
+	
 	// Add Delete button to the new Question
 	$("#question"+lastQuestionID).prepend('<i class="material-icons md-36 delQuestionBtn">remove</i>');
 }
@@ -231,14 +279,15 @@ function addAnswer(questionID)
 		lastAnswerID = lastAnswerID.replace(/q\d+|a/gi, "");
 	}
 	lastAnswerID++;
-	$('#question'+questionID).append(newAnswer);
+	$(newAnswer).insertBefore($('#question'+questionID).find(".questionTags").closest(".form-group"));
 	var lastAnswer = $("#question"+questionID).find(".answer").last();
 	lastAnswer.attr("id","q"+questionID+"a"+lastAnswerID);
 	lastAnswer.find("label").last().attr("for", "question"+questionID+"-answer"+lastAnswerID+"");
+	lastAnswer.find("input").last().attr("name", "questions_answers[question"+questionID+"]");
 	lastAnswer.find("input").last().attr("id", "question"+questionID+"-answer"+lastAnswerID+"");
 	lastAnswer.find("label").last().html("Risposta "+lastAnswerID);
 	
-	lastAnswer.find("input").first().attr("name", "question"+questionID+"_correct");
+	lastAnswer.find("input").first().attr("name", "correctAnswers[question"+questionID+"]");
 	lastAnswer.find("label").first().attr("for", "question"+questionID+"-answer"+lastAnswerID+"_correct");
 	lastAnswer.find("input").first().attr("id", "question"+questionID+"-answer"+lastAnswerID+"_correct");
 }

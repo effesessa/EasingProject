@@ -6,7 +6,7 @@ import java.util.Map;
 public class AddQuizForm
 {
 
-	private int contestId;
+	private String contestName;
 
 	// total points of a quiz (example 30)
 	private int quizPoints;
@@ -16,36 +16,38 @@ public class AddQuizForm
 	private List<String> questions;
 
 	// type of questions
-	private List<String> types;
+	private Map<String, String> question_types;
 
 	// points of questions
 	private List<Integer> points;
 
 	// correct answers of questions
-	private List<String> correctAnswers;
+	private Map<String, String> correctAnswers;
 
 	// map questions with more answers
 	private Map<String, List<String>> questions_answers;
 
+	private Map<String, String> questions_tags;
+
 	public AddQuizForm()
 	{
 		questions = null;
-		types = null;
+		question_types = null;
 		points = null;
 		correctAnswers = null;
 		questions_answers = null;
 		quizName = null;
 		quizPoints = -1;
 		quizName = null;
-		contestId = -1;
+		contestName = null;
 	}
 
-	public int getContestId()
+	public String getContestName()
 	{
-		return contestId;
+		return contestName;
 	}
 
-	public List<String> getCorrectAnswers()
+	public Map<String, String> getCorrectAnswers()
 	{
 		return correctAnswers;
 	}
@@ -53,6 +55,11 @@ public class AddQuizForm
 	public List<Integer> getPoints()
 	{
 		return points;
+	}
+
+	public Map<String, String> getQuestion_types()
+	{
+		return question_types;
 	}
 
 	public List<String> getQuestions()
@@ -65,6 +72,11 @@ public class AddQuizForm
 		return questions_answers;
 	}
 
+	public Map<String, String> getQuestions_tags()
+	{
+		return questions_tags;
+	}
+
 	public String getQuizName()
 	{
 		return quizName;
@@ -75,17 +87,12 @@ public class AddQuizForm
 		return quizPoints;
 	}
 
-	public List<String> getTypes()
+	public void setContestName(String contestName)
 	{
-		return types;
+		this.contestName = contestName;
 	}
 
-	public void setContestId(int contestId)
-	{
-		this.contestId = contestId;
-	}
-
-	public void setCorrectAnswers(final List<String> correctAnswers)
+	public void setCorrectAnswers(Map<String, String> correctAnswers)
 	{
 		this.correctAnswers = correctAnswers;
 	}
@@ -93,6 +100,11 @@ public class AddQuizForm
 	public void setPoints(final List<Integer> points)
 	{
 		this.points = points;
+	}
+
+	public void setQuestion_types(Map<String, String> question_types)
+	{
+		this.question_types = question_types;
 	}
 
 	public void setQuestions(final List<String> questions)
@@ -105,6 +117,11 @@ public class AddQuizForm
 		this.questions_answers = questions_answers;
 	}
 
+	public void setQuestions_tags(Map<String, String> questions_tags)
+	{
+		this.questions_tags = questions_tags;
+	}
+
 	public void setQuizName(final String quizName)
 	{
 		this.quizName = quizName;
@@ -113,10 +130,5 @@ public class AddQuizForm
 	public void setQuizPoints(int quizPoints)
 	{
 		this.quizPoints = quizPoints;
-	}
-
-	public void setTypes(final List<String> types)
-	{
-		this.types = types;
 	}
 }

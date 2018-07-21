@@ -19,12 +19,13 @@
 			<div class="block-header">
 				<div class="card" style="height: auto !important;">
 					<div class="header">
-						<h2>Crea un Quiz</h2>
+						<h2>Create Quiz</h2>
 					</div>
-					<form:form id="quizForm" class="form-horizontal" action="addQuiz" method="post" modelAttribute="addQuizForm">
+					<form:form id="quizForm" class="form-horizontal" action="addQuizFake" method="post" modelAttribute="addQuizForm">
+						<input type="hidden" id="quizPoints" name="quizPoints" />
 						<div class="border">
 							<div class="form-group">
-								<label for="nQuiz_contest">Nome Contest</label>
+								<label for="nQuiz_contest">Contest Name</label>
 								<div class="input-group text-center">
 									<span class="input-group-addon">
 										<i class="glyphicon glyphicon-education"></i>
@@ -34,12 +35,12 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="nQuiz_name">Nome Quiz</label>
+								<label for="nQuiz_name">Quiz Name</label>
 								<div class="input-group">
 									<span class="input-group-addon">
 										<i class="glyphicon glyphicon-list-alt"></i>
 									</span>
-									<input type="text" class="form-control" name="name" id="nQuiz_name" placeholder="Nome del Quiz" required autofocus>
+									<input type="text" class="form-control" name="quizName" id="nQuiz_name" placeholder="Quiz name" required autofocus>
 								</div>
 							</div>
 						</div>
@@ -47,28 +48,28 @@
 						<div class="quizQuestions">
 							<div class="quizQuestion border" id="question1">
 								<div class="form-check">
-									<input class="form-check-input questionType" type="radio" name="question1_type" id="question1_open" value="open" checked>
-								  	<label class="form-check-label" for="question1_open">Domanda aperta</label>
+									<input class="form-check-input questionType" type="radio" name="question_types[question1]" id="question1_open" value="open" checked>
+								  	<label class="form-check-label" for="question1_open">Open question</label>
 								</div>
 								<div class="form-check">
-						  			<input class="form-check-input questionType" type="radio" name="question1_type" id="question1_closed" value="closed">
-							  		<label class="form-check-label" for="question1_closed">Domanda chiusa</label>
+						  			<input class="form-check-input questionType" type="radio" name="question_types[question1]" id="question1_closed" value="closed">
+							  		<label class="form-check-label" for="question1_closed">Closed question</label>
 								</div>
 								<div class="row">
 									<div class="col-md-10">
 										<div class="form-group">
-											<label for="question1_name">Domanda</label>
+											<label for="question1_name">Question</label>
 											<div class="input-group">
 												<span class="input-group-addon">
 													<i class="glyphicon glyphicon-question-sign"></i>
 												</span>
-												<input type="text" class="form-control input-sm questionName" name="name" id="question1_name" placeholder="Inserisci la domanda" required autofocus>
+												<input type="text" class="form-control input-sm questionName" name="questions" id="question1_name" placeholder="Insert question" required autofocus>
 											</div>
 										</div>
 									</div>
 									<div class="col-md-2">
 										<div class="form-group">
-									    	<label for="question1_points">Punti domanda</label>
+									    	<label for="question1_points">Points</label>
 											<div class="input-group">
 									    		<span class="input-group-addon">
 													<i class="glyphicon glyphicon-time"></i>
@@ -78,11 +79,23 @@
 									  	</div>
 									</div>
 								</div>
+								<div class="form-group">
+									<label for="question1_tags">Tags</label><br>
+									<small class="form-text text-muted">Insert Tags divided by comma or space</small>
+									<div class="input-group questionTags">
+										<span class="input-group-addon">
+											<i class="glyphicon glyphicon-tags"></i>
+										</span>
+										<input type="text" class="form-control" name="questions_tags[question1]" id="question1_tags">
+									</div>
+										<small class="form-text text-muted popularQuestionsTags">
+										</small>
+								</div>
 							</div>
 						</div>
 						<i id="newQuestionBtn" class="material-icons md-36">add</i><br>
 						<div class="text-center">
-							<button id="createQuizBtn" class="btn btn-lg btn-primary">Crea Quiz</button>
+							<button id="createQuizBtn" class="btn btn-lg btn-primary">Create Quiz</button>
 						</div>
 					</form:form>
 				</div>
@@ -94,6 +107,8 @@
 	<script src="resources/plugins/node-waves/waves.js"></script>
 	<!-- Custom Js -->
 	<script src="resources/js/admin.js"></script>
+	<script src="resources/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+	<script src="resources/js/typeahead.bundle.js"></script>
 	<script src="resources/js/createQuizScript.js"></script>
 </body>
 </html>

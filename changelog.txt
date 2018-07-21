@@ -133,6 +133,11 @@
 	- Fixata LazyInitializationException in QuizDAO (Fetch Join)
 	- Fixati bug minori in "QuizController" (due IF confrontavano Nome==ID invece di ID1==ID2)
 	
+21-07-2018
+	- Aggiunto supporto ai Tag per i Quiz
+	- Riscritta submit di creazione Quiz
+		- Nessuna chiamata Ajax, ora viene utilizzato Spring usando gli stessi nomi per creare delle Liste
+	
 	
 	
 	

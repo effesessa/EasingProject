@@ -41,6 +41,7 @@ import it.unical.entities.SubmitAnswer;
 import it.unical.entities.SubmitQuiz;
 import it.unical.entities.Team;
 import it.unical.entities.User;
+import it.unical.forms.AddQuizForm;
 import it.unical.forms.QuizDTO;
 import it.unical.forms.SubmitQuizForm;
 import it.unical.utils.SessionUtils;
@@ -143,7 +144,7 @@ public class QuizController
 	}
 
 	@RequestMapping(value = "/addQuizFake", method = RequestMethod.POST)
-	public String addQuizFake(final HttpSession session, @RequestBody QuizDTO quiz, final Model model)
+	public String addQuizFake(final HttpSession session, @ModelAttribute AddQuizForm quiz, final Model model)
 	{
 		System.out.println(quiz.getContestName());
 		System.out.println(quiz.getQuizName());
@@ -155,13 +156,16 @@ public class QuizController
 		for (final Integer string : quiz.getPoints())
 			System.out.println(string);
 		System.out.println("TIPOLOGIA:");
-		for (final String string : quiz.getTypes())
-			System.out.println(string);
+		for (final Map.Entry<String, String> entry : quiz.getQuestion_types().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
 		System.out.println("RISPOSTE CORRETTE:");
-		for (final String string : quiz.getCorrectAnswers())
-			System.out.println(string);
+		for (final Map.Entry<String, String> entry : quiz.getCorrectAnswers().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
 		System.out.println("RISPOSTE");
 		for (final Map.Entry<String, List<String>> entry : quiz.getQuestions_answers().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
+		System.out.println("TAGS");
+		for (final Map.Entry<String, String> entry : quiz.getQuestions_tags().entrySet())
 			System.out.println(entry.getKey() + "/" + entry.getValue());
 		return "redirect:/";
 	}
