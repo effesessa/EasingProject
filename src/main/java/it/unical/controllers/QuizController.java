@@ -31,7 +31,6 @@ import it.unical.dao.QuizDAO;
 import it.unical.dao.QuizTagDAO;
 import it.unical.dao.SubmitAnswerDAO;
 import it.unical.dao.SubmitQuizDAO;
-import it.unical.dao.TagDAO;
 import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Answer;
@@ -50,26 +49,31 @@ import it.unical.forms.SubmitQuizForm;
 import it.unical.utils.SessionUtils;
 
 @Controller
-public class QuizController {
+public class QuizController
+{
 	private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
 
 	@Autowired
 	private WebApplicationContext context;
 
-	private void _setAccountAttribute(final HttpSession session, final Model model) {
-		if (SessionUtils.isUser(session)) {
+	private void _setAccountAttribute(final HttpSession session, final Model model)
+	{
+		if (SessionUtils.isUser(session))
+		{
 			final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 			final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
 			model.addAttribute("user", user);
 			model.addAttribute("typeSession", "Account");
 			model.addAttribute("userLogged", true);
-		} else
+		}
+		else
 			model.addAttribute("typeSession", "Login");
 	}
 
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
 	public String addQuiz(final HttpSession session, @ModelAttribute AddQuizForm addQuizForm, final Model model,
-			HttpServletResponse response) {
+			HttpServletResponse response)
+	{
 		_setAccountAttribute(session, model);
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
@@ -88,9 +92,10 @@ public class QuizController {
 		final Set<Question> questions = new LinkedHashSet<>();
 		final List<Quiz> quizes = new ArrayList<>();
 		quizes.add(quiz);
-		for (int i = 0; i < addQuizForm.getQuestions().size(); i++) {
+		for (int i = 0; i < addQuizForm.getQuestions().size(); i++)
+		{
 			final String questionKey = "question" + (i + 1);
-			Question question = new Question();
+			final Question question = new Question();
 			question.setPoints(addQuizForm.getPoints().get(i));
 			question.setText(addQuizForm.getQuestions().get(i));
 			question.setType(getType(addQuizForm.getQuestion_types().get(questionKey)));
@@ -102,19 +107,22 @@ public class QuizController {
 		quiz.setQuestions(questions);
 		quizDAO.update(quiz);
 
-		//create answers, tags and update questions
+		// create answers, tags and update questions
 		int i = 1;
-		for (Question question : questions) {
+		for (final Question question : questions)
+		{
 			final String questionKey = "question" + i;
 			final Set<Answer> answers = new LinkedHashSet<>();
-			if (addQuizForm.getQuestions_answers().containsKey(questionKey)) {
-				for (final String textAnswer : addQuizForm.getQuestions_answers().get(questionKey)) {
+			if (addQuizForm.getQuestions_answers().containsKey(questionKey))
+			{
+				for (final String textAnswer : addQuizForm.getQuestions_answers().get(questionKey))
+				{
 					Answer answer = new Answer();
 					answer.setText(textAnswer);
-					if (!answerDAO.exists(textAnswer)) {
+					if (!answerDAO.exists(textAnswer))
 						answerDAO.create(answer);
-					} 
-					else {
+					else
+					{
 						answer = answerDAO.getByText(textAnswer);
 						question.setCorrectAnswer(answer);
 					}
@@ -124,9 +132,11 @@ public class QuizController {
 				questionDAO.update(question);
 			}
 
-			if (addQuizForm.getQuestions_tags().containsKey(questionKey)) {
+			if (addQuizForm.getQuestions_tags().containsKey(questionKey))
+			{
 				final String tagsToSplitted = addQuizForm.getQuestions_tags().get(questionKey);
-				for (final String quizTagValue : tagsToSplitted.split(",")) {
+				for (final String quizTagValue : tagsToSplitted.split(","))
+				{
 					final QuizTag quizTag = new QuizTag();
 					quizTag.setQuiz(quiz);
 					quizTag.setValue(quizTagValue);
@@ -139,7 +149,8 @@ public class QuizController {
 	}
 
 	@RequestMapping(value = "/addQuizFake", method = RequestMethod.POST)
-	public String addQuizFake(final HttpSession session, @ModelAttribute AddQuizForm quiz, final Model model) {
+	public String addQuizFake(final HttpSession session, @ModelAttribute AddQuizForm quiz, final Model model)
+	{
 		System.out.println(quiz.getContestName());
 		System.out.println(quiz.getQuizName());
 		System.out.println(quiz.getQuizPoints());
@@ -173,7 +184,7 @@ public class QuizController {
 		final int userID = SessionUtils.getUserIdFromSessionOrNull(session);
 		if (SessionUtils.isLoggedIn(session) && req.equals("tags"))
 		{
-			final TagDAO tagDAO = (TagDAO) context.getBean("tagDAO");
+			final QuizTagDAO tagDAO = (QuizTagDAO) context.getBean("quizTagDAO");
 			final List<String> tags = tagDAO.getAllTagValues();
 			try
 			{
@@ -188,7 +199,8 @@ public class QuizController {
 	}
 
 	@RequestMapping(value = "/createQuiz", method = RequestMethod.GET)
-	public String createQuiz(HttpSession session, Model model) {
+	public String createQuiz(HttpSession session, Model model)
+	{
 		_setAccountAttribute(session, model);
 		final User user = (User) model.asMap().get("user");
 
@@ -199,18 +211,22 @@ public class QuizController {
 	}
 
 	@RequestMapping(value = "/myQuizs", method = RequestMethod.GET)
-	public String getAllQuizs(final HttpSession session, final Model model) {
+	public String getAllQuizs(final HttpSession session, final Model model)
+	{
 		_setAccountAttribute(session, model);
 		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
-		if (user != null && user.isProfessor()) {
+		if (user != null && user.isProfessor())
+		{
 			final Map<Contest, List<Quiz>> contestQuizsMap = new HashMap<>();
 			final List<Contest> contests = contestDAO.getContestsByProfessor(user.getId());
-			for (final Contest contest : contests) {
+			for (final Contest contest : contests)
+			{
 				final Jury jury = contest.getJury();
-				if (jury.getProfessor().getId().equals(user.getId())) {
+				if (jury.getProfessor().getId().equals(user.getId()))
+				{
 					final List<Quiz> quizs = quizDAO.getAllQuizByContest(contest.getIdcontest());
 					contestQuizsMap.put(contest, quizs);
 				}
@@ -222,19 +238,23 @@ public class QuizController {
 	}
 
 	@RequestMapping(value = "/quizSubmits", method = RequestMethod.GET)
-	public String getAllSubmitsByQuiz(@RequestParam String idQuiz, final HttpSession session, final Model model) {
+	public String getAllSubmitsByQuiz(@RequestParam String idQuiz, final HttpSession session, final Model model)
+	{
 		_setAccountAttribute(session, model);
 		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
-		if (user != null && user.isProfessor()) {
+		if (user != null && user.isProfessor())
+		{
 			final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 			final Quiz quiz = quizDAO.get(Integer.parseInt(idQuiz));
-			if (quiz.getContest().getJury().getProfessor().getId().equals(user.getId())) {
+			if (quiz.getContest().getJury().getProfessor().getId().equals(user.getId()))
+			{
 				final SubmitQuizDAO submitQuizDAO = (SubmitQuizDAO) context.getBean("submitQuizDAO");
 				final SubmitAnswerDAO submitAnswerDAO = (SubmitAnswerDAO) context.getBean("submitAnswerDAO");
 				final List<SubmitQuiz> submitQuizs = submitQuizDAO.getAllByQuiz(quiz);
 				final Map<SubmitQuiz, List<SubmitAnswer>> submitQuizSubmitAnswersMap = new HashMap<>();
-				for (final SubmitQuiz submitQuiz : submitQuizs) {
+				for (final SubmitQuiz submitQuiz : submitQuizs)
+				{
 					final List<SubmitAnswer> submitAnswers = submitAnswerDAO.getBySubmitQuiz(submitQuiz);
 					submitQuizSubmitAnswersMap.put(submitQuiz, submitAnswers);
 				}
@@ -248,7 +268,8 @@ public class QuizController {
 
 	@RequestMapping(value = "/toBeCorrection", method = RequestMethod.GET)
 	public String getAllSubmitToBeCorrection(@RequestParam String idProfessor, final HttpSession session,
-			final Model model) {
+			final Model model)
+	{
 		_setAccountAttribute(session, model);
 		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
@@ -261,17 +282,22 @@ public class QuizController {
 		final Map<Quiz, List<SubmitQuiz>> quizSubmitQuizsMap = new HashMap<>();
 		final Map<SubmitQuiz, List<SubmitAnswer>> submitQuizSubmitAnswersMap = new HashMap<>();
 
-		if (user != null && user.isProfessor()) {
+		if (user != null && user.isProfessor())
+		{
 			final List<Contest> contests = contestDAO.getContestsByProfessor(Integer.parseInt(idProfessor));
-			for (final Contest contest : contests) {
+			for (final Contest contest : contests)
+			{
 				final Jury jury = contest.getJury();
-				if (jury.getProfessor().getId().equals(Integer.parseInt(idProfessor))) {
+				if (jury.getProfessor().getId().equals(Integer.parseInt(idProfessor)))
+				{
 					final List<Quiz> quizs = quizDAO.getAllQuizByContest(contest.getIdcontest());
 					contestQuizsMap.put(contest, quizs);
-					for (final Quiz quiz : quizs) {
+					for (final Quiz quiz : quizs)
+					{
 						final List<SubmitQuiz> submitQuizs = submitQuizDAO.getAllToBeCorrectionByQuiz(quiz);
 						quizSubmitQuizsMap.put(quiz, submitQuizs);
-						for (final SubmitQuiz submitQuiz : submitQuizs) {
+						for (final SubmitQuiz submitQuiz : submitQuizs)
+						{
 							final List<SubmitAnswer> submitAnswers = submitAnswerDAO.getBySubmitQuiz(submitQuiz);
 							submitQuizSubmitAnswersMap.put(submitQuiz, submitAnswers);
 						}
@@ -287,8 +313,10 @@ public class QuizController {
 		return "redirect:/";
 	}
 
-	private Question.Type getType(String typeFrontEnd) {
-		switch (typeFrontEnd) {
+	private Question.Type getType(String typeFrontEnd)
+	{
+		switch (typeFrontEnd)
+		{
 		case "closed":
 			return Type.MULTIPLE;
 		case "open":
@@ -299,7 +327,8 @@ public class QuizController {
 	}
 
 	@RequestMapping(value = "/showQuiz", method = RequestMethod.GET)
-	public String showQuiz(@RequestParam String quizName, final HttpSession session, final Model model) {
+	public String showQuiz(@RequestParam String quizName, final HttpSession session, final Model model)
+	{
 		// if you want pass quizId, change @RequestParam String quizId and use
 		// quizDAO.get(Integer.parseInt(quizId));
 		_setAccountAttribute(session, model);
@@ -313,10 +342,10 @@ public class QuizController {
 		// below to pass answers directly
 
 		/*
-		 * Map<Question,Set<Answer>> question_answers = new HashMap<>(); for (Question
-		 * question : quiz.getQuestions()) { question_answers.put(question,
-		 * question.getAnswers()); } model.addAttribute("question_answers",
-		 * question_answers);
+		 * Map<Question,Set<Answer>> question_answers = new HashMap<>(); for
+		 * (Question question : quiz.getQuestions()) {
+		 * question_answers.put(question, question.getAnswers()); }
+		 * model.addAttribute("question_answers", question_answers);
 		 */
 
 		return "nomePaginaPerMostrareilQuiz";
@@ -324,7 +353,8 @@ public class QuizController {
 
 	@RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
 	public String submitQuiz(final HttpSession session, @ModelAttribute SubmitQuizForm submitQuizForm,
-			final Model model) {
+			final Model model)
+	{
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final SubmitQuizDAO submitQuizDAO = (SubmitQuizDAO) context.getBean("submitQuizDAO");
 		final SubmitAnswerDAO submitAnswerDAO = (SubmitAnswerDAO) context.getBean("submitAnswerDAO");
@@ -340,25 +370,32 @@ public class QuizController {
 
 		int multipleScore = 0;
 		boolean correction = false;
-		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet()) {
+		for (final Map.Entry<String, String> entry : submitQuizForm.getQuestion_answer().entrySet())
+		{
 			Question findQuestion = null;
 			for (final Question question : questions)
-				if (question.getId().equals(Integer.parseInt(entry.getKey()))) {
+				if (question.getId().equals(Integer.parseInt(entry.getKey())))
+				{
 					findQuestion = question;
 					break;
 				}
 			final SubmitAnswer submitAnswer = new SubmitAnswer();
 			submitAnswer.setSubmitQuiz(submitQuiz);
 			submitAnswer.setQuestion(findQuestion);
-			if (findQuestion.getType() == Question.Type.OPEN) {
+			if (findQuestion.getType() == Question.Type.OPEN)
+			{
 				submitAnswer.setOpenAnswer(entry.getValue());
 				correction = true;
-			} else {
+			}
+			else
+			{
 				final Set<Answer> answers = findQuestion.getAnswers();
 				for (final Answer answer : answers)
-					if (answer.getId().equals(Integer.parseInt(entry.getValue()))) {
+					if (answer.getId().equals(Integer.parseInt(entry.getValue())))
+					{
 						submitAnswer.setAnswer(answer);
-						if (answer.getId().equals(findQuestion.getCorrectAnswer().getId())) {
+						if (answer.getId().equals(findQuestion.getCorrectAnswer().getId()))
+						{
 							multipleScore += findQuestion.getPoints();
 							submitAnswer.setPoints(findQuestion.getPoints());
 						}
