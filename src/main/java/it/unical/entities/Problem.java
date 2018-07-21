@@ -69,7 +69,7 @@ public class Problem
 	private List<Submit> submits;
 
 	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL)
-	private List<Tag> tags;
+	private List<ProblemTag> tags;
 
 	public Problem()
 	{
@@ -123,7 +123,7 @@ public class Problem
 		return submits;
 	}
 
-	public List<Tag> getTags()
+	public List<ProblemTag> getTags()
 	{
 		return tags;
 	}
@@ -193,7 +193,7 @@ public class Problem
 		this.submits = submits;
 	}
 
-	public void setTags(List<Tag> tags)
+	public void setTags(List<ProblemTag> tags)
 	{
 		this.tags = tags;
 	}

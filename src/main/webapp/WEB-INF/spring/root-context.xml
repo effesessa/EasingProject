@@ -14,7 +14,7 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/easingdb2?UseUnicode=true&amp;characterEncoding=utf8" />
+		<property name="url" value="jdbc:mysql://localhost:3306/easingdb?UseUnicode=true&amp;characterEncoding=utf8" />
 		<property name="username" value="root"/>
 		<property name="password" value="root"/> 
 		
@@ -89,7 +89,11 @@
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 	
-	<bean id="tagDAO" class="it.unical.dao.TagDAOImpl">
+	<bean id="quizTagDAO" class="it.unical.dao.QuizTagDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="problemTagDAO" class="it.unical.dao.ProblemTagDAOImpl">
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 	
@@ -101,18 +105,18 @@
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 	
-	<bean id="quizQuestionDAO" class="it.unical.dao.QuizQuestionDAOImpl">
-		<property name="databaseHandler" ref="databaseHandler" />
-	</bean>
-	
 	<bean id="answerDAO" class="it.unical.dao.AnswerDAOImpl">
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 	
-	<bean id="questionAnswerDAO" class="it.unical.dao.QuestionAnswerDAOImpl">
+	<bean id="submitQuizDAO" class="it.unical.dao.SubmitQuizDAOImpl">
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
-
+	
+	<bean id="submitAnswerDAO" class="it.unical.dao.SubmitAnswerDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />

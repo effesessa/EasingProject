@@ -9,26 +9,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-/**
- * @author Fabrizio
- */
-
 @Entity 
-@Table(name = "tag")
-public class Tag {
+@Table(name = "quiz_tag")
+public class QuizTag {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@Column(name = "id")
 	private Integer id;
 	
 	@ManyToOne 
-	@JoinColumn(name = "problem")
-	private Problem problem;
+	@JoinColumn(name = "quiz")
+	private Quiz quiz;
 	
 	@Column(name = "value")
 	private String value;
 
-	public Tag() {
+	public QuizTag() {
 		
 	}
 
@@ -40,20 +36,20 @@ public class Tag {
 		this.id = id;
 	}
 
-	public Problem getProblem() {
-		return problem;
-	}
-
-	public void setProblem(Problem problem) {
-		this.problem = problem;
-	}
-
 	public String getValue() {
 		return value;
 	}
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public Quiz getQuiz() {
+		return quiz;
+	}
+
+	public void setQuiz(Quiz quiz) {
+		this.quiz = quiz;
 	}
 	
 }
