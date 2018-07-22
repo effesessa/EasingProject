@@ -27,8 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unical.dao.AnswerDAO;
 import it.unical.dao.ContestDAO;
 import it.unical.dao.QuestionDAO;
+import it.unical.dao.QuestionTagDAO;
 import it.unical.dao.QuizDAO;
-import it.unical.dao.QuizTagDAO;
 import it.unical.dao.SubmitAnswerDAO;
 import it.unical.dao.SubmitQuizDAO;
 import it.unical.dao.TeamDAO;
@@ -38,8 +38,8 @@ import it.unical.entities.Contest;
 import it.unical.entities.Jury;
 import it.unical.entities.Question;
 import it.unical.entities.Question.Type;
+import it.unical.entities.QuestionTag;
 import it.unical.entities.Quiz;
-import it.unical.entities.QuizTag;
 import it.unical.entities.SubmitAnswer;
 import it.unical.entities.SubmitQuiz;
 import it.unical.entities.Team;
@@ -69,6 +69,8 @@ public class QuizController
 		else
 			model.addAttribute("typeSession", "Login");
 	}
+	
+	
 
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
 	public String addQuiz(final HttpSession session, @ModelAttribute AddQuizForm addQuizForm, final Model model,
@@ -80,7 +82,7 @@ public class QuizController
 		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
 		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
 		final Contest contest = contestDAO.getContestByName(addQuizForm.getContestName());
-		final QuizTagDAO quizTagDAO = (QuizTagDAO) context.getBean("quizTagDAO");
+		final QuestionTagDAO questionTagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
 
 		// create quiz
 		final Quiz quiz = new Quiz();
@@ -122,11 +124,12 @@ public class QuizController
 					if (!answerDAO.exists(textAnswer))
 						answerDAO.create(answer);
 					else
-					{
 						answer = answerDAO.getByText(textAnswer);
-						question.setCorrectAnswer(answer);
-					}
 					answers.add(answer);
+				}
+				if(addQuizForm.getCorrectAnswers().containsKey(questionKey)) {
+					final Answer correctAnswer = answerDAO.getByText(addQuizForm.getCorrectAnswers().get(questionKey));
+					question.setCorrectAnswer(correctAnswer);
 				}
 				question.setAnswers(answers);
 				questionDAO.update(question);
@@ -135,13 +138,19 @@ public class QuizController
 			if (addQuizForm.getQuestions_tags().containsKey(questionKey))
 			{
 				final String tagsToSplitted = addQuizForm.getQuestions_tags().get(questionKey);
-				for (final String quizTagValue : tagsToSplitted.split(","))
+				final Set<QuestionTag> tags = new LinkedHashSet<>();
+				for (final String questionTagValue : tagsToSplitted.split(","))
 				{
-					final QuizTag quizTag = new QuizTag();
-					quizTag.setQuiz(quiz);
-					quizTag.setValue(quizTagValue);
-					quizTagDAO.create(quizTag);
+					if(questionTagValue.equals(""))
+						continue;
+					final QuestionTag questionTag = new QuestionTag();
+					questionTag.setQuestion(question);
+					questionTag.setValue(questionTagValue);
+					questionTagDAO.create(questionTag);
+					tags.add(questionTag);
 				}
+				question.setTags(tags);
+				questionDAO.update(question);
 			}
 			i++;
 		}
@@ -184,7 +193,7 @@ public class QuizController
 		final int userID = SessionUtils.getUserIdFromSessionOrNull(session);
 		if (SessionUtils.isLoggedIn(session) && req.equals("tags"))
 		{
-			final QuizTagDAO tagDAO = (QuizTagDAO) context.getBean("quizTagDAO");
+			final QuestionTagDAO tagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
 			final List<String> tags = tagDAO.getAllTagValues();
 			try
 			{
@@ -214,6 +223,14 @@ public class QuizController
 	public String getAllQuizs(final HttpSession session, final Model model)
 	{
 		_setAccountAttribute(session, model);
+		
+		System.out.println("*****************************");
+		QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
+		List<Question> questions = questionDAO.getRandomQuestions("java", 3);
+		for (Question question : questions) {
+			System.out.println(question.getText());
+		}
+		System.out.println("*****************************");
 		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");

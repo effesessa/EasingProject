@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -60,6 +61,10 @@ public class Question implements Serializable
 	@OrderBy("id DESC")
 	private Set<Answer> answers = new LinkedHashSet<>();
 
+	@OneToMany(mappedBy = "question")
+	@OrderBy("id DESC")
+	private Set<QuestionTag> tags = new  LinkedHashSet<>();
+	
 	public Question()
 	{
 
@@ -133,6 +138,14 @@ public class Question implements Serializable
 	public void setType(final Type type)
 	{
 		this.type = type;
+	}
+
+	public Set<QuestionTag> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<QuestionTag> tags) {
+		this.tags = tags;
 	}
 
 }
