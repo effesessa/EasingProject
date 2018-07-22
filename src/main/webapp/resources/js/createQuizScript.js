@@ -121,6 +121,54 @@ function init()
 	    this.submit();
 	});
 	
+	$('#generate_form').submit(function(e)
+	{
+	    e.preventDefault();
+	    
+	    var questionsNumber = [];
+	    var tags = [];
+
+	    
+	    var generate = $("#generateModal");
+	    generate.find(".nArgs").each(function(idx, val)
+	    {
+    	   questionsNumber.push($(this).val());
+    	})
+    	generate.find("input[name=generate_arg]").each(function(idx, val)
+		{
+    		tags.push($(this).val());
+		})
+		
+		console.log("==============================");
+	    console.log("QUANTITA' DOMANDE");
+	    console.log(questionsNumber);
+	    console.log("TAGS");
+	    console.log(tags);
+	    console.log("==============================");
+	    
+	    $("#generateQuizBtn").prop("disabled", true);
+	    $.ajax(
+	    {
+	        type: "POST",
+	        contentType : 'application/json; charset=utf-8',
+	        url: "addQuiz",
+	        data: {questionsNumber: JSON.stringify(questionsNumber), tags: JSON.stringify(tags)},
+	        success :function(result)
+	        {
+//	        	window.location.replace("/");
+	        	console.log("DID IT");
+	        	$("#generateQuizBtn").prop("disabled", false);
+	        }
+	    }).fail(function(jqXHR, textStatus)
+	    {
+	        console.log(textStatus);
+	        $("#generateQuizBtn").prop("disabled", false);
+	    });
+	    
+	    
+//	    this.submit();
+	});
+	
 //	$('#quizForm').submit(function(e)
 //	{
 //	    e.preventDefault();

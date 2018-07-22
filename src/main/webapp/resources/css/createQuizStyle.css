@@ -60,7 +60,7 @@ i.delQuestionBtn:hover, #newQuestionBtn, i.delArgumentBtn:hover, #generate_newAr
 	margin-bottom: 2%;
 }
 
-#generateQuizBtn
+.toRight
 {
 	float:right;
 }
