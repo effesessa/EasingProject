@@ -45,6 +45,7 @@ import it.unical.entities.SubmitQuiz;
 import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.AddQuizForm;
+import it.unical.forms.RandomQuestionForm;
 import it.unical.forms.SubmitQuizForm;
 import it.unical.utils.SessionUtils;
 
@@ -218,19 +219,32 @@ public class QuizController
 		else
 			return "createQuiz";
 	}
+	
+	@RequestMapping(value = "/nomeRequest", method = RequestMethod.POST)
+	public String getRandomQuestions(final HttpSession session, @ModelAttribute RandomQuestionForm randomQuestionForm, final Model model) {
+		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
+		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
+		final Map<Question, List<Answer>> questionAnswersMap = new HashMap<>();
+		for(int i = 0; i < randomQuestionForm.getQuestionTagValues().size(); i++) {
+			List<Question> questions = questionDAO.getRandomQuestions(randomQuestionForm.getQuestionTagValues().get(i), 
+					randomQuestionForm.getNumberOfQuestions().get(i));
+			for (Question question : questions) {
+				System.out.println(question.getText());
+				final List<Answer> answers = answerDAO.getAnswersByQuestion(question.getId());
+				for (Answer answer : answers) {
+					System.out.println(answer.getText());
+				}
+				questionAnswersMap.put(question, answers);
+			}
+		}
+		model.addAttribute("questionAnswersMap", questionAnswersMap);
+		return "nomeResponse";
+	}
 
 	@RequestMapping(value = "/myQuizs", method = RequestMethod.GET)
 	public String getAllQuizs(final HttpSession session, final Model model)
 	{
 		_setAccountAttribute(session, model);
-		
-		System.out.println("*****************************");
-		QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
-		List<Question> questions = questionDAO.getRandomQuestions("java", 3);
-		for (Question question : questions) {
-			System.out.println(question.getText());
-		}
-		System.out.println("*****************************");
 		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");

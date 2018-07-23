@@ -75,8 +75,8 @@ public class QuestionDAOImpl implements QuestionDAO {
 	@Override
 	public List<Question> getRandomQuestions(String tagValue, Integer limit) {
 		final Session session = databaseHandler.getSessionFactory().openSession();
-		//String hql = "select Q from Question Q left join fetch Q.tags where and Q.tags.value = :tagValue group by Q.text order by rand()";
-		final Query query = session.createQuery("");
+		String hql = "select Q from Question Q left join fetch Q.tags T where T.value = :tagValue group by Q.text order by rand()";
+		final Query query = session.createQuery(hql);
 		query.setParameter("tagValue", tagValue);
 		query.setMaxResults(limit);
 		List<Question> questions = query.list();

@@ -58,7 +58,7 @@ public class AnswerDAOImpl implements AnswerDAO
 	public List<Answer> getAnswersByQuestion(Integer id)
 	{
 		final Session session = databaseHandler.getSessionFactory().openSession();
-		final Query query = session.createQuery("from Answer A where A.questions.id = :id");
+		final Query query = session.createQuery("from Answer A left join fetch A.questions Q where Q.id = :id");
 		query.setParameter("id", id);
 		final List<Answer> answers = query.list();
 		session.close();
