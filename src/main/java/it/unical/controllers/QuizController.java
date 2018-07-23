@@ -44,6 +44,7 @@ import it.unical.entities.SubmitAnswer;
 import it.unical.entities.SubmitQuiz;
 import it.unical.entities.Team;
 import it.unical.entities.User;
+import it.unical.forms.AddQuestionsForm;
 import it.unical.forms.AddQuizForm;
 import it.unical.forms.RandomQuestionForm;
 import it.unical.forms.SubmitQuizForm;
@@ -318,6 +319,59 @@ public class QuizController
 			model.addAttribute("quizSubmitQuizsMap", quizSubmitQuizsMap);
 			model.addAttribute("submitQuizSubmitAnswersMap", submitQuizSubmitAnswersMap);
 			return "quizsubmitsToBeCorrection";
+		}
+		return "redirect:/";
+	}
+	
+	@RequestMapping(value = "/addQuestions", method = RequestMethod.POST)
+	public String addQuestions(final HttpSession session, @ModelAttribute AddQuestionsForm form, final Model model) {
+		_setAccountAttribute(session, model);
+		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
+		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
+		final QuestionTagDAO questionTagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
+		
+		List<Question> questions = new ArrayList<>();
+		for (final String questionText: form.getQuestions()) {
+			Question question = new Question();
+			question.setText(questionText);
+			question.setPoints(Integer.parseInt(form.getQuestion_points().get(questionText)));
+			question.setType(getType(form.getQuestion_types().get(questionText)));
+			questionDAO.create(question);
+			questions.add(question);
+		}
+		
+		Set<Answer> answers = new LinkedHashSet<>();
+		for (Question question : questions) {
+			for (String textAnswer : form.getQuestion_answers().get(question.getText())) {
+				Answer answer = new Answer();
+				answer.setText(textAnswer);
+				if (!answerDAO.exists(textAnswer))
+					answerDAO.create(answer);
+				else
+					answer = answerDAO.getByText(textAnswer);
+				answers.add(answer);
+			}
+			if (form.getQuestion_correctAnswer().containsKey(question.getText())) {
+				final Answer correctAnswer = answerDAO.getByText(form.getQuestion_correctAnswer().get(question.getText()));
+				question.setCorrectAnswer(correctAnswer);
+			}
+			question.setAnswers(answers);
+			if (form.getQuestion_tags().containsKey(question.getText())) {
+				final String tagsToSplitted = form.getQuestion_tags().get(question.getText());
+				final Set<QuestionTag> tags = new LinkedHashSet<>();
+				for (final String questionTagValue : tagsToSplitted.split(","))
+				{
+					if (questionTagValue.equals(""))
+						continue;
+					final QuestionTag questionTag = new QuestionTag();
+					questionTag.setQuestion(question);
+					questionTag.setValue(questionTagValue);
+					questionTagDAO.create(questionTag);
+					tags.add(questionTag);
+				}
+				question.setTags(tags);
+			}
+			questionDAO.update(question);
 		}
 		return "redirect:/";
 	}
