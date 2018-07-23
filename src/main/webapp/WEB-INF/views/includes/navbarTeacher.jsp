@@ -61,9 +61,9 @@
 						<div id="custom-search-input" style="margin: 16px">
 							<div class="input-group col-md-12">
 								<form:form id="navbar-search-form" class="navbar-form form-inline" action="searchProblem" method="POST" modelAttribute="searchForm" style="margin: 0px !important;padding: 0px !important;">
-									<input type="text" class="form-control input-lg" placeholder="Solutions" name="word" />
+									<input type="text" class="form-control input-lg" placeholder="Search Problems" name="word" />
 									<span class="input-group-btn">
-										<button class="btn btn-info btn-lg" type="button">
+										<button class="btn btn-info btn-lg" type="submit">
 											<i class="glyphicon glyphicon-search"></i>
 										</button>
 									</span>
@@ -103,7 +103,7 @@
 							</a></li>
 				  		</ul>
 				  	</li>
-					<hr />
+					<hr>
 					<li><a href="logout">
 						<i class="material-icons">exit_to_app</i> <span>Logout</span>
 					</a></li>

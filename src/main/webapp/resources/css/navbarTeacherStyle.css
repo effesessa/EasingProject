@@ -77,15 +77,24 @@ ul.list span
 {
 	list-style: none;
 }
+
 #leftsidebar>.menu ul ul
 {
 	display: none;
 }
+
 #leftsidebar>.menu ul li:hover ul
 {
 	display: block;
 }
+
 .submenu 
 {
 	display: block; margin: 0;
+}
+
+hr
+{
+	margin: 0;
+	border-width: 2px;
 }

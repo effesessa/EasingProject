@@ -70,8 +70,6 @@ public class QuizController
 		else
 			model.addAttribute("typeSession", "Login");
 	}
-	
-	
 
 	@RequestMapping(value = "/addQuiz", method = RequestMethod.POST)
 	public String addQuiz(final HttpSession session, @ModelAttribute AddQuizForm addQuizForm, final Model model,
@@ -128,7 +126,8 @@ public class QuizController
 						answer = answerDAO.getByText(textAnswer);
 					answers.add(answer);
 				}
-				if(addQuizForm.getCorrectAnswers().containsKey(questionKey)) {
+				if (addQuizForm.getCorrectAnswers().containsKey(questionKey))
+				{
 					final Answer correctAnswer = answerDAO.getByText(addQuizForm.getCorrectAnswers().get(questionKey));
 					question.setCorrectAnswer(correctAnswer);
 				}
@@ -142,7 +141,7 @@ public class QuizController
 				final Set<QuestionTag> tags = new LinkedHashSet<>();
 				for (final String questionTagValue : tagsToSplitted.split(","))
 				{
-					if(questionTagValue.equals(""))
+					if (questionTagValue.equals(""))
 						continue;
 					final QuestionTag questionTag = new QuestionTag();
 					questionTag.setQuestion(question);
@@ -218,27 +217,6 @@ public class QuizController
 			return "redirect:/";
 		else
 			return "createQuiz";
-	}
-	
-	@RequestMapping(value = "/nomeRequest", method = RequestMethod.POST)
-	public String getRandomQuestions(final HttpSession session, @ModelAttribute RandomQuestionForm randomQuestionForm, final Model model) {
-		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
-		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
-		final Map<Question, List<Answer>> questionAnswersMap = new HashMap<>();
-		for(int i = 0; i < randomQuestionForm.getQuestionTagValues().size(); i++) {
-			List<Question> questions = questionDAO.getRandomQuestions(randomQuestionForm.getQuestionTagValues().get(i), 
-					randomQuestionForm.getNumberOfQuestions().get(i));
-			for (Question question : questions) {
-				System.out.println(question.getText());
-				final List<Answer> answers = answerDAO.getAnswersByQuestion(question.getId());
-				for (Answer answer : answers) {
-					System.out.println(answer.getText());
-				}
-				questionAnswersMap.put(question, answers);
-			}
-		}
-		model.addAttribute("questionAnswersMap", questionAnswersMap);
-		return "nomeResponse";
 	}
 
 	@RequestMapping(value = "/myQuizs", method = RequestMethod.GET)
@@ -342,6 +320,42 @@ public class QuizController
 			return "quizsubmitsToBeCorrection";
 		}
 		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/generateQuestions", method = RequestMethod.POST)
+	public void getRandomQuestions(final HttpSession session, @ModelAttribute RandomQuestionForm randomQuestionForm,
+			final Model model, HttpServletResponse response)
+	{
+		response.setContentType("text/html; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		final ObjectMapper mapper = new ObjectMapper();
+		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
+		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
+		final Map<Question, List<Answer>> questionAnswersMap = new HashMap<>();
+		for (int i = 0; i < randomQuestionForm.getQuestionTagValues().size(); i++)
+		{
+			final List<Question> questions = questionDAO.getRandomQuestions(
+					randomQuestionForm.getQuestionTagValues().get(i), randomQuestionForm.getNumberOfQuestions().get(i));
+			for (final Question question : questions)
+			{
+				System.out.println(question.getText());
+				final List<Answer> answers = answerDAO.getAnswersByQuestion(question.getId());
+				for (final Answer answer : answers)
+					System.out.println(answer.getText());
+				questionAnswersMap.put(question, answers);
+			}
+		}
+		try
+		{
+			mapper.writeValue(response.getOutputStream(), questionAnswersMap);
+		}
+		catch (final IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// model.addAttribute("questionAnswersMap", questionAnswersMap);
+		// return "nomeResponse";
 	}
 
 	private Question.Type getType(String typeFrontEnd)
