@@ -62,3 +62,30 @@ form
 {
 	margin: 0;
 }
+
+/* ul.list i.material-icons
+{
+	font-size: 20px;
+}
+ul.list span
+{
+	font-size: 13px !important;
+	margin-bottom: 0px !important;
+} */
+
+#leftsidebar>.menu ul
+{
+	list-style: none;
+}
+#leftsidebar>.menu ul ul
+{
+	display: none;
+}
+#leftsidebar>.menu ul li:hover ul
+{
+	display: block;
+}
+.submenu 
+{
+	display: block; margin: 0;
+}

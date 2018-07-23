@@ -264,19 +264,23 @@ public class HomeController
 
 		return "searchResults";
 	}
-	
+
 	@RequestMapping(value = "/searchProblem", method = RequestMethod.POST)
-	public String searchProblem(@ModelAttribute SearchForm form, HttpSession session, Model model) {
+	public String searchProblem(@ModelAttribute SearchForm form, HttpSession session, Model model)
+	{
 		setAccountAttribute(session, model);
+		final User user = (User) model.asMap().get("user");
+		if (user == null || !user.isProfessor())
+			return "redirect:/";
+
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 		final List<Problem> problems = problemDAO.getAllProblemsByTagOrLikeName(form.getWord());
 		System.out.println("word:" + form.getWord());
-		System.out.println("getAllProblemsByLikeTagOrLikeName:" +  problems.size());
-		for (Problem problem : problems) {
+		System.out.println("getAllProblemsByLikeTagOrLikeName:" + problems.size());
+		for (final Problem problem : problems)
 			System.out.println(problem.getName());
-		}
 		model.addAttribute("problems", problems);
-		return "submitResults";
+		return "searchProblems";
 	}
 
 	private void setAccountAttribute(HttpSession session, Model model)
