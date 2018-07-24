@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -44,6 +45,7 @@ public class Problem
 	@Column(name = "type")
 	private String type;
 
+	@Lob
 	@Column(name = "sol", columnDefinition = "blob")
 	private byte[] sol;
 

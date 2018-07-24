@@ -10,8 +10,13 @@ public class Verdict {
 
 	private String executionTime;
 	
+	private String testCaseFailed;
+	
+	private String errorText;
+	
 	public Verdict() {
-
+		errorText = "";
+		testCaseFailed = "";
 	}
 
 	public Verdict(String status, String executionTime) {
@@ -36,6 +41,23 @@ public class Verdict {
 		this.executionTime = executionTime;
 		return this;
 	}
-	
+
+	public String getTestCaseFailed() {
+		return testCaseFailed;
+	}
+
+	public Verdict setTestCaseFailed(String testCaseFailed) {
+		this.testCaseFailed = testCaseFailed;
+		return this;
+	}
+
+	public String getErrorText() {
+		return errorText;
+	}
+
+	public Verdict setErrorText(String errorText) {
+		this.errorText = errorText;
+		return this;
+	}
 	
 }

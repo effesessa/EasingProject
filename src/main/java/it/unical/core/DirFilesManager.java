@@ -58,19 +58,12 @@ public class DirFilesManager {
 		return testCaseFile;
 	}
 	
-	public String getParentAndName(int i) {
-		switch (i) {
-		case SUBMITTED_FILE:
-			return submittedFile.getParent() + separator() + submittedFile.getName();
-		case TEST_CASE_FILE:
-			return testCaseFile.getParent() + separator() + testCaseFile.getName();
-		default:
-			return null;
-		}
-	}
-	
 	public File getRandomDirectory() {
 		return randomDirectory;
+	}
+	
+	public String separatorAndNameRandomDir() {
+		return separator() + randomDirectory.getName();
 	}
 	
 	public File getTestCaseFile() {
@@ -93,8 +86,8 @@ public class DirFilesManager {
 		return file.getAbsolutePath();
 	}
 	
-	public String getPathArchiveNoWorkingDir(String extractedFileName) {
-		return randomDirectory.getName() + separator() + nameArchive + separator() + extractedFileName;
+	public String getPathArchiveAndFile(String extractedFileName) {
+		return nameArchive + separator() + extractedFileName;
 	}
 	
 }

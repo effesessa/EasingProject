@@ -133,7 +133,7 @@ public class ContestController
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
 		final List<Quiz> quizzes = quizDAO.getAllQuizByContest(contest.getIdcontest());
-		debugQuiz(quizzes);
+		//debugQuiz(quizs);
 		model.addAttribute("quizzes", quizzes);
 		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);
@@ -143,6 +143,21 @@ public class ContestController
 			model.addAttribute("problems", "");
 		model.addAttribute("contest", contest.getIdcontest());
 		return "contest";
+	}
+	
+	public void debugQuiz(List<Quiz> quizs) {
+		System.out.println("**************************debug quiz**************************");
+		for (Quiz quiz : quizs) {
+			System.out.println("Quiz:" + quiz.getName());
+			for (Question question : quiz.getQuestions()) {
+				System.out.println("Question:" + question.getText());
+				for (Answer answer : question.getAnswers()) {
+					System.out.println("Answer:" + answer.getText());
+				}
+			}
+			System.out.println("__________________________________________________________");
+		}
+		System.out.println("**************************debug quiz**************************");
 	}
 
 	// Iscrizione a un Contest
@@ -189,23 +204,6 @@ public class ContestController
 			partecipationDAO.create(partecipation);
 			return "iscritto";
 		}
-	}
-
-	public void debugQuiz(List<Quiz> quizzes)
-	{
-		System.out.println("**************************debug quiz**************************");
-		for (final Quiz quiz : quizzes)
-		{
-			System.out.println("Quiz:" + quiz.getName());
-			for (final Question question : quiz.getQuestions())
-			{
-				System.out.println("Question:" + question.getText());
-				for (final Answer answer : question.getAnswers())
-					System.out.println("Answer:" + answer.getText());
-			}
-			System.out.println("__________________________________________________________");
-		}
-		System.out.println("**************************debug quiz**************************");
 	}
 
 	@RequestMapping(value = "/files/{file_name}", method = RequestMethod.GET)

@@ -1,13 +1,8 @@
 package it.unical.core.strategy;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import it.unical.core.DirFilesManager;
-import it.unical.core.Engine;
 import it.unical.core.Verdict;
 import it.unical.entities.Problem;
 import it.unical.forms.AddProblemForm;
@@ -31,7 +26,7 @@ public class AlgorithmStrategy extends AbstractStrategy {
 
 	@Override
 	public Verdict generateOutput(AddProblemForm problemDTO, Problem problem) {
-		MultipartFile multipartFile = problemDTO.getTestcase();
+		/*MultipartFile multipartFile = problemDTO.getTestcase();
 		File algorithmFile = new File(System.getProperty(Engine.WORKING_DIRECTORY) + multipartFile.getOriginalFilename());
 		try {
 			algorithmFile.createNewFile();
@@ -48,7 +43,8 @@ public class AlgorithmStrategy extends AbstractStrategy {
 			return verdict;
 		problem.setSol(verdict.getStatus().getBytes());
 		algorithmFile.delete();
-		return verdict.setStatus(Status.SUCCESS);
+		*/
+		return new Verdict().setStatus(Status.SUCCESS);
 	}
 	
 	@Override
