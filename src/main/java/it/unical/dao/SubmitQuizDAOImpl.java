@@ -78,9 +78,9 @@ public class SubmitQuizDAOImpl implements SubmitQuizDAO {
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from SubmitQuiz where idquiz = :idQuiz");
 		query.setParameter("idQuiz", idQuiz);
-		final List<SubmitQuiz> submitQuizs =  query.list();
+		final List<SubmitQuiz> submitQuizzes =  query.list();
 		session.close();
-		return submitQuizs;
+		return submitQuizzes;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,9 +89,9 @@ public class SubmitQuizDAOImpl implements SubmitQuizDAO {
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from SubmitQuiz where idquiz = :idQuiz");
 		query.setParameter("idQuiz", quiz.getId());
-		final List<SubmitQuiz> submitQuizs =  query.list();
+		final List<SubmitQuiz> submitQuizzes =  query.list();
 		session.close();
-		return submitQuizs;
+		return submitQuizzes;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -100,8 +100,8 @@ public class SubmitQuizDAOImpl implements SubmitQuizDAO {
 		final Session session = databaseHandler.getSessionFactory().openSession();
 		final Query query = session.createQuery("from SubmitQuiz where idquiz = :idQuiz and correction = true");
 		query.setParameter("idQuiz", quiz.getId());
-		final List<SubmitQuiz> submitQuizs =  query.list();
+		final List<SubmitQuiz> submitQuizzes =  query.list();
 		session.close();
-		return submitQuizs;
+		return submitQuizzes;
 	}
 }

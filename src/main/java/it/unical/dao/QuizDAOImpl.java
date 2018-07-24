@@ -53,12 +53,12 @@ public class QuizDAOImpl implements QuizDAO
 		final Query query = session.createQuery(
 				"select Q from Quiz Q join fetch Q.questions QE left join fetch QE.answers where Q.contest.idcontest = :contest");
 		query.setParameter("contest", contest);
-		final List<Quiz> quizs = query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		for (final Question quest : quizs.get(0).getQuestions())
+		final List<Quiz> quizzes = query.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		for (final Question quest : quizzes.get(0).getQuestions())
 			System.out.println(quest.getText());
 		session.close();
-		return quizs;
-		// return new HashSet<Quiz>(quizs);
+		return quizzes;
+		// return new HashSet<Quiz>(quizzes);
 	}
 
 	@Override

@@ -22,7 +22,7 @@
 				<div class="panel panel-default">
 					<div class="panel-body">
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
-							<c:forEach var="contest" items="${contestQuizsMap}" varStatus="index">
+							<c:forEach var="contest" items="${contestQuizzesMap}" varStatus="index">
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h4 class="panel-title">

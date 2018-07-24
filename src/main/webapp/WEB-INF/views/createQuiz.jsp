@@ -142,7 +142,7 @@
 				  	<p id="totalArgsNumber" class="form-control-static">1</p><br>
 					<i id="generate_newArg" class="material-icons md-24">add</i><br>
 					<div class="modal-footer">
-						<input id="generateQuizBtn" type="submit" class="btn btn-primary button-login" value="Generate Quiz" />
+						<button id="generateQuizBtn" class="btn btn-lg btn-primary">Generate Quiz</button>
 					</div>
 				</form:form>
 			</div>

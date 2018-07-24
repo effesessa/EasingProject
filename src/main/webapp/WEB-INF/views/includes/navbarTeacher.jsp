@@ -90,15 +90,15 @@
 					<!-- <li><a href="myProblems">
 						<i class="material-icons">view_list</i> <span>My Problems</span>
 					</a></li>
-					<li><a href="myQuizs">
-						<i class="material-icons">list</i> <span>My Quizs</span>
+					<li><a href="myQuizzes">
+						<i class="material-icons">list</i> <span>My Quizzes</span>
 					</a></li> -->
 					<li class="submenu"><a href="#"><i class="material-icons">list_alt</i><span>My...</span></a>
 						<ul>
 					   		<li class="submenu"><a href="myProblems">
 								<i class="material-icons">view_list</i> <span>My Problems</span>
 							</a></li>
-						   	<li class="submenu"><a href="myQuizs">
+						   	<li class="submenu"><a href="myQuizzes">
 								<i class="material-icons">list</i> <span>My Quizzes</span>
 							</a></li>
 				  		</ul>

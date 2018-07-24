@@ -33,7 +33,7 @@
 								<c:forEach items="${problems}" var="problem" varStatus="status">
 									<a href="#" data-nav="problem-${problem.id_problem}" class="pn-ProductNav_Link" ${status.first ? 'aria-selected="true"' : ''}>${problem.name }</a>
 								</c:forEach>
-								<c:forEach items="${quizs}" var="quiz" varStatus="status">
+								<c:forEach items="${quizzes}" var="quiz" varStatus="status">
 									<a href="#" data-nav="quiz-${quiz.id}" class="pn-ProductNav_Link">${quiz.name }</a>
 								</c:forEach>
 								<span id="pnIndicator" class="pn-ProductNav_Indicator"></span>
@@ -172,7 +172,7 @@
 								</form:form>
 							</div>
 						</c:forEach>
-						<c:forEach items="${quizs}" var="quiz" varStatus="status">
+						<c:forEach items="${quizzes}" var="quiz" varStatus="status">
 							<div id="quiz-${quiz.id}" style="display:none">
 								<h3><span class="label label-primary">${quiz.name}</span></h3><br>
 								<form action="submitQuiz" method="post" modelAttribute="submitQuizForm">

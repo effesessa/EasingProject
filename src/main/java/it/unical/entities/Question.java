@@ -21,8 +21,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name = "question")
+@JsonFilter("questionFilter")
 public class Question implements Serializable
 {
 
@@ -53,7 +58,7 @@ public class Question implements Serializable
 	public Type type = Type.OPEN;
 
 	@ManyToMany(mappedBy = "questions")
-	private List<Quiz> quizs = new ArrayList<>();
+	private List<Quiz> quizzes = new ArrayList<>();
 
 	@ManyToMany
 	@JoinTable(name = "question_answer", joinColumns = { @JoinColumn(name = "idquestion") }, inverseJoinColumns = {
@@ -63,8 +68,8 @@ public class Question implements Serializable
 
 	@OneToMany(mappedBy = "question")
 	@OrderBy("id DESC")
-	private Set<QuestionTag> tags = new  LinkedHashSet<>();
-	
+	private Set<QuestionTag> tags = new LinkedHashSet<>();
+
 	public Question()
 	{
 
@@ -90,9 +95,14 @@ public class Question implements Serializable
 		return points;
 	}
 
-	public List<Quiz> getQuizs()
+	public List<Quiz> getQuizzes()
 	{
-		return quizs;
+		return quizzes;
+	}
+
+	public Set<QuestionTag> getTags()
+	{
+		return tags;
 	}
 
 	public String getText()
@@ -125,9 +135,14 @@ public class Question implements Serializable
 		this.points = points;
 	}
 
-	public void setQuizs(List<Quiz> quizs)
+	public void setQuizzes(List<Quiz> quizzes)
 	{
-		this.quizs = quizs;
+		this.quizzes = quizzes;
+	}
+
+	public void setTags(Set<QuestionTag> tags)
+	{
+		this.tags = tags;
 	}
 
 	public void setText(final String text)
@@ -140,12 +155,15 @@ public class Question implements Serializable
 		this.type = type;
 	}
 
-	public Set<QuestionTag> getTags() {
-		return tags;
-	}
-
-	public void setTags(Set<QuestionTag> tags) {
-		this.tags = tags;
+	@Override
+	public String toString()
+	{
+		String correct;
+		if (correctAnswer == null)
+			correct = "";
+		else
+			correct = correctAnswer.getId().toString();
+		return id + ":_:" + text + ":_:" + points + ":_:" + correct + ":_:" + type;
 	}
 
 }

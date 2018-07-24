@@ -9,7 +9,7 @@
 	<title>Easing - I miei Quiz</title>
 	<%@ include file="includes/header.jsp" %>
 	<link href="resources/css/style.css" rel="stylesheet">
-	<link href="resources/css/myQuizsStyle.css" rel="stylesheet">
+	<link href="resources/css/myQuizzesStyle.css" rel="stylesheet">
 </head>
 <body>
 	<jsp:include page="includes/navbarTeacher.jsp"></jsp:include>
@@ -22,7 +22,7 @@
 						<h2>I miei Quiz</h2>
 						Verranno visualizzati solo i Quiz creati da una Giuria di cui sei leader.
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
-							<c:forEach var="contestMap" items="${contestQuizsMap}" varStatus="index">
+							<c:forEach var="contestMap" items="${contestQuizzesMap}" varStatus="index">
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h4 class="panel-title">
@@ -88,6 +88,6 @@
 	<!-- Custom Js -->
 	<script src="resources/js/admin.js"></script>
 	<script src="resources/js/bootbox.min.js"></script>
-	<script src="resources/js/myQuizsScript.js"></script>
+	<script src="resources/js/myQuizzesScript.js"></script>
 </body>
 </html>
