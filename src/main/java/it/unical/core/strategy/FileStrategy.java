@@ -37,12 +37,12 @@ public class FileStrategy extends AbstractStrategy {
 	
 	@Override
 	public Verdict process(Problem problem, DirFilesManager dirFilesManager) throws IOException {
-		Verdict verdict = Engine.compile(dirFilesManager.getParentAndName(DirFilesManager.SUBMITTED_FILE));
+		Verdict verdict = Engine.compile(dirFilesManager);
 		if(verdict.getStatus().equals(Status.COMPILE_ERROR))
 			return verdict;
 		long timeLimit = TimeUnit.SECONDS.toMillis((long)(float)problem.getTimelimit());
-		verdict = Engine.run(dirFilesManager.getParentAndName(DirFilesManager.SUBMITTED_FILE), timeLimit,
-				dirFilesManager.getParentAndName(DirFilesManager.TEST_CASE_FILE));
+		verdict = Engine.run(dirFilesManager, timeLimit,
+				dirFilesManager.getTestCaseFile().getName());
 		if(Status.statusList.contains(verdict.getStatus()))
 			return verdict;
 		String correctSolution = new String(problem.getSol(),"UTF-8");

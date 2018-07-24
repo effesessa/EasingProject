@@ -561,6 +561,8 @@ public class ProblemController
 		final DirFilesManager dirFilesManager = new DirFilesManager();
 		final Verdict verdict = typeContext.submit(problem, submitForm, dirFilesManager);
 		System.out.println(verdict.getStatus());
+		System.out.println(verdict.getErrorText());
+		System.out.println(verdict.getTestCaseFailed());
 		SubmissionHandler.save(context, problem, submitForm, verdict, dirFilesManager);
 		System.out.println("********************submit*********************");
 		return "redirect:/";

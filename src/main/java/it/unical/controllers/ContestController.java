@@ -133,7 +133,7 @@ public class ContestController
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
 		final List<Quiz> quizs = quizDAO.getAllQuizByContest(contest.getIdcontest());
-		debugQuiz(quizs);
+		//debugQuiz(quizs);
 		model.addAttribute("quizs", quizs);
 		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);

@@ -58,12 +58,12 @@ public class CompressStrategy extends AbstractStrategy {
 		Arrays.sort(files);
 		for (int i = 0; i < files.length; i+=2) {
 			File file = files[i];
-			verdict = Engine.compile(dirFilesManager.getParentAndName(DirFilesManager.SUBMITTED_FILE));
+			verdict = Engine.compile(dirFilesManager);
 			if(verdict.getStatus().equals(Status.COMPILE_ERROR))
 				return verdict;
 			long timeLimit = TimeUnit.SECONDS.toMillis((long)(float)problem.getTimelimit());
-			verdict = Engine.run(dirFilesManager.getParentAndName(DirFilesManager.SUBMITTED_FILE), timeLimit, 
-					dirFilesManager.getPathArchiveNoWorkingDir(file.getName()));
+			verdict = Engine.run(dirFilesManager, timeLimit, 
+					dirFilesManager.getPathArchiveAndFile(file.getName()));
 			if(Status.statusList.contains(verdict.getStatus()))
 				return verdict;
 			String correctSolution = FileUtils.readFileToString(files[i+1],"UTF-8");

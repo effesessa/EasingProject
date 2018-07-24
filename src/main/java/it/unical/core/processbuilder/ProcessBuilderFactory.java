@@ -2,6 +2,7 @@ package it.unical.core.processbuilder;
 
 import java.util.Map;
 import java.util.TreeMap;
+
 import it.unical.utils.StringUtils;
 
 /**
@@ -18,7 +19,7 @@ public class ProcessBuilderFactory {
 	
 	private ProcessBuilderFactory() {
 		corePackage = this.getClass().getPackage().getName() + ".";
-		processBuilderCache = new TreeMap<String, IProcessBuilder>(String.CASE_INSENSITIVE_ORDER);
+		processBuilderCache = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	}
 	
 	public static ProcessBuilderFactory getInstance() {
@@ -44,7 +45,7 @@ public class ProcessBuilderFactory {
 			return iProcessBuilder;
 		} 
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			return (IProcessBuilder) new NoOneProcessBuilder();
+			return new NoOneProcessBuilder();
 		}
 	}
 }

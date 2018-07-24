@@ -20,14 +20,14 @@ import it.unical.utils.Status;
 
 public class Engine {
 	
-	public static Verdict compile(String file) {
+	public static Verdict compile(DirFilesManager manager) {
 		Verdict verdict = new Verdict();
 		ProcessBuilderFactory processBuilderFactory = ProcessBuilderFactory.getInstance();
-		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(file);
+		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(manager.getSubmittedFile().getName());
 		if(!iProcessBuilder.compile())
 			return verdict.setStatus(Status.COMPILE_SUCCESS);
-		ProcessBuilder processBuilder = iProcessBuilder.getCompileProcessBuilder(file);
-		processBuilder.directory(new File(System.getProperty(WORKING_DIRECTORY)));
+		ProcessBuilder processBuilder = iProcessBuilder.getCompileProcessBuilder(manager.getSubmittedFile().getName());
+		processBuilder.directory(new File(System.getProperty(WORKING_DIRECTORY) + manager.separatorAndNameRandomDir()));
 		processBuilder.redirectErrorStream(true);
 		boolean compiled = true;
         try {
@@ -37,6 +37,7 @@ public class Engine {
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
                 while((line = bufferedReader.readLine()) != null) {
                     compiled = false;
+                    verdict.setErrorText(verdict.getErrorText() + line + System.getProperty("line.separator"));
                     System.out.println(line);
                 }
                 process.waitFor();
@@ -53,29 +54,38 @@ public class Engine {
         return verdict.setStatus(Status.COMPILE_ERROR);
 	}
 	
-	public static Verdict run(String file, long timeLimit, String...input) {
+	public static Verdict run(DirFilesManager manager, long timeLimit, String...input) {
 		Verdict verdict = new Verdict();
 		ProcessBuilderFactory processBuilderFactory = ProcessBuilderFactory.getInstance();
-		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(file);
+		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(manager.getSubmittedFile().getName());
 		ProcessBuilder processBuilder;
-		if(input.length > 0)
-			processBuilder = iProcessBuilder.getRunProcessBuilder(file,input[0]);
+		if(input.length > 0) {
+			verdict.setTestCaseFailed(input[0]);
+			processBuilder = iProcessBuilder.getRunProcessBuilder(manager.getSubmittedFile().getName(), input[0]);
+		}
 		else
-			processBuilder = iProcessBuilder.getRunProcessBuilder(file);
-		processBuilder.directory(new File(System.getProperty(WORKING_DIRECTORY)));
-        processBuilder.redirectErrorStream(true);
+			processBuilder = iProcessBuilder.getRunProcessBuilder(manager.getSubmittedFile().getName());
+		processBuilder.directory(new File(System.getProperty(WORKING_DIRECTORY) + manager.separatorAndNameRandomDir()));
+        processBuilder.redirectErrorStream(false);
 		String output = "";
         try {
         	long startTime = System.nanoTime();
             Process process = processBuilder.start();
-            if (!process.waitFor(timeLimit*2, TimeUnit.MILLISECONDS))
+            if (!process.waitFor(timeLimit, TimeUnit.MILLISECONDS)) 
                 return verdict.setStatus(Status.TIME_LIMIT_EXIT);
             long endTime = System.nanoTime();
             int exitCode = process.exitValue();
-            for (int i = 0; i < process.getErrorStream().available(); i++)
-				System.out.println(process.getErrorStream().read());
+            //READ ERROR STREAM
+            String errorText = "";
+            String line = "";
+            BufferedReader bufferOutput = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((line = bufferOutput.readLine()) != null) {
+            	errorText = errorText + line + System.getProperty("line.separator");
+            }
+            System.out.println(errorText);
+            //END READ ERROR STREAM
             if (exitCode != 0)
-            	return verdict.setStatus(Status.RUN_TIME_ERROR);
+            	return verdict.setStatus(Status.RUN_TIME_ERROR).setErrorText(errorText);
             output = IOUtils.toString(process.getInputStream());
             Long nanosTime = (endTime - startTime);
     		double secondsTime = (nanosTime.doubleValue() / 1000000000);
