@@ -28,13 +28,36 @@ public class QuestionDAOImpl implements QuestionDAO
 	{
 		databaseHandler.delete(question);
 	}
+	
+	@Override
+	public boolean exists(String textQuestion) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Question where text = :textQuestion group by text");
+		query.setParameter("textQuestion", textQuestion);
+		final Question question = (Question) query.uniqueResult();
+		session.close();
+		if(question == null)
+			return false;
+		return true;
+	}
 
 	@Override
 	public Question get(Integer id)
 	{
 		final Session session = databaseHandler.getSessionFactory().openSession();
-		final Query query = session.createQuery("from Question where id =: id");
+		final Query query = session.createQuery("from Question where id = :id");
 		query.setParameter("id", id);
+		final Question question = (Question) query.uniqueResult();
+		session.close();
+		return question;
+	}
+	
+	@Override
+	public Question getDistinctByText(String textQuestion) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Question Q left join fetch Q.tags T where Q.text = :textQuestion group by Q.text");
+		query.setParameter("textQuestion", textQuestion);
+		query.setMaxResults(1);
 		final Question question = (Question) query.uniqueResult();
 		session.close();
 		return question;

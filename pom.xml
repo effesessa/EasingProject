@@ -15,12 +15,6 @@
 		<hibernate.version>5.0.1.Final</hibernate.version>
 	</properties>
 	<dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <version>1.5.3.RELEASE</version>
-        </dependency>
-	
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

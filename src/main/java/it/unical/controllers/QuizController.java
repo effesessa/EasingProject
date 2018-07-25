@@ -149,7 +149,7 @@ public class QuizController
 		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
 		final Contest contest = contestDAO.getContestByName(addQuizForm.getContestName());
 		final QuestionTagDAO questionTagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
-
+		
 		// create quiz
 		final Quiz quiz = new Quiz();
 		quiz.setContest(contest);
@@ -169,6 +169,19 @@ public class QuizController
 			question.setType(getType(addQuizForm.getQuestion_types().get(questionKey)));
 			question.setQuizzes(quizes);
 			questionDAO.create(question);
+			if(addQuizForm.getQuestions_tags() != null || addQuizForm.getQuestions_tags().isEmpty()) {
+				if(questionDAO.exists(addQuizForm.getQuestions().get(i))) {
+					final Question existingQuestion =  questionDAO.getDistinctByText(addQuizForm.getQuestions().get(i));
+					for(QuestionTag questionTag: existingQuestion.getTags()) {
+						QuestionTag copyQuestionTag = new QuestionTag();
+						copyQuestionTag.setQuestion(question);
+						copyQuestionTag.setValue(questionTag.getValue());
+						questionTagDAO.create(copyQuestionTag);
+						question.getTags().add(copyQuestionTag);
+					}
+				}
+			}
+			questionDAO.update(question);
 			questions.add(question);
 		}
 		// update quiz

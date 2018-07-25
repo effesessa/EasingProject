@@ -89,7 +89,7 @@
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 	
-	<bean id="QuestionTagDAO" class="it.unical.dao.QuestionTagDAOImpl">
+	<bean id="questionTagDAO" class="it.unical.dao.QuestionTagDAOImpl">
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 	

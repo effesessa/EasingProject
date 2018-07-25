@@ -17,4 +17,8 @@ public interface QuestionDAO {
 	List<Question> getQuestionsByQuiz(Integer idQuiz);
 
 	List<Question> getRandomQuestions(String tagValue, Integer limit);
+
+	boolean exists(String textQuestion);
+
+	Question getDistinctByText(String textQuestion);
 }
