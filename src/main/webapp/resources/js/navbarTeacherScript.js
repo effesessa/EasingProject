@@ -2,6 +2,24 @@
  * 
  */
 var c = [];
+var nav_newAnswer = '<div class="answer" id=""> \
+				<div class="row">\
+					<div class="form-check col-md-1"> \
+						<input class="form-check-input correctAnswer" type="radio" name="" id="" value="" required> \
+						<label class="form-check-label" for=""></label> \
+					</div> \
+					<div class="form-group col-md-11"> \
+						<label for=""></label> \
+						<div class="input-group"> \
+							<span class="input-group-addon"> \
+								<i class="glyphicon glyphicon-chevron-right"></i> \
+							</span> \
+							<input type="text" class="form-control input-sm" name="" id="" placeholder="Insert answer" required> \
+						</div> \
+					</div> \
+				</div> \
+			</div>';
+
 function init()
 {
 	var fileExtension;
@@ -99,6 +117,65 @@ function init()
 			});
 		}
 	});
+	
+	$.ajax(
+	{
+		type : "GET", url : "createProblem?req=contests", datatype : "json",
+		success : function(data)
+		{
+			$('#newQuestion_contestName').html("");
+			data = $.parseJSON(data);
+			var contests = [];
+			$.each(data, function(key, val)
+			{
+				contests.push('<option id="' + val + '">' + val + '</option>');
+			})
+			$('#newQuestion_contestName').append(contests);
+		}
+	});
+	
+	$.ajax(
+	{
+		type : "GET", url : "quiz?req=tags", datatype : "json",
+		success : function(data)
+		{
+			data = $.parseJSON(data);
+			var tags = [];
+			$.each(data, function(key, val)
+			{
+				tags.push(val);
+			})
+			
+			tagsnames = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				local: $.map(tags, function (tag) {
+					return {
+						name: tag
+					};
+				})
+			});
+			tagsnames.initialize();
+			
+			$("#addQuestionModal .questionTags input").tagsinput({
+				typeaheadjs: [{
+					minLength: 1,
+					highlight: true,
+				},{
+					minlength: 1,
+					name: 'tagsnames',
+					displayKey: 'name',
+					valueKey: 'name',
+					source: tagsnames.ttAdapter()
+				}],
+				freeInput: true,
+				confirmKeys: [13, 44, 32],
+				trimValue: true
+			});
+		}
+	});
+	
+	$('#addQuestionModal form').submit(submitNewQuestion);
 }
 
 function getContests()
@@ -180,4 +257,67 @@ function getSubjectsAndJuries()
 	});
 }
 
+function nav_addAnswer()
+{
+	var lastAnswerID = $("#addQuestionModal").find(".answer").last().attr("id");
+	
+	// If there are no answers, initialize lastAnswerID
+	if(typeof lastAnswerID == "undefined")
+	{
+		lastAnswerID = 0;
+	}
+	else
+	{
+		lastAnswerID = lastAnswerID.replace(/answer/gi, "");
+	}
+	lastAnswerID++;
+	$(nav_newAnswer).insertBefore($("#addQuestionModal").find(".questionTags").closest(".form-group"));
+	var lastAnswer = $("#addQuestionModal").find(".answer").last();
+	
+	lastAnswer.attr("id","answer"+lastAnswerID);
+	lastAnswer.find("label").last().attr("for", "answer"+lastAnswerID+"");
+	lastAnswer.find("input").last().attr("name", "question_answers[question1]");
+	lastAnswer.find("input").last().attr("id", "answer"+lastAnswerID+"");
+	lastAnswer.find("label").last().html("Risposta "+lastAnswerID);
+	
+	lastAnswer.find("input").first().attr("name", "question_correctAnswer[question1]");
+	lastAnswer.find("label").first().attr("for", "answer"+lastAnswerID+"_correct");
+	lastAnswer.find("input").first().attr("id", "answer"+lastAnswerID+"_correct");
+}
+
+function nav_toggleForm()
+{
+	if (this.value == 'open')
+	{
+		$("#addQuestionModal .answer").remove();
+	}
+	else if (this.value == 'closed')
+	{
+		nav_addAnswer();
+		nav_addAnswer();
+		nav_addAnswer();
+	}
+}
+
+function setCorrectValue()
+{
+	$("#addQuestionModal").find(".correctAnswer").attr("value","");
+	$(this).attr("value","correct");
+}
+
+function submitNewQuestion(e)
+{
+	e.preventDefault();
+	
+	$('#addQuestionModal').find(".answer").each(function(idx, val)
+	{
+		var answer = $(this).find("input").last().val();
+		$(this).find("input").first().val(answer);
+	});
+	
+	this.submit();
+}
+
 $(document).ready(init);
+$(document).on('change','input.nav-questionType',nav_toggleForm);
+$(document).on('change','input.correctAnswer',setCorrectValue);

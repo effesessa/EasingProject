@@ -146,7 +146,7 @@
 												</c:choose>
 												</td>
 												<td>
-													<a href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}">
+													<a href="viewSubmit?submitId=${submit.id }">
 														<i class="material-icons">get_app</i>
 													</a>
 												</td>

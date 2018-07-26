@@ -57,6 +57,12 @@
 								Tempo d'esecuzione: ${submit.score}s
 							</c:if>
 							<a id="downloadBtn" href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}" class="btn btn-info">Scarica Sottomissione</a>
+							<c:if test="${submit.info!='CORRECT' && user.professor}">
+								<form:form action="" method="post">
+									<input type="hidden" >
+									<button type="submit" class="btn btn-primary">OEEE</button>
+								</form:form>
+							</c:if>
 						</h2>
 					</div>
 					<pre>

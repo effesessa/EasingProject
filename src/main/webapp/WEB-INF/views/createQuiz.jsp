@@ -21,7 +21,7 @@
 					<div class="header">
 						<h2>Create Quiz</h2>
 					</div>
-					<form:form id="quizForm" class="form-horizontal" action="addQuiz" method="post" modelAttribute="addQuizForm">
+					<form:form id="quizForm" class="form-horizontal" action="addQuizFake" method="post" modelAttribute="addQuizForm">
 						<input type="hidden" id="quizPoints" name="quizPoints" />
 						<a type="button" class="btn btn-default btn-sm toRight" href="#" data-toggle="modal" data-target="#generateModal">Generate Quiz</a><br><br>
 						<div class="border">

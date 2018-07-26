@@ -98,3 +98,13 @@ hr
 	margin: 0;
 	border-width: 2px;
 }
+
+.answer
+{
+	padding-left: 2em;
+}
+
+#addQuestionModal .answer .form-check
+{
+	width: 0;
+}

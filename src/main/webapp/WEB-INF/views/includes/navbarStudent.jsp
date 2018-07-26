@@ -37,7 +37,7 @@
 			<!-- User Info -->
 			<div class="user-info">
 				<div class="info-container">
-					<div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${user.name}${user.surname}</div>
+					<div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${user.name}<br>${user.surname}</div>
 					<div class="id_number">${user.id}</div>
 					<a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a>
 				</div>

@@ -48,7 +48,7 @@
 			<!-- User Info -->
 			<div class="user-info">
 				<div class="info-container">
-					<div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${user.name}${user.surname}</div>
+					<div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${user.name}<br>${user.surname}</div>
 					<div class="id_number">${user.id}</div>
 					<a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a>
 				</div>
@@ -84,6 +84,9 @@
 					<li><a href="#" data-toggle="modal" data-target="#myModal3" onclick="getContests()">
 						<i class="material-icons">note_add</i> <span>Add Problem</span>
 					</a></li>
+					<li><a href="#" data-toggle="modal" data-target="#addQuestionModal" onclick="getContests()">
+						<i class="material-icons">help_outline</i> <span>Add Question</span>
+					</a></li>
 					<li><a href="createQuiz">
 						<i class="material-icons">list_alt</i> <span>Add Quiz</span>
 					</a></li>
@@ -93,7 +96,7 @@
 					<li><a href="myQuizzes">
 						<i class="material-icons">list</i> <span>My Quizzes</span>
 					</a></li> -->
-					<li class="submenu"><a href="#"><i class="material-icons">list_alt</i><span>My...</span></a>
+					<li class="submenu"><a href="#"><i class="material-icons">account_box</i><span>My...</span></a>
 						<ul>
 					   		<li class="submenu"><a href="myProblems">
 								<i class="material-icons">view_list</i> <span>My Problems</span>
@@ -351,13 +354,81 @@
 			</div>
 		</div>
 	</div>
+	<div id="addQuestionModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h3 class="modal-title">Create free Question</h3>
+				</div>
+				<form:form action="addQuestions" method="post" modelAttribute="addQuestionsForm">
+					<div class="form-group">
+						<label for="newQuestion_contestName">Contest Name</label>
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-education"></i>
+							</span>
+							<select class="form-control" id="newQuestion_contestName" name="contestName" required>
+							</select>
+						</div>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input nav-questionType" type="radio" name="question_types[question1]" id="newQuestion_open" value="open" checked>
+					  	<label class="form-check-label" for="newQuestion_open">Open question</label>
+					</div>
+					<div class="form-check">
+			  			<input class="form-check-input nav-questionType" type="radio" name="question_types[question1]" id="newQuestion_closed" value="closed">
+				  		<label class="form-check-label" for="newQuestion_closed">Closed question</label>
+					</div>
+					<div class="row">
+						<div class="col-md-9">
+							<div class="form-group">
+								<label for="newQuestion_name">Question</label>
+								<div class="input-group">
+									<span class="input-group-addon">
+										<i class="glyphicon glyphicon-question-sign"></i>
+									</span>
+									<input type="text" class="form-control input-sm questionName" name="questions" id="newQuestion_name" placeholder="Insert question" required autofocus>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+						    	<label for="newQuestion_points">Points</label>
+								<div class="input-group">
+						    		<span class="input-group-addon">
+										<i class="glyphicon glyphicon-time"></i>
+									</span>
+									<input class="form-control input-sm questionPoints" id="newQuestion_points" name="question_points[question1]" type="number" min=1 step=1 value="5" required />
+								</div>
+						  	</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="newQuestion_tags">Tags</label><br>
+						<small class="form-text text-muted">Insert Tags divided by comma or space</small>
+						<div class="input-group questionTags">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-tags"></i>
+							</span>
+							<input type="text" class="form-control" name="question_tags[question1]" id="newQuestion_tags">
+						</div>
+						<small class="form-text text-muted popularQuestionsTags">
+						</small>
+					</div>
+					<div class="modal-footer">
+						<input type="submit" class="btn btn-primary" value="Add Question" />
+					</div>
+				</form:form>
+			</div>
+		</div>
+	</div>
+	
 	<%@ include file="footer.jsp" %>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
 	<script src="resources/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
 	<script src="resources/js/typeahead.bundle.js"></script>
 	<script src="resources/js/navbarTeacherScript.js"></script>
-	<!-- <script src="resources/plugins/jquery/jquery.min.js"></script>
-	<script src="resources/plugins/bootstrap/js/bootstrap.js"></script> -->
 	
 </body>
 </html>

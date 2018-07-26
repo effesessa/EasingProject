@@ -81,45 +81,89 @@ public class QuizController
 	@RequestMapping(value = "/addQuestions", method = RequestMethod.POST)
 	public String addQuestions(final HttpSession session, @ModelAttribute AddQuestionsForm form, final Model model)
 	{
+
+		System.out.println("DOMANDE:");
+		for (final String string : form.getQuestions())
+			System.out.println(string);
+		System.out.println("PUNTI:");
+		for (final Map.Entry<String, Integer> entry : form.getQuestion_points().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
+		System.out.println("TIPOLOGIA:");
+		for (final Map.Entry<String, String> entry : form.getQuestion_types().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
+		if (form.getQuestion_correctAnswer() != null)
+		{
+			System.out.println("RISPOSTE CORRETTE:");
+			for (final Map.Entry<String, String> entry : form.getQuestion_correctAnswer().entrySet())
+				System.out.println(entry.getKey() + "/" + entry.getValue());
+			System.out.println("RISPOSTE");
+			for (final Map.Entry<String, List<String>> entry : form.getQuestion_answers().entrySet())
+				System.out.println(entry.getKey() + "/" + entry.getValue());
+		}
+		System.out.println("TAGS");
+		for (final Map.Entry<String, String> entry : form.getQuestion_tags().entrySet())
+			System.out.println(entry.getKey() + "/" + entry.getValue());
+
 		_setAccountAttribute(session, model);
 		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
 		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
 		final QuestionTagDAO questionTagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
 
 		final List<Question> questions = new ArrayList<>();
-		for (final String questionText : form.getQuestions())
+		// for (final String questionText : form.getQuestions())
+		// {
+		// final Question question = new Question();
+		// question.setText(questionText);
+		// question.setPoints(form.getQuestion_points().get(questionText));
+		// System.out.println();
+		// System.out.println(questionText);
+		// question.setType(getType(form.getQuestion_types().get(questionText)));
+		// questionDAO.create(question);
+		// questions.add(question);
+		// }
+
+		for (int i = 0; i < form.getQuestions().size(); i++)
 		{
 			final Question question = new Question();
+			final String questionText = form.getQuestions().get(i);
+			final String questionKey = "question" + (i + 1);
 			question.setText(questionText);
-			question.setPoints(Integer.parseInt(form.getQuestion_points().get(questionText)));
-			question.setType(getType(form.getQuestion_types().get(questionText)));
+			question.setPoints(form.getQuestion_points().get(questionKey));
+			System.out.println();
+			System.out.println(questionText);
+			question.setType(getType(form.getQuestion_types().get(questionKey)));
 			questionDAO.create(question);
 			questions.add(question);
 		}
 
+		int i = 1;
 		final Set<Answer> answers = new LinkedHashSet<>();
 		for (final Question question : questions)
 		{
-			for (final String textAnswer : form.getQuestion_answers().get(question.getText()))
+			final String questionKey = "question" + i;
+
+			if (form.getQuestion_answers() != null && form.getQuestion_answers().containsKey(questionKey))
 			{
-				Answer answer = new Answer();
-				answer.setText(textAnswer);
-				if (!answerDAO.exists(textAnswer))
-					answerDAO.create(answer);
-				else
-					answer = answerDAO.getByText(textAnswer);
-				answers.add(answer);
+				for (final String textAnswer : form.getQuestion_answers().get(questionKey))
+				{
+					Answer answer = new Answer();
+					answer.setText(textAnswer);
+					if (!answerDAO.exists(textAnswer))
+						answerDAO.create(answer);
+					else
+						answer = answerDAO.getByText(textAnswer);
+					answers.add(answer);
+				}
+				if (form.getQuestion_correctAnswer().containsKey(questionKey))
+				{
+					final Answer correctAnswer = answerDAO.getByText(form.getQuestion_correctAnswer().get(questionKey));
+					question.setCorrectAnswer(correctAnswer);
+				}
+				question.setAnswers(answers);
 			}
-			if (form.getQuestion_correctAnswer().containsKey(question.getText()))
+			if (form.getQuestion_tags().containsKey(questionKey))
 			{
-				final Answer correctAnswer = answerDAO
-						.getByText(form.getQuestion_correctAnswer().get(question.getText()));
-				question.setCorrectAnswer(correctAnswer);
-			}
-			question.setAnswers(answers);
-			if (form.getQuestion_tags().containsKey(question.getText()))
-			{
-				final String tagsToSplitted = form.getQuestion_tags().get(question.getText());
+				final String tagsToSplitted = form.getQuestion_tags().get(questionKey);
 				final Set<QuestionTag> tags = new LinkedHashSet<>();
 				for (final String questionTagValue : tagsToSplitted.split(","))
 				{
@@ -134,6 +178,7 @@ public class QuizController
 				question.setTags(tags);
 			}
 			questionDAO.update(question);
+			i++;
 		}
 		return "redirect:/";
 	}
@@ -149,7 +194,7 @@ public class QuizController
 		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
 		final Contest contest = contestDAO.getContestByName(addQuizForm.getContestName());
 		final QuestionTagDAO questionTagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
-		
+
 		// create quiz
 		final Quiz quiz = new Quiz();
 		quiz.setContest(contest);
@@ -169,18 +214,19 @@ public class QuizController
 			question.setType(getType(addQuizForm.getQuestion_types().get(questionKey)));
 			question.setQuizzes(quizes);
 			questionDAO.create(question);
-			if(addQuizForm.getQuestions_tags() != null || addQuizForm.getQuestions_tags().isEmpty()) {
-				if(questionDAO.exists(addQuizForm.getQuestions().get(i))) {
-					final Question existingQuestion =  questionDAO.getDistinctByText(addQuizForm.getQuestions().get(i));
-					for(QuestionTag questionTag: existingQuestion.getTags()) {
-						QuestionTag copyQuestionTag = new QuestionTag();
+			if (addQuizForm.getQuestions_tags() != null || addQuizForm.getQuestions_tags().isEmpty())
+				if (questionDAO.exists(addQuizForm.getQuestions().get(i)))
+				{
+					final Question existingQuestion = questionDAO.getDistinctByText(addQuizForm.getQuestions().get(i));
+					for (final QuestionTag questionTag : existingQuestion.getTags())
+					{
+						final QuestionTag copyQuestionTag = new QuestionTag();
 						copyQuestionTag.setQuestion(question);
 						copyQuestionTag.setValue(questionTag.getValue());
 						questionTagDAO.create(copyQuestionTag);
 						question.getTags().add(copyQuestionTag);
 					}
 				}
-			}
 			questionDAO.update(question);
 			questions.add(question);
 		}
