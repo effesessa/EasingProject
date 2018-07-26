@@ -35,6 +35,10 @@ public class SubmissionHandler {
 		submit.setIdTeam(team);
 		submit.setProblem(problem);
 		submit.setInfo(verdict.getStatus());
+		if(verdict.getErrorText() != null && !verdict.getErrorText().equals(""))
+			submit.setError(verdict.getErrorText());
+		if(verdict.getTestCaseFailed() != null && !verdict.getTestCaseFailed().equals(""))
+			submit.setTestCaseFailed(verdict.getTestCaseFailed());
 		if(verdict.getExecutionTime() != null)
 			submit.setScore(verdict.getExecutionTime());
 		submit.setDate(DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDate.now()));

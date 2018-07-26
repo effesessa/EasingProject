@@ -78,6 +78,56 @@ public class QuizController
 			model.addAttribute("typeSession", "Login");
 	}
 
+		@RequestMapping(value = "/editOrDeleteOrCloneQuiz", method = RequestMethod.POST)
+	public String editOrDeleteOrCloneQuiz(@RequestParam String op, @RequestParam String id,
+			@RequestParam(required = false) String contestName, @ModelAttribute AddQuizForm form, HttpSession session, Model model) {
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+		final QuestionDAO questionDAO = (QuestionDAO) context.getBean("questionDAO");
+		final AnswerDAO answerDAO = (AnswerDAO) context.getBean("answerDAO");
+		final QuestionTagDAO questionTagDAO = (QuestionTagDAO) context.getBean("questionTagDAO");
+		final SubmitQuizDAO submitQuizDAO = (SubmitQuizDAO) context.getBean("submitQuizDAO");
+		final SubmitAnswerDAO submitAnswerDAO = (SubmitAnswerDAO) context.getBean("submitAnswerDAO");
+		
+		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
+		if (op != null && userID != null) { // userID.equals(problem.getJury().getProfessor().getId()
+			final Quiz quiz = quizDAO.get(Integer.parseInt(id));
+			switch (op) {
+				case "deleteQuiz":
+					Set<Question> questions = quiz.getQuestions();
+					
+					for (final Question question : questions) {
+						System.out.println("question:" + question.getText());
+						for (final QuestionTag questionTag : question.getTags()) {
+							System.out.println("questionTag:" + questionTag.getValue());
+							questionTagDAO.delete(questionTag);
+						}
+					}
+					
+					final List<SubmitQuiz> submitQuizzes = submitQuizDAO.getAllByQuiz(quiz.getId());
+					for (final SubmitQuiz submitQuiz : submitQuizzes) {
+						final List<SubmitAnswer> submitAnswers = submitAnswerDAO.getBySubmitQuiz(submitQuiz.getId());
+						for (final SubmitAnswer submitAnswer : submitAnswers) {
+							submitAnswerDAO.delete(submitAnswer);
+						}
+						submitQuizDAO.delete(submitQuiz);
+					}
+					quizDAO.delete(quiz);
+					for (final Question question : questions) {
+						final List<Answer> answers = answerDAO.getOrphanAnswersByQuestion(question.getId());
+						questionDAO.delete(question);
+						for (Answer answer : answers) {
+							System.out.println("answer:" + answer.getText());
+							answerDAO.delete(answer);
+						}
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		return "redirect:/";
+	}
+
 	@RequestMapping(value = "/addQuestions", method = RequestMethod.POST)
 	public String addQuestions(final HttpSession session, @ModelAttribute AddQuestionsForm form, final Model model)
 	{

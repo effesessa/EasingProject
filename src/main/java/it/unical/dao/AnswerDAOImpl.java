@@ -75,6 +75,20 @@ public class AnswerDAOImpl implements AnswerDAO
 		session.close();
 		return answer;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Answer> getOrphanAnswersByQuestion(Integer id)
+	{
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		String hql = "from Answer A join fetch A.questions Q where Q.id = :id and not exists "
+				+ "(from Question Q2 join Q2.answers A2 where Q2.id != Q.id and A.id = A2.id)";
+		final Query query = session.createQuery(hql);
+		query.setParameter("id", id);
+		final List<Answer> answers = query.list();
+		session.close();
+		return answers;
+	}
 
 	public DatabaseHandler getDatabaseHandler()
 	{

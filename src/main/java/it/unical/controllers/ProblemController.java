@@ -1,15 +1,8 @@
 package it.unical.controllers;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -63,17 +54,15 @@ import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.AddProblemForm;
 import it.unical.forms.SubmitForm;
-import it.unical.utils.Judge;
 import it.unical.utils.SessionUtils;
 import it.unical.utils.Status;
+import it.unical.utils.StringUtils;
 import it.unical.utils.TypeFileExtension;
 
 @Controller
 public class ProblemController
 {
 	private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
-	private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
 	@Autowired
 	private WebApplicationContext context;
@@ -247,6 +236,20 @@ public class ProblemController
 			System.out.println("TODO redirect with popup errore" + typeContext.getVerdict().getStatus());
 		return "redirect:/";
 	}
+	
+	//Alessandro metti il nome del mapping che vuoi
+	@RequestMapping(value = "/onOffShowTestCaseForIncorrectSubmission", method = RequestMethod.POST)
+	public String onOffShowTestCaseForIncorrectSubmission(@RequestParam String idSubmit, HttpSession session, Model model) {
+		_setAccountAttribute(session, model);
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Submit submit = submitDAO.get(Integer.parseInt(idSubmit));
+		if(!submit.isShowTcf())
+			submit.setShowTcf(true);
+		else
+			submit.setShowTcf(false);
+		submitDAO.update(submit);
+		return "redirect:/";
+	}
 
 	@RequestMapping(value = "/myProblems", method = RequestMethod.GET)
 	public String addProblem(HttpSession session, Model model) throws IOException
@@ -260,8 +263,6 @@ public class ProblemController
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 
-		// final List<String> professorContests =
-		// contestDAO.getContestsNamesByProfessor(user.getId());
 		final List<Contest> professorContests = contestDAO.getContestsByProfessor(user.getId());
 		final List<Problem> problemsByProfessor = problemDAO.getProblemsByProfessor(user.getId());
 
@@ -287,7 +288,6 @@ public class ProblemController
 			}
 			catch (final IOException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -301,7 +301,6 @@ public class ProblemController
 			}
 			catch (final IOException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -315,7 +314,6 @@ public class ProblemController
 			}
 			catch (final IOException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -328,12 +326,9 @@ public class ProblemController
 		_setAccountAttribute(session, model);
 
 		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-
 		final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
 		final Team team = teamDAO.getByName(teamname);
-
 		Submit submit = submitDAO.getAllSubmitByProblemAndTeamFake(Integer.parseInt(problemid), team.getId());
-
 		final File fileSolution = new File(path);
 		final byte[] fileData = new byte[(int) fileSolution.length()];
 
@@ -357,6 +352,28 @@ public class ProblemController
 
 	}
 
+	@RequestMapping(value = "/downloadTestCaseFailed/{submitId}", method = RequestMethod.GET)
+	public void downloadTestCaseFailed(@PathVariable String submitId, HttpSession session,
+			HttpServletResponse response) {
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Submit submit = submitDAO.get(Integer.parseInt(submitId));
+		final String mimeType = TypeFileExtension.getMimeType(submit.getType());
+		response.setContentType(mimeType);
+		response.setHeader("Content-disposition", "attachment; filename=" + Engine.BASE_NAME_INPUT + Engine.DOT + submit.getType());
+		String testCaseFailedStr = submit.getTestCaseFailed();
+		testCaseFailedStr = StringUtils.stripDiacritics(testCaseFailedStr);
+		testCaseFailedStr = StringUtils.checkAndRemoveUTF8BOM(testCaseFailedStr);
+		final byte[] data = testCaseFailedStr.getBytes();
+		response.setContentLength(data.length);
+		try {
+			response.getOutputStream().write(data);
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@RequestMapping(value = "/downloadSubmit/{submitId}", method = RequestMethod.GET)
 	public void downloadSubmit(@PathVariable String submitId, HttpSession session, HttpServletResponse response)
 	{
@@ -450,7 +467,7 @@ public class ProblemController
 		return "redirect:/myProblems";
 	}
 
-	private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
+	/*private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
 	{
 
 		final Judge judge = new Judge("java", team.getName());
@@ -528,7 +545,7 @@ public class ProblemController
 			e.printStackTrace();
 		}
 		return info;
-	}
+	}*/
 
 	/*
 	 * final TypeContext typeContext = TypeContext.getInstance();
@@ -546,25 +563,16 @@ public class ProblemController
 	 */
 
 	@RequestMapping(value = "/submit", method = RequestMethod.POST)
-	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException
-	{
+	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException {
 		_setAccountAttribute(session, model);
-		System.out.println("********************submit*********************");
-
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 		final Problem problem = problemDAO.get(submitForm.getIdProblem());
-		System.out.println(submitForm.getIdProblem());
-		System.out.println(submitForm.getTeam());
-		System.out.println(submitForm.getSolution().getOriginalFilename());
 		final TypeContext typeContext = TypeContext.getInstance();
 		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
 		final DirFilesManager dirFilesManager = new DirFilesManager();
 		final Verdict verdict = typeContext.submit(problem, submitForm, dirFilesManager);
-		System.out.println(verdict.getStatus());
-		System.out.println(verdict.getErrorText());
-		System.out.println(verdict.getTestCaseFailed());
+		System.out.println("newsubmit Verdicti:" + verdict.getTestCaseFailed());
 		SubmissionHandler.save(context, problem, submitForm, verdict, dirFilesManager);
-		System.out.println("********************submit*********************");
 		return "redirect:/";
 	}
 
