@@ -346,7 +346,7 @@ public class QuizController
 			return "createQuiz";
 	}
 
-	@RequestMapping(value = "/editOrDeleteOrCloneQuiz", method = RequestMethod.POST)
+	@RequestMapping(value = "/quiz", method = RequestMethod.POST)
 	public String editOrDeleteOrCloneQuiz(@RequestParam String op, @RequestParam String id,
 			@RequestParam(required = false) String contestName, @ModelAttribute AddQuizForm form, HttpSession session,
 			Model model)

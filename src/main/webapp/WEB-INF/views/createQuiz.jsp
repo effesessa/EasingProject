@@ -138,7 +138,7 @@
 						</div>
 				  	</div>
 				  	<hr/>
-				  	<p class="form-control-static">TOTALE</p>
+				  	<p class="form-control-static">TOTAL</p>
 				  	<p id="totalArgsNumber" class="form-control-static">1</p><br>
 					<i id="generate_newArg" class="material-icons md-24">add</i><br>
 					<div class="modal-footer">

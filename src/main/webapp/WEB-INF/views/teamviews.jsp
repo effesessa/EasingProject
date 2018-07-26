@@ -57,7 +57,7 @@
 			<div class="block-header">
 				<div class="card">
 					<div class="header">
-						<h2>I MIEI TEAM</h2>
+						<h2>My Teams</h2>
 					</div>
 					<div class="body">
 						<c:choose>
@@ -66,7 +66,7 @@
 									<table class="table table-hover dashboard-task-infos">
 										<thead>
 											<tr>
-												<th>Nome Team</th>
+												<th>Team Name</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -80,11 +80,11 @@
 								</div>
 							</c:when>
 							<c:otherwise>
-								<h4>Non sei iscritto a nessun Team. Creane uno!</h4>
+								<h4>You are not in any Team now. Create one!</h4>
 							</c:otherwise>
 						</c:choose>
 						<br>
-						<a href="#" data-toggle="modal" data-target="#newTeamModal" class="btn btn-lg btn-primary button-bookatable createTeam">Crea Team</a>
+						<a href="#" data-toggle="modal" data-target="#newTeamModal" class="btn btn-lg btn-primary button-bookatable createTeam">Create Team</a>
 					</div>
 				</div>
 			</div>
@@ -97,36 +97,36 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Crea Nuovo Team</h4>
+					<h4 class="modal-title">Create Team</h4>
 				</div>
 				<form:form action="addTeam" method="post" modelAttribute="addTeamForm" id="newTeamForm">
 					<div class="form-group">
-						<label for="newTeam_name">Nome del Team</label>
+						<label for="newTeam_name">Team Name</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-education"></i>
 							</span>
-							<input type="text" class="form-control" name="name" id="newTeam_name" placeholder="Nome Team" required autofocus>
+							<input type="text" class="form-control" name="name" id="newTeam_name" placeholder="Team Name" required autofocus>
 						</div>
 					</div>
 						
 					<div class="form-group">
-						<label for="newTeam_member2">Secondo Membro</label>
+						<label for="newTeam_member2">Second Member</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-user"></i>
 							</span>
-							<input type="text" class="form-control" name="member2" id="newTeam_member2" placeholder="Matricola" required>
+							<input type="text" class="form-control" name="member2" id="newTeam_member2" placeholder="Student ID" required>
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label for="newTeam_member3">Terzo Membro</label>
+						<label for="newTeam_member3">Third Member</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-user"></i>
 							</span>
-							<input type="text" class="form-control" name="member3" id="newTeam_member3" placeholder="Matricola" required>
+							<input type="text" class="form-control" name="member3" id="newTeam_member3" placeholder="Student ID" required>
 						</div>
 					</div>
 					

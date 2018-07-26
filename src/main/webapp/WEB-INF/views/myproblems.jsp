@@ -19,8 +19,8 @@
 			<div class="block-header">
 				<div class="card" style="height: auto !important;">
 					<div class="header">
-						<h2>I miei Problemi</h2>
-						Verranno visualizzati solo i Problemi creati da una Giuria di cui sei leader.
+						<h2>My Problems</h2>
+						Only Problems created by a Jury which you are leader will be shown.
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
 							<c:forEach var="contest" items="${contests}" varStatus="index">
 								<div class="panel panel-default">
@@ -61,13 +61,13 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h3 class="modal-title">Modifica un Problema</h3>
+					<h3 class="modal-title">Edit Problem</h3>
 				</div>
 				<form:form action="problem" method="post" enctype="multipart/form-data" modelAttribute="problemForm">
 					<input type="hidden" name="op" value="editProblem"/> 
 					<input type="hidden" name="id" id="id" value=""/> 
 					<div class="form-group">
-						<label for="editP_contest">Nome Contest</label>
+						<label for="editP_contest">Contest Name</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-education"></i>
@@ -77,25 +77,25 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="editP_problemName">Nome</label>
+						<label for="editP_problemName">Name</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-text-size"></i>
 							</span>
-							<input type="text" class="form-control" name="name" id="editP_problemName" placeholder="Nome del Problema" required autofocus>
+							<input type="text" class="form-control" name="name" id="editP_problemName" placeholder="Problem Name" required autofocus>
 						</div>
 					</div>
 					<div class="form-group">
-				    	<label for="editP_description">Descrizione</label>
+				    	<label for="editP_description">Description</label>
 						<div class="input-group">
 				    		<span class="input-group-addon">
 								<i class="glyphicon glyphicon-pencil"></i>
 							</span>
-							<textarea class="form-control" id="editP_description" name="description" rows="5" cols="60" placeholder="Inserire una breve descrizione del Problema" style="resize: vertical;" required></textarea>		
+							<textarea class="form-control" id="editP_description" name="description" rows="5" cols="60" placeholder="Insert a Problem description" style="resize: vertical;" required></textarea>		
 						</div>
 				  	</div>
 					<div class="form-group">
-				    	<label for="editP_download">Testo del Problema</label>
+				    	<label for="editP_download">Essay</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-file"></i>
@@ -104,7 +104,7 @@
 						</div>
 			  		</div>
 			  		<div class="form-group">
-				    	<label for="editP_timeout">Timeout d'esecuzione (secondi)</label>
+				    	<label for="editP_timeout">Execution timeout (seconds)</label>
 						<div class="input-group">
 				    		<span class="input-group-addon">
 								<i class="glyphicon glyphicon-time"></i>
@@ -115,13 +115,13 @@
 				  	<br>
 				  	<div class="form-check generate-group">
 				  		<input class="form-check-input" type="checkbox" value=1 id="editP_show_testcase" name="show_testcase">
-				  		<label class="form-check-label" for="editP_show_testcase"> Vuoi che gli Studenti possano accedere ai file di input e di output?</label>
+				  		<label class="form-check-label" for="editP_show_testcase"> Do you want share input/output files with the students?</label>
 					</div>
 
 					<br>
 					<div class="form-group">
 						<label for="editP_problemTags">Tag</label><br>
-						<small class="form-text text-muted">Inserisci i Tag separati da una virgola o uno spazio</small>
+						<small class="form-text text-muted">Insert Tags divided by comma or space</small>
 						<div class="input-group" id="editP_tagsDiv">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-tags"></i>
@@ -145,13 +145,13 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h3 class="modal-title">Clona un Problema</h3>
+					<h3 class="modal-title">Clone Problem</h3>
 				</div>
 				<form:form action="problem" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="op" value="cloneProblem"/>
 					<input type="hidden" name="id" id="cloneP_id" value=""/> 
 					<div class="form-group">
-						<label for="cloneP_contestName">Seleziona un Contest di destinazione</label>
+						<label for="cloneP_contestName">Select Contest</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-education"></i>

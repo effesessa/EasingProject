@@ -81,7 +81,7 @@
 					<pre>
 						<code class="language-${language}">${submitFile }</code>
 					</pre>
-					<c:if test="${submit.info!='CORRECT' && submit.info!='WRONG_ANSWER'}">
+					<c:if test="${submit.info!='CORRECT' && submit.info!='WRONG_ANSWER' && submit.info!='TIME_LIMIT_EXIT'}">
 						<%-- <pre>
 							<code class="language-bash">${submit.error}</code>
 						</pre>

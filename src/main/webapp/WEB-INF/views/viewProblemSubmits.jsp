@@ -18,13 +18,13 @@
 			<div class="block-header">
 				<div class="card" style="height: auto !important;">
 					<div class="header">
-						<h2>Sottomissioni ${problem.name}</h2>
+						<h2>${problem.name} submits</h2>
 					</div>
 					<table class="table table-hover table-responsive">
 						<thead class="headTable">
 					  		<tr>
 							    <th>#</th>
-							    <th>Nome Team</th>
+							    <th>Team name</th>
 							    <th>1</th>
 							    <th>2</th>
 							    <th>3</th>

@@ -130,20 +130,20 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h3 class="modal-title">Crea Subject</h3>
+					<h3 class="modal-title">Create Subject</h3>
 				</div>
 				<form:form action="addSubject" method="post" modelAttribute="addSubjectForm">
 					<div class="form-group">
-						<label for="newSub_subjectName">Nome Corso</label>
+						<label for="newSub_subjectName">Subject Name</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-text-size"></i>
 							</span>
-							<input type="text" class="form-control" name="name" id="newSub_subjectName" placeholder="Nome del Corso" required autofocus>
+							<input type="text" class="form-control" name="name" id="newSub_subjectName" placeholder="Subject Name" required autofocus>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="newSub_year">Anno</label>
+						<label for="newSub_year">Year</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-calendar"></i>
@@ -157,16 +157,16 @@
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-lock"></i>
 							</span>
-							<input type="text" class="form-control" name="password" id="newSub_passwordSubject" placeholder="Password richiesta per iscriversi" required>
+							<input type="text" class="form-control" name="password" id="newSub_passwordSubject" placeholder="Subject password" required>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="newSub_subjectURL">Pagina del Corso</label>
+						<label for="newSub_subjectURL">Subject page</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-link"></i>
 							</span>
-							<input type="text" class="form-control" name="url" id="newSub_subjectURL" placeholder="Incolla l'URL della pagine del Corso" required>
+							<input type="text" class="form-control" name="url" id="newSub_subjectURL" placeholder="Paste Subject page URL" required>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -181,22 +181,22 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h3 class="modal-title">Crea Contest</h3>
+					<h3 class="modal-title">Create Contest</h3>
 				</div>
 				<form:form action="addContest" method="post" modelAttribute="addContestForm">
 					<div class="form-group">
-						<label for="newContest_contestName">Nome Contest</label>
+						<label for="newContest_contestName">Contest Name</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-text-size"></i>
 							</span>
-							<input type="text" class="form-control" name="name" id="newContest_contestName" placeholder="Nome del Contest" required autofocus>
+							<input type="text" class="form-control" name="name" id="newContest_contestName" placeholder="Contest Name" required autofocus>
 						</div>
 						<!-- <div>Nome del Contest:</div>
 						<input type="text" class="form-control" name="name"	placeholder="Name"> -->
 					</div>
 					<div class="form-group">
-						<label for="newContest_subjectName">Nome Corso</label>
+						<label for="newContest_subjectName">Subject Name</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-education"></i>
@@ -208,7 +208,7 @@
 						<input type="text" name="subjectId" placeholder="Id Subject"> -->
 					</div>
 					<div class="form-group">
-						<label for="newContest_jury">ID Giuria</label>
+						<label for="newContest_jury">Jury ID</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-user"></i>
@@ -220,12 +220,12 @@
 						<input type="text" name="jury" placeholder="Id Jury"> -->
 					</div>
 					<div class="form-group">
-						<label for="newContest_deadline">Data di scadenza</label>
+						<label for="newContest_deadline">Deadline</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-calendar"></i>
 							</span>
-							<input type="text" class="form-control" name="deadline" id="newContest_deadline" placeholder="Scadenza" required>
+							<input type="text" class="form-control" name="deadline" id="newContest_deadline" placeholder="Deadline" required>
 						</div>
 						<!-- <div>Data Scadenza:</div>
 						<input type="text" id="datepicker"> -->
@@ -242,12 +242,12 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h3 class="modal-title">Crea un Problema</h3>
+					<h3 class="modal-title">Create Problem</h3>
 				</div>
 				<form:form action="addProblem" method="post" enctype="multipart/form-data" modelAttribute="problemForm">
 					<input type="hidden" name="type" id="type" value="1"/> 
 					<div class="form-group">
-						<label for="contest">Nome Contest</label>
+						<label for="contest">Contest Name</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-education"></i>
@@ -258,25 +258,25 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="problemName">Nome</label>
+						<label for="problemName">Name</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-text-size"></i>
 							</span>
-							<input type="text" class="form-control" name="name" id="problemName" placeholder="Nome del Problema" required autofocus>
+							<input type="text" class="form-control" name="name" id="problemName" placeholder="Problem Name" required autofocus>
 						</div>
 					</div>
 					<div class="form-group">
-				    	<label for="description">Descrizione</label>
+				    	<label for="description">Description</label>
 						<div class="input-group">
 				    		<span class="input-group-addon">
 								<i class="glyphicon glyphicon-pencil"></i>
 							</span>
-							<textarea class="form-control" id="description" name="description" rows="5" cols="60" placeholder="Inserire una breve descrizione del Problema" style="resize: vertical;" required></textarea>		
+							<textarea class="form-control" id="description" name="description" rows="5" cols="60" placeholder="Insert a Problem description" style="resize: vertical;" required></textarea>		
 						</div>
 				  	</div>
 					<div class="form-group">
-				    	<label for="download">Testo del Problema</label>
+				    	<label for="download">Problem essay</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-file"></i>
@@ -285,7 +285,7 @@
 						</div>
 			  		</div>
 			  		<div class="form-group">
-				    	<label for="timeout">Timeout d'esecuzione (secondi)</label>
+				    	<label for="timeout">Execution timeout (seconds)</label>
 						<div class="input-group">
 				    		<span class="input-group-addon">
 								<i class="glyphicon glyphicon-time"></i>
@@ -296,10 +296,10 @@
 				  	<br>
 				  	<div class="form-check generate-group">
 				  		<input class="form-check-input" type="checkbox" value=1 id="show_testcase" name="show_testcase">
-				  		<label class="form-check-label" for="show_testcase"> Vuoi che gli Studenti possano accedere ai file di input e di output?</label>
+				  		<label class="form-check-label" for="show_testcase"> Do you want share input/output files with the students?</label>
 					</div>
 					<div class="form-group">
-				    	<label for="testcase">File di input o Algoritmo</label>
+				    	<label for="testcase">Input file or Algorithm</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-open-file"></i>
@@ -308,7 +308,7 @@
 						</div>
 			  		</div>
 					<div class="form-group output-group hidden">
-				    	<label for="output">Output atteso</label>
+				    	<label for="output">Expected output</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-open-file"></i>
@@ -318,10 +318,10 @@
 			  		</div>
 			  		<div class="form-check generate-group hidden">
 					  <input class="form-check-input" type="checkbox" value="" id="generateInput">
-					  <label class="form-check-label" for="generateInput"> Vuoi che vengano generati degli input?</label>
+					  <label class="form-check-label" for="generateInput"> Do you want generate inputs?</label>
 					</div>
 					<div class="form-group hidden">
-						<label class="form-check-label" for="domain"> Dominio:</label>
+						<label class="form-check-label" for="domain"> Domain:</label>
 						<div class="form-check">
 							<label class="form-check-label">
 								<input class="form-check-input" type="radio" name="domain" id="intDomain" value="Array Integer" checked> Array Integer
@@ -336,7 +336,7 @@
 					<br>
 					<div class="form-group">
 						<label for="problemTags">Tag</label><br>
-						<small class="form-text text-muted">Inserisci i Tag separati da una virgola o uno spazio</small>
+						<small class="form-text text-muted">Insert Tags divided by comma or space</small>
 						<div class="input-group" id="tagsDiv">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-tags"></i>

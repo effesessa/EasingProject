@@ -169,7 +169,7 @@
 											<thead>
 												<tr>
 													<th>Name</th>
-													<th>Corso</th>
+													<th>Course</th>
 													<th>Problems</th>
 													<th>Deadline</th>
 												</tr>
@@ -205,18 +205,15 @@
 										<table class="table table-hover dashboard-task-infos">
 											<thead>
 												<tr>
-													<th>Corso</th>
-													<th>Pagina</th>
+													<th>Course</th>
+													<th>Page</th>
 												</tr>
 											</thead>
 											<tbody>
 												<c:forEach items="${subjects}" var="subject">
 													<tr>
 														<td>${subject}</td>
-														<td><a
-															href="<c:url value='subject?name=${subject}'/>"><i
-																class="fas fa-link"
-																style="color: #bf0418; font-size: 1.1em;"></i></a></td>
+														<td><a href="<c:url value='subject?name=${subject}'/>"><i class="fas fa-link" style="color: #bf0418; font-size: 1.1em;"></i></a></td>
 													</tr>
 												</c:forEach>
 											</tbody>

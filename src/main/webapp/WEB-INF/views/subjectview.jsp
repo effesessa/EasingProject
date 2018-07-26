@@ -54,9 +54,9 @@
 									<table class="table table-hover dashboard-task-infos">
 										<thead>
 											<tr>
-												<th>Nome Contest</th>
-												<th>Anno</th>
-												<th>Scadenza</th>
+												<th>Contest Name</th>
+												<th>Year</th>
+												<th>Deadline</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -72,7 +72,7 @@
 								</div>
 							</c:when>
 							<c:otherwise>
-								<h4>Non ci sono Contest disponibili al momento.</h4>
+								<h4>No Contests available now.</h4>
 							</c:otherwise>
 						</c:choose>
 					</div>

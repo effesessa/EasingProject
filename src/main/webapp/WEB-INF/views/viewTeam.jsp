@@ -98,8 +98,8 @@
 																		  		<tr>
 																				    <th>Info</th>
 																				    <th class="hidden-xs">Score</th>
-																				    <th>Problema</th>
-																				    <th class="hidden-xs">Linguaggio</th>
+																				    <th>Problem</th>
+																				    <th class="hidden-xs">Language</th>
 																		  		</tr>
 																			</thead>
 																			<tbody id="tableSub${contest.idcontest }">

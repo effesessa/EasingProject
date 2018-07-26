@@ -19,8 +19,8 @@
 			<div class="block-header">
 				<div class="card" style="height: auto !important;">
 					<div class="header">
-						<h2>I miei Quiz</h2>
-						Verranno visualizzati solo i Quiz creati da una Giuria di cui sei leader.
+						<h2>My Quizzes</h2>
+						Only Quizzes created by a Jury which you are leader will be shown.
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
 							<c:forEach var="contestMap" items="${contestQuizzesMap}" varStatus="index">
 								<div class="panel panel-default">
@@ -58,13 +58,13 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h3 class="modal-title">Clona un Quiz</h3>
+					<h3 class="modal-title">Clone Quiz</h3>
 				</div>
 				<form:form action="quiz" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="op" value="cloneQuiz"/>
 					<input type="hidden" name="id" id="cloneQ_id" value=""/> 
 					<div class="form-group">
-						<label for="cloneQ_contestName">Seleziona un Contest di destinazione</label>
+						<label for="cloneQ_contestName">Select Contest</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-education"></i>

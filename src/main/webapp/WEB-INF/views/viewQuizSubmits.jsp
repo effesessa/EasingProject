@@ -19,14 +19,14 @@
 			<div class="block-header">
 				<div class="card" style="height: auto !important;">
 					<div class="header">
-						<h2>Sottomissioni</h2>
+						<h2>Submits</h2>
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
 							<c:forEach var="teamsSubmit" items="${submitQuizSubmitAnswersMap}" varStatus="index">
 								
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#${teamsSubmit.key.team.id }"> ${teamsSubmit.key.team.name } ${teamsSubmit.key.correction ? "<div class='text-danger'> DA CORREGGERE </div>" : "" }</a>
+											<a data-toggle="collapse" data-parent="#accordion" href="#${teamsSubmit.key.team.id }"> ${teamsSubmit.key.team.name } ${teamsSubmit.key.correction ? "<div class='text-danger'> TO BE CORRECTED </div>" : "" }</a>
 										</h4>
 									</div>
 									<div id="${teamsSubmit.key.team.id}" class="panel-collapse collapse ${index.first ? 'in' : ''}">
@@ -35,7 +35,7 @@
 												<br>
 												<div class="panel panel-default">
 													<div class="panel-heading">
-														PUNTEGGIO DOMANDA: ${submit.question.points }
+														QUESTION POINTS: ${submit.question.points }
 													</div>
 												</div>
 											<div class="border">
@@ -43,13 +43,13 @@
 													<c:when test="${submit.question.type == 'OPEN' }">
 													<div class="row">
 														<div class="form-group">
-													  		<label class="col-sm-1 control-label">Domanda</label>
+													  		<label class="col-sm-1 control-label">Question</label>
 													  		<div class="col-sm-11">
 												    			<p class="form-control-static">${submit.question.text }</p>
 													  		</div>
 														</div>
 														<div class="form-group">
-															<label class="col-sm-1 control-label">Risposta</label>
+															<label class="col-sm-1 control-label">Answer</label>
 															<div class="col-sm-11">
 																<p class="form-control-static">${submit.openAnswer }</p>
 															</div>
@@ -58,7 +58,7 @@
 													</c:when>
 													<c:otherwise>
 														<div class="form-group">
-													  		<label class="col-sm-1 control-label">Domanda</label>
+													  		<label class="col-sm-1 control-label">Question</label>
 													  		<div class="col-sm-11">
 												    			<p class="form-control-static">${submit.question.text }</p>
 													  		</div>
@@ -79,7 +79,7 @@
 											</c:forEach>
 										</div>
 										<div class="panel-footer">
-											PUNTEGGIO TOTALE: ${teamsSubmit.key.totalScore }/${teamsSubmit.key.quiz.points }
+											TOTAL POINTS: ${teamsSubmit.key.totalScore }/${teamsSubmit.key.quiz.points }
 										</div>
 									</div>
 								</div>

@@ -53,23 +53,23 @@
 					<div class="body">
 						<c:forEach items="${problems}" var="problem" varStatus="status">
 							<div id="problem-${problem.id_problem}" ${status.first ? '' : 'style="display:none"'}>
-								<small class="form-text text-muted">Clicca sul problema per vedere la traccia</small>
+								<small class="form-text text-muted">Click the Problem name to download the essay</small>
 								<h3>Problema <span class="label label-primary"><a target="_blank" href="${pageContext.servletContext.contextPath }/files/${problem.id_problem}">${problem.name}</a></span></h3><br>
 								<c:if test="${problem.show_testcase}">
 									<c:choose>
 										<c:when test="${(problem.type == 'zip')}">
 											<h4>Test-Case</h4>
-											<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">File di input</a><br><br>
+											<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">Input file</a><br><br>
 										</c:when>
 										<c:when test="${(problem.type == 'txt') || (problem.type == 'dlv') || (problem.type == 'dat')}">
 											<h4>Test-Case</h4>
-											<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">File di input</a>
-											<a href="${pageContext.servletContext.contextPath }/testCase/output/${problem.id_problem}" class="btn btn-info">File di output</a><br><br>
+											<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">Input file</a>
+											<a href="${pageContext.servletContext.contextPath }/testCase/output/${problem.id_problem}" class="btn btn-info">Output file</a><br><br>
 										</c:when>
 									</c:choose>
 								</c:if>
 								<div class="bubble">
-									<h4><span class="label label-warning">Descrizione</span></h4>
+									<h4><span class="label label-warning">Description</span></h4>
 									<div class="well well-sm">${problem.description}</div>
 									<br>
 								</div><br>
@@ -88,8 +88,8 @@
 													  		<tr>
 															    <th>Info</th>
 															    <th class="hidden-xs">Score</th>
-															    <th>Problema</th>
-															    <th class="hidden-xs">Linguaggio</th>
+															    <th>Problem</th>
+															    <th class="hidden-xs">Language</th>
 													  		</tr>
 														</thead>
 														<tbody id="table_prob${problem.id_problem }_team${team.id }">
@@ -145,7 +145,7 @@
 								<form:form action="submit" method="post" enctype="multipart/form-data" modelAttribute="submitForm">
 									<input type="hidden" name="idProblem" id="idProblem" value="${problem.id_problem}"/> 
 									<div class="form-group">
-										<label for="team">Nome del Team</label>
+										<label for="team">Team Name</label>
 										<div class="input-group">
 											<span class="input-group-addon">
 												<i class="glyphicon glyphicon-education"></i>
@@ -158,7 +158,7 @@
 										</div>
 									</div>
 									<div class="form-group">
-								    	<label for="solution">Soluzione</label>
+								    	<label for="solution">Solution</label>
 										<div class="input-group">
 											<span class="input-group-addon">
 												<i class="glyphicon glyphicon-open-file"></i>
@@ -167,7 +167,7 @@
 										</div>
 							  		</div>
 									<div>
-										<input type="submit" class="btn btn-primary btn-lg button-login" value="Invia" />
+										<input type="submit" class="btn btn-primary btn-lg button-login" value="Send" />
 									</div>
 								</form:form>
 							</div>
@@ -178,7 +178,7 @@
 								<form action="submitQuiz" method="post" modelAttribute="submitQuizForm">
 									<input type="hidden" name="quizID" id="quizID" value="${quiz.id}"/> 
 									<div class="form-group">
-										<label for="team">Nome del Team</label>
+										<label for="team">Team Name</label>
 										<div class="input-group">
 											<span class="input-group-addon">
 												<i class="glyphicon glyphicon-education"></i>
@@ -194,21 +194,21 @@
 										<c:choose>
 											<c:when test="${question.type == 'OPEN' }">
 												<div class="form-group">
-											  		<label class="col-sm-1 control-label">Domanda</label>
+											  		<label class="col-sm-1 control-label">Question</label>
 											  		<div class="col-sm-11">
 										    			<p class="form-control-static">${question.text }</p>
 											  		</div>
 												</div>
 												<div class="form-group">
-													<label class="col-sm-1 control-label" for="questionID-${question.id}">Risposta</label>
+													<label class="col-sm-1 control-label" for="questionID-${question.id}">Answer</label>
 													<div class="col-sm-11">
-														<input type="text" class="form-control" name="question_answer['${question.id}']" id="questionID-${question.id}" placeholder="Risposta" required autofocus>
+														<input type="text" class="form-control" name="question_answer['${question.id}']" id="questionID-${question.id}" placeholder="Answer" required autofocus>
 													</div>
 												</div>
 											</c:when>
 											<c:otherwise>
 												<div class="form-group">
-											  		<label class="col-sm-1 control-label">Domanda</label>
+											  		<label class="col-sm-1 control-label">Question</label>
 											  		<div class="col-sm-11">
 										    			<p class="form-control-static">${question.text }</p>
 											  		</div>
@@ -226,7 +226,7 @@
 										<br/>
 										<br/>
 									</c:forEach>
-									<input type="submit" class="btn btn-primary btn-lg" value="Invia" />
+									<input type="submit" class="btn btn-primary btn-lg" value="Send" />
 								</form>
 							</div>
 						</c:forEach>

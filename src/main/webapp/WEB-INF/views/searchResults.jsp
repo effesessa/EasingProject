@@ -103,7 +103,7 @@
 																	<input type="text" class="form-control" name="password"	placeholder="Password" />
 																</div>
 															</div>
-															<button class="btn btn-primary button-add" data-toggle="tooltip">Iscriviti</button>
+															<button class="btn btn-primary button-add" data-toggle="tooltip">Subscribe</button>
 														</form:form>
 													</div>
 												</li>
@@ -139,7 +139,7 @@
 																</div>
 															</div>
 														</form:form>
-														<button class="btn btn-primary button-add" data-toggle="tooltip">Iscriviti</button>
+														<button class="btn btn-primary button-add" data-toggle="tooltip">Subscribe</button>
 													</div>
 												</li>
 											</c:forEach>
