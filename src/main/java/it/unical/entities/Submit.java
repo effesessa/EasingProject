@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import it.unical.dao.DatabaseHandler;
 
 @Entity
@@ -55,6 +57,16 @@ public class Submit
 	@Column(name = "solution")
 	private byte[] solution;
 	
+	@Column(name = "error", nullable = true, columnDefinition = "TEXT")
+	private String error;
+	
+	@Column(name = "test_case_failed", nullable = true, columnDefinition = "MEDIUMTEXT")
+	private String testCaseFailed;
+	
+	@Column(name = "show_tcf", nullable = false, columnDefinition = "TINYINT")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
+	private boolean showTcf = false;
+	
 	public Submit()
 	{
 		this.id = DatabaseHandler.NO_ID;
@@ -63,6 +75,9 @@ public class Submit
 		this.score = null;
 		this.info = null;
 		this.solution = null;
+		this.testCaseFailed = null;
+		this.error = null;
+		this.showTcf = false;
 	}
 
 	public Integer getId() {
@@ -119,6 +134,30 @@ public class Submit
 	
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	public String getTestCaseFailed() {
+		return testCaseFailed;
+	}
+
+	public void setTestCaseFailed(String testCaseFailed) {
+		this.testCaseFailed = testCaseFailed;
+	}
+
+	public boolean isShowTcf() {
+		return showTcf;
+	}
+
+	public void setShowTcf(boolean showTcf) {
+		this.showTcf = showTcf;
 	}
 	
 }

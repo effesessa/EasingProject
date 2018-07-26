@@ -2,6 +2,7 @@ package it.unical.core;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,7 +61,13 @@ public class Engine {
 		IProcessBuilder iProcessBuilder = processBuilderFactory.createIProcessBuilder(manager.getSubmittedFile().getName());
 		ProcessBuilder processBuilder;
 		if(input.length > 0) {
-			verdict.setTestCaseFailed(input[0]);
+			String maybeItWillFail = null;
+			try {
+				maybeItWillFail = IOUtils.toString(new FileInputStream(manager.getTestCaseFile()), "UTF-8");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			verdict.setTestCaseFailed(maybeItWillFail);
 			processBuilder = iProcessBuilder.getRunProcessBuilder(manager.getSubmittedFile().getName(), input[0]);
 		}
 		else

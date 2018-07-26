@@ -20,4 +20,6 @@ public interface AnswerDAO
 	Answer getByText(String text);
 
 	void update(Answer answer);
+
+	List<Answer> getOrphanAnswersByQuestion(Integer id);
 }
