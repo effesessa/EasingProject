@@ -278,7 +278,7 @@ function nav_addAnswer()
 	lastAnswer.find("label").last().attr("for", "answer"+lastAnswerID+"");
 	lastAnswer.find("input").last().attr("name", "question_answers[question1]");
 	lastAnswer.find("input").last().attr("id", "answer"+lastAnswerID+"");
-	lastAnswer.find("label").last().html("Risposta "+lastAnswerID);
+	lastAnswer.find("label").last().html("Answer "+lastAnswerID);
 	
 	lastAnswer.find("input").first().attr("name", "question_correctAnswer[question1]");
 	lastAnswer.find("label").first().attr("for", "answer"+lastAnswerID+"_correct");

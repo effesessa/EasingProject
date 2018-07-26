@@ -400,7 +400,7 @@ function addAnswer(questionID, answer, correctID)
 	lastAnswer.find("label").last().attr("for", "question"+questionID+"-answer"+lastAnswerID+"");
 	lastAnswer.find("input").last().attr("name", "questions_answers[question"+questionID+"]");
 	lastAnswer.find("input").last().attr("id", "question"+questionID+"-answer"+lastAnswerID+"");
-	lastAnswer.find("label").last().html("Risposta "+lastAnswerID);
+	lastAnswer.find("label").last().html("Answer "+lastAnswerID);
 	
 	// If Question is generated, set the related answers
 	$("#question"+questionID+"-answer"+lastAnswerID).val(answer !== undefined ? answer.text : "");

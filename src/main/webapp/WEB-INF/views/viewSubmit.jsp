@@ -56,19 +56,40 @@
 							<c:if test="${not empty submit.score }">
 								Tempo d'esecuzione: ${submit.score}s
 							</c:if>
-							<a id="downloadBtn" href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}" class="btn btn-info">Scarica Sottomissione</a>
+							<c:if test="${submit.showTcf }">
+								<a id="downloadFTCBtn" href="${pageContext.servletContext.contextPath }/downloadTestCaseFailed/${submit.id}" class="btn btn-info">Download Failed TestCase</a>
+							</c:if>
+							<a id="downloadBtn" href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}" class="btn btn-info">Download Submit</a>
 							<c:if test="${submit.info!='CORRECT' && user.professor}">
-								<form:form action="" method="post">
-									<input type="hidden" >
-									<button type="submit" class="btn btn-primary">OEEE</button>
-								</form:form>
+								<c:choose>
+									<c:when test="${not submit.showTcf}">
+										<form:form action="toggleTestCase" method="post">
+											<input type="hidden" name="idSubmit" value="${submit.id}">
+											<button id="testCaseBtn" type="submit" class="btn btn-warning">Show failed TestCase</button>
+										</form:form>
+									</c:when>
+									<c:otherwise>
+										<form:form action="toggleTestCase" method="post">
+											<input type="hidden" name="idSubmit" value="${submit.id}">
+											<button id="testCaseBtn" type="submit" class="btn btn-warning">Hide failed TestCase</button>
+										</form:form>
+									</c:otherwise>
+								</c:choose>
 							</c:if>
 						</h2>
 					</div>
 					<pre>
 						<code class="language-${language}">${submitFile }</code>
 					</pre>
-					
+					<c:if test="${submit.info!='CORRECT'}">
+						<%-- <pre>
+							<code class="language-bash">${submit.error}</code>
+						</pre>
+						<pre>
+							<samp>${submit.error}</samp>
+						</pre> --%>
+						<samp>${submit.error}</samp>
+					</c:if>
 				</div>
 			</div>
 		</div>

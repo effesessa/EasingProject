@@ -236,20 +236,6 @@ public class ProblemController
 			System.out.println("TODO redirect with popup errore" + typeContext.getVerdict().getStatus());
 		return "redirect:/";
 	}
-	
-	//Alessandro metti il nome del mapping che vuoi
-	@RequestMapping(value = "/onOffShowTestCaseForIncorrectSubmission", method = RequestMethod.POST)
-	public String onOffShowTestCaseForIncorrectSubmission(@RequestParam String idSubmit, HttpSession session, Model model) {
-		_setAccountAttribute(session, model);
-		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-		final Submit submit = submitDAO.get(Integer.parseInt(idSubmit));
-		if(!submit.isShowTcf())
-			submit.setShowTcf(true);
-		else
-			submit.setShowTcf(false);
-		submitDAO.update(submit);
-		return "redirect:/";
-	}
 
 	@RequestMapping(value = "/myProblems", method = RequestMethod.GET)
 	public String addProblem(HttpSession session, Model model) throws IOException
@@ -352,28 +338,6 @@ public class ProblemController
 
 	}
 
-	@RequestMapping(value = "/downloadTestCaseFailed/{submitId}", method = RequestMethod.GET)
-	public void downloadTestCaseFailed(@PathVariable String submitId, HttpSession session,
-			HttpServletResponse response) {
-		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-		final Submit submit = submitDAO.get(Integer.parseInt(submitId));
-		final String mimeType = TypeFileExtension.getMimeType(submit.getType());
-		response.setContentType(mimeType);
-		response.setHeader("Content-disposition", "attachment; filename=" + Engine.BASE_NAME_INPUT + Engine.DOT + submit.getType());
-		String testCaseFailedStr = submit.getTestCaseFailed();
-		testCaseFailedStr = StringUtils.stripDiacritics(testCaseFailedStr);
-		testCaseFailedStr = StringUtils.checkAndRemoveUTF8BOM(testCaseFailedStr);
-		final byte[] data = testCaseFailedStr.getBytes();
-		response.setContentLength(data.length);
-		try {
-			response.getOutputStream().write(data);
-			response.getOutputStream().flush();
-			response.getOutputStream().close();
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	@RequestMapping(value = "/downloadSubmit/{submitId}", method = RequestMethod.GET)
 	public void downloadSubmit(@PathVariable String submitId, HttpSession session, HttpServletResponse response)
 	{
@@ -384,6 +348,34 @@ public class ProblemController
 		response.setHeader("Content-disposition",
 				"attachment; filename=" + Engine.BASE_NAME_SUBMIT + Engine.DOT + submit.getType());
 		final byte[] data = submit.getSolution();
+		response.setContentLength(data.length);
+		try
+		{
+			response.getOutputStream().write(data);
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		}
+		catch (final IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value = "/downloadTestCaseFailed/{submitId}", method = RequestMethod.GET)
+	public void downloadTestCaseFailed(@PathVariable String submitId, HttpSession session, HttpServletResponse response)
+	{
+		// TODO Proteggere la servlet da accessi non autorizzati (es: controllo
+		// isShowTCF, hash url ecc)
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Submit submit = submitDAO.get(Integer.parseInt(submitId));
+		final String mimeType = TypeFileExtension.getMimeType(submit.getType());
+		response.setContentType(mimeType);
+		response.setHeader("Content-disposition",
+				"attachment; filename=" + Engine.BASE_NAME_INPUT + Engine.DOT + "txt");
+		String testCaseFailedStr = submit.getTestCaseFailed();
+		testCaseFailedStr = StringUtils.stripDiacritics(testCaseFailedStr);
+		testCaseFailedStr = StringUtils.checkAndRemoveUTF8BOM(testCaseFailedStr);
+		final byte[] data = testCaseFailedStr.getBytes();
 		response.setContentLength(data.length);
 		try
 		{
@@ -467,85 +459,62 @@ public class ProblemController
 		return "redirect:/myProblems";
 	}
 
-	/*private ArrayList<String> executeZip(Team team, byte[] data, String pathSol)
+	@RequestMapping(value = "/submit", method = RequestMethod.POST)
+	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException
 	{
+		_setAccountAttribute(session, model);
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final Problem problem = problemDAO.get(submitForm.getIdProblem());
+		final TypeContext typeContext = TypeContext.getInstance();
+		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
+		final DirFilesManager dirFilesManager = new DirFilesManager();
+		final Verdict verdict = typeContext.submit(problem, submitForm, dirFilesManager);
+		System.out.println("newsubmit Verdicti:" + verdict.getTestCaseFailed());
+		SubmissionHandler.save(context, problem, submitForm, verdict, dirFilesManager);
+		return "redirect:/";
+	}
 
-		final Judge judge = new Judge("java", team.getName());
-		///////// SCOMPATTO L'ARCHIVIO CHE SI TROVA IN DATA//////
-		InputStream fis = null;
-		ZipInputStream zipIs = null;
-		ZipEntry zEntry = null;
-		boolean found = false;
-		final ArrayList<String> info = new ArrayList<>();
-		try
-		{
-			fis = new ByteArrayInputStream(data);
-			zipIs = new ZipInputStream(new BufferedInputStream(fis));
-			int cont = 0;
-			int contWrong = 0;
-
-			while ((zEntry = zipIs.getNextEntry()) != null)
-			{
-				cont++;
-				System.out.println(zEntry.getName());
-				final byte[] test = new byte[(int) zEntry.getSize()];
-				zipIs.read(test, 0, test.length);
-				final String strTestCase = new String(test, StandardCharsets.UTF_8);
-				zEntry = zipIs.getNextEntry();
-				System.out.println(zEntry.getName());
-				final byte[] sol = new byte[(int) zEntry.getSize()];
-				zipIs.read(sol);
-				final String strSol = new String(sol, StandardCharsets.UTF_8);
-				String result = judge.compile("java", team.getName(), pathSol);
-
-				///////////////// Judge every file in zip///////////////
-				if (result.equals("COMPILE_SUCCESS"))
-				{
-					// info.add("Compilation result: "+result);
-					result = judge.execute("java", strTestCase, 1000, pathSol);
-
-					if (result.contains("RUN_ERROR") || result.equals("TLE"))
-						info.add("execution result: " + result);
-					//// controllare l'esecuzione/////
-					final String match = judge.match(result, strSol);
-					if (!match.equals("RIGHT"))
-					{
-						contWrong++;
-						found = true;
-						info.add("Mismatch with: " + zEntry.getName());
-					}
-				}
-
-			}
-			zipIs.close();
-			if (!found)
-			{
-				logger.info("corretto");
-				info.add("No mismatch found");
-				info.add("All tests passed!!");
-
-				return info;
-			}
-			else
-			{
-				logger.info("errato");
-				info.add("Test Failed: " + contWrong + "/" + cont);
-				return info;
-			}
-
-		}
-		catch (final FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (final IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return info;
-	}*/
+	/*
+	 * private ArrayList<String> executeZip(Team team, byte[] data, String
+	 * pathSol) {
+	 *
+	 * final Judge judge = new Judge("java", team.getName()); /////////
+	 * SCOMPATTO L'ARCHIVIO CHE SI TROVA IN DATA////// InputStream fis = null;
+	 * ZipInputStream zipIs = null; ZipEntry zEntry = null; boolean found =
+	 * false; final ArrayList<String> info = new ArrayList<>(); try { fis = new
+	 * ByteArrayInputStream(data); zipIs = new ZipInputStream(new
+	 * BufferedInputStream(fis)); int cont = 0; int contWrong = 0;
+	 *
+	 * while ((zEntry = zipIs.getNextEntry()) != null) { cont++;
+	 * System.out.println(zEntry.getName()); final byte[] test = new byte[(int)
+	 * zEntry.getSize()]; zipIs.read(test, 0, test.length); final String
+	 * strTestCase = new String(test, StandardCharsets.UTF_8); zEntry =
+	 * zipIs.getNextEntry(); System.out.println(zEntry.getName()); final byte[]
+	 * sol = new byte[(int) zEntry.getSize()]; zipIs.read(sol); final String
+	 * strSol = new String(sol, StandardCharsets.UTF_8); String result =
+	 * judge.compile("java", team.getName(), pathSol);
+	 *
+	 * ///////////////// Judge every file in zip/////////////// if
+	 * (result.equals("COMPILE_SUCCESS")) { //
+	 * info.add("Compilation result: "+result); result = judge.execute("java",
+	 * strTestCase, 1000, pathSol);
+	 *
+	 * if (result.contains("RUN_ERROR") || result.equals("TLE"))
+	 * info.add("execution result: " + result); //// controllare
+	 * l'esecuzione///// final String match = judge.match(result, strSol); if
+	 * (!match.equals("RIGHT")) { contWrong++; found = true;
+	 * info.add("Mismatch with: " + zEntry.getName()); } }
+	 *
+	 * } zipIs.close(); if (!found) { logger.info("corretto");
+	 * info.add("No mismatch found"); info.add("All tests passed!!");
+	 *
+	 * return info; } else { logger.info("errato"); info.add("Test Failed: " +
+	 * contWrong + "/" + cont); return info; }
+	 *
+	 * } catch (final FileNotFoundException e) { // TODO Auto-generated catch
+	 * block e.printStackTrace(); } catch (final IOException e) { // TODO
+	 * Auto-generated catch block e.printStackTrace(); } return info; }
+	 */
 
 	/*
 	 * final TypeContext typeContext = TypeContext.getInstance();
@@ -562,18 +531,24 @@ public class ProblemController
 	 * t.setValue(tag); tagDAO.create(t); } }
 	 */
 
-	@RequestMapping(value = "/submit", method = RequestMethod.POST)
-	public String newsubmit(@ModelAttribute SubmitForm submitForm, HttpSession session, Model model) throws IOException {
+	@RequestMapping(value = "/toggleTestCase", method = RequestMethod.POST)
+	public String onOffShowTestCaseForIncorrectSubmission(@RequestParam String idSubmit, HttpSession session,
+			Model model)
+	{
 		_setAccountAttribute(session, model);
-		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
-		final Problem problem = problemDAO.get(submitForm.getIdProblem());
-		final TypeContext typeContext = TypeContext.getInstance();
-		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
-		final DirFilesManager dirFilesManager = new DirFilesManager();
-		final Verdict verdict = typeContext.submit(problem, submitForm, dirFilesManager);
-		System.out.println("newsubmit Verdicti:" + verdict.getTestCaseFailed());
-		SubmissionHandler.save(context, problem, submitForm, verdict, dirFilesManager);
-		return "redirect:/";
+		final User user = (User) model.asMap().get("user");
+
+		if (user == null || !user.isProfessor())
+			return "redirect:/";
+
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final Submit submit = submitDAO.get(Integer.parseInt(idSubmit));
+		if (!submit.isShowTcf())
+			submit.setShowTcf(true);
+		else
+			submit.setShowTcf(false);
+		submitDAO.update(submit);
+		return "redirect:/viewSubmit?submitId=" + idSubmit;
 	}
 
 	// Vista di un Problema
