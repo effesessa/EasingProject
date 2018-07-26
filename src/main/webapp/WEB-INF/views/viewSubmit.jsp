@@ -60,7 +60,7 @@
 								<a id="downloadFTCBtn" href="${pageContext.servletContext.contextPath }/downloadTestCaseFailed/${submit.id}" class="btn btn-info">Download Failed TestCase</a>
 							</c:if>
 							<a id="downloadBtn" href="${pageContext.servletContext.contextPath }/downloadSubmit/${submit.id}" class="btn btn-info">Download Submit</a>
-							<c:if test="${submit.info!='CORRECT' && user.professor}">
+							<c:if test="${user.professor && submit.info!='CORRECT' && submit.info!='COMPILE_ERROR'}">
 								<c:choose>
 									<c:when test="${not submit.showTcf}">
 										<form:form action="toggleTestCase" method="post">
@@ -81,7 +81,7 @@
 					<pre>
 						<code class="language-${language}">${submitFile }</code>
 					</pre>
-					<c:if test="${submit.info!='CORRECT'}">
+					<c:if test="${submit.info!='CORRECT' && submit.info!='WRONG_ANSWER'}">
 						<%-- <pre>
 							<code class="language-bash">${submit.error}</code>
 						</pre>
