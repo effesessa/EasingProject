@@ -1,5 +1,8 @@
 package it.unical.entities;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import it.unical.dao.DatabaseHandler;
@@ -44,6 +48,12 @@ public class Contest
 	@JoinColumn(name = "id_jury")
 	private Jury jury;
 
+	@OneToMany(mappedBy = "contest")
+	private Set<ProblemConstraint> problemConstraints = new LinkedHashSet<>();
+	
+	@OneToMany(mappedBy = "contest")
+	private Set<QuizConstraint> quizConstraints = new LinkedHashSet<>();
+
 	public Contest()
 	{
 		this.idcontest = DatabaseHandler.NO_ID;
@@ -53,16 +63,6 @@ public class Contest
 		this.rankable = null;
 		this.subject = null;
 		this.jury = null;
-	}
-
-	public Contest(String name, String deadline, String url_image, String rankable, Subject subject, Jury jury)
-	{
-		this.name = name;
-		this.deadline = deadline;
-		this.url_image = url_image;
-		this.rankable = rankable;
-		this.subject = subject;
-		this.jury = jury;
 	}
 
 	public String getDeadline()
@@ -145,4 +145,20 @@ public class Contest
 		this.url_image = url_image;
 	}
 
+	public Set<ProblemConstraint> getProblemConstraints() {
+		return problemConstraints;
+	}
+
+	public void setProblemConstraints(Set<ProblemConstraint> problemConstraints) {
+		this.problemConstraints = problemConstraints;
+	}
+
+	public Set<QuizConstraint> getQuizConstraints() {
+		return quizConstraints;
+	}
+
+	public void setQuizConstraints(Set<QuizConstraint> quizConstraints) {
+		this.quizConstraints = quizConstraints;
+	}
+	
 }
