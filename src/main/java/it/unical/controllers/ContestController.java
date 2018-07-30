@@ -346,11 +346,14 @@ public class ContestController
 		if (user == null || !user.isProfessor())
 			return "redirect:/";
 
+		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 
+		final Contest contest = contestDAO.get(contestID);
 		final List<Problem> problems = problemDAO.getProblemOfAContest(contestID);
 		final List<Quiz> quizzes = quizDAO.getAllQuizByContest(contestID);
+		model.addAttribute("contest", contest);
 		model.addAttribute("problems", problems);
 		model.addAttribute("quizzes", quizzes);
 

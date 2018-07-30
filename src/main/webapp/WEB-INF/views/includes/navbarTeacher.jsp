@@ -74,7 +74,7 @@
 					<li class="active"><a href="/"> <i class="material-icons">home</i>
 						<span>Home</span>
 					</a></li>
-					<li><a href="#" data-toggle="modal" data-target="#myModal1">
+				<!-- <li><a href="#" data-toggle="modal" data-target="#myModal1">
 						<i class="material-icons">school</i> <span>Add Subject</span>
 					</a></li>
 					<li><a href="#" data-toggle="modal" data-target="#myModal2" onclick="getSubjectsAndJuries()">
@@ -89,13 +89,33 @@
 					</a></li>
 					<li><a href="createQuiz">
 						<i class="material-icons">list_alt</i> <span>Add Quiz</span>
-					</a></li>
+					</a></li> -->
 					<!-- <li><a href="myProblems">
 						<i class="material-icons">view_list</i> <span>My Problems</span>
 					</a></li>
 					<li><a href="myQuizzes">
 						<i class="material-icons">list</i> <span>My Quizzes</span>
 					</a></li> -->
+					<li class="submenu"><a href="#"><i class="material-icons">add_circle</i><span>Add...</span></a>
+						<ul>
+							<li class="submenu"><a href="#" data-toggle="modal" data-target="#myModal1">
+								<i class="material-icons">school</i> <span>Add Subject</span>
+							</a></li>
+							<li class="submenu"><a href="#" data-toggle="modal" data-target="#myModal2" onclick="getSubjectsAndJuries()">
+								<i class="material-icons">add_to_queue</i> <span>Add Contest</span>
+							</a></li>
+							<li>
+							<li class="submenu"><a href="#" data-toggle="modal" data-target="#myModal3" onclick="getContests()">
+								<i class="material-icons">note_add</i> <span>Add Problem</span>
+							</a></li>
+							<li class="submenu"><a href="#" data-toggle="modal" data-target="#addQuestionModal" onclick="getContests()">
+								<i class="material-icons">help_outline</i> <span>Add Question</span>
+							</a></li>
+							<li class="submenu"><a href="createQuiz">
+								<i class="material-icons">list_alt</i> <span>Add Quiz</span>
+							</a></li>
+						</ul>
+					</li>
 					<li class="submenu"><a href="#"><i class="material-icons">account_box</i><span>My...</span></a>
 						<ul>
 					   		<li class="submenu"><a href="myContests">

@@ -20,9 +20,10 @@
 			<div class="block-header">
 				<div class="card" style="height: auto !important;">
 					<div class="header">
-						<h2>Prepare Exam</h2>
+						<h2>Prepare exam - ${contest.name}</h2>
 					</div>
 					<form:form id="manageExamForm">
+						<input type="hidden" name="contestID" value="${contest.idcontest}" />
 						<table class="table table-hover table-responsive">
 							<thead class="headTable">
 						  		<tr>
@@ -40,14 +41,14 @@
 										<td>
 											<div class="form-group">
 												<div class="input-group">
-													<input class="form-control input-sm" id="p${problem.id_problem}-mPr" name="minProblems" type="number" min=0 step=1 value=0 required />
+													<input class="form-control input-sm" id="p${problem.id_problem}-mPr" name="minProblems[p${problem.id_problem}]" type="number" min=0 step=1 value=0 required />
 												</div>
 										  	</div>
 										</td>
 										<td>
 											<div class="form-group">
 												<div class="input-group">
-													<input class="form-control input-sm" id="p${problem.id_problem}-mPo" name="minPoints" type="number" min=0 step=1 value=0 required />
+													<input class="form-control input-sm" id="p${problem.id_problem}-mPo" name="minPoints[p${problem.id_problem}]" type="number" min=0 step=1 value=0 required />
 												</div>
 										  	</div>
 										</td>
@@ -60,14 +61,14 @@
 										<td>
 											<div class="form-group">
 												<div class="input-group">
-													<input class="form-control input-sm" id="q${problem.id_problem}-mPr" name="minProblems" type="number" min=0 step=1 value=0 required />
+													<input class="form-control input-sm" id="q${problem.id_problem}-mPr" name="minProblems[q${quiz.id}]" type="number" min=0 step=1 value=0 required />
 												</div>
 										  	</div>
 										</td>
 										<td>
 											<div class="form-group">
 												<div class="input-group">
-													<input class="form-control input-sm" id="q${problem.id_problem}-mPo" name="minPoints" type="number" min=0 step=1 value=0 required />
+													<input class="form-control input-sm" id="q${problem.id_problem}-mPo" name="minPoints[q${quiz.id}]" type="number" min=0 step=1 value=0 required />
 												</div>
 										  	</div>
 										</td>

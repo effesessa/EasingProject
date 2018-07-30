@@ -1,4 +1,4 @@
-﻿.navbar {
+.navbar {
   font-family: "Roboto", sans-serif;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -852,7 +852,7 @@ section.content {
       cursor: default;
       display: block;
       position: relative;
-      top: 10px; }
+      /* top: 10px */; }
       .sidebar .user-info .info-container .name {
         white-space: nowrap;
         -ms-text-overflow: ellipsis;

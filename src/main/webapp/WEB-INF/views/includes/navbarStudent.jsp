@@ -8,6 +8,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+	<link rel="stylesheet" href="resources/css/navbarStudentStyle.css" type="text/css">
 </head>
 <body>
 	<!-- Overlay For Sidebars -->
@@ -59,8 +60,9 @@
 					<li><a href="javascript:void(0);"> <i class="material-icons">update</i>
 						<span>Contests</span>
 					</a></li>
-					<li><a href="logout"> <i class="fas fa-sign-out-alt" style="font-size: 1.5em;"></i>
-						<span style="position: relative; bottom: 5px">Logout</span>
+					<hr>
+					<li><a href="logout">
+						<i class="material-icons">exit_to_app</i> <span>Logout</span>
 					</a></li>
 				</ul>
 			</div>

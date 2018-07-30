@@ -23,28 +23,30 @@
 						Only Quizzes created by a Jury which you are leader will be shown.
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
 							<c:forEach var="contestMap" items="${contestQuizzesMap}" varStatus="index">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#${contestMap.key.idcontest }"> ${contestMap.key.name }</a>
-										</h4>
-									</div>
-									<div id="${contestMap.key.idcontest }" class="panel-collapse collapse ${index.first ? 'in' : ''}">
-										<div class="panel-body">
-											<ul class="list-group">
-												<c:forEach items="${contestMap.value}" var="quiz">
-													<li class="list-group-item">
-														<a href="quizSubmits?idQuiz=${quiz.id}">${quiz.name}</a>
-														<span class="toRight">
-															<input class="btn btn-success cloneQuizBtn" type="button" value="Clone" data-id="${quiz.id}" data-toggle="modal" data-target="#cloneQuizModal" />
-															<input class="btn btn-danger deleteQuizBtn" type="button" value="Delete" data-id="${quiz.id}" />
-														</span>
-													</li>
-												</c:forEach>
-											</ul>
+								<c:if test="${not empty contestMap.value}">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h4 class="panel-title">
+												<a data-toggle="collapse" data-parent="#accordion" href="#${contestMap.key.idcontest }"> ${contestMap.key.name }</a>
+											</h4>
+										</div>
+										<div id="${contestMap.key.idcontest }" class="panel-collapse collapse ${index.first ? 'in' : ''}">
+											<div class="panel-body">
+												<ul class="list-group">
+													<c:forEach items="${contestMap.value}" var="quiz">
+														<li class="list-group-item">
+															<a href="quizSubmits?idQuiz=${quiz.id}">${quiz.name}</a>
+															<span class="toRight">
+																<input class="btn btn-success cloneQuizBtn" type="button" value="Clone" data-id="${quiz.id}" data-toggle="modal" data-target="#cloneQuizModal" />
+																<input class="btn btn-danger deleteQuizBtn" type="button" value="Delete" data-id="${quiz.id}" />
+															</span>
+														</li>
+													</c:forEach>
+												</ul>
+											</div>
 										</div>
 									</div>
-								</div>
+								</c:if>
 							</c:forEach>
 						</div>
 					</div>
