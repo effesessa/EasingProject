@@ -1,5 +1,8 @@
 package it.unical.entities;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -57,6 +61,12 @@ public class Contest
 	@JoinColumn(name = "id_jury")
 	private Jury jury;
 
+	@OneToMany(mappedBy = "contest")
+	private Set<ProblemConstraint> problemConstraints = new LinkedHashSet<>();
+
+	@OneToMany(mappedBy = "contest")
+	private Set<QuizConstraint> quizConstraints = new LinkedHashSet<>();
+
 	public Contest()
 	{
 		this.idcontest = DatabaseHandler.NO_ID;
@@ -105,6 +115,16 @@ public class Contest
 	public String getPassword()
 	{
 		return password;
+	}
+
+	public Set<ProblemConstraint> getProblemConstraints()
+	{
+		return problemConstraints;
+	}
+
+	public Set<QuizConstraint> getQuizConstraints()
+	{
+		return quizConstraints;
 	}
 
 	public String getRankable()
@@ -167,6 +187,16 @@ public class Contest
 		this.password = password;
 	}
 
+	public void setProblemConstraints(Set<ProblemConstraint> problemConstraints)
+	{
+		this.problemConstraints = problemConstraints;
+	}
+
+	public void setQuizConstraints(Set<QuizConstraint> quizConstraints)
+	{
+		this.quizConstraints = quizConstraints;
+	}
+
 	public void setRankable(String rankable)
 	{
 		this.rankable = rankable;
@@ -191,5 +221,4 @@ public class Contest
 	{
 		this.visible = visible;
 	}
-
 }

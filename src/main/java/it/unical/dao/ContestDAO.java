@@ -7,25 +7,27 @@ import it.unical.entities.Contest;
 public interface ContestDAO
 {
 
-	public void create(Contest contest);
+	void create(Contest contest);
 
-	public void delete(Contest contest);
+	void delete(Contest contest);
 
-	public Contest get(Integer id);
+	Contest get(Integer id);
 
-	public List<Contest> getAll();
+	List<Contest> getAll();
 
-	public List<Contest> getContestByJury(Integer jury);
+	List<Contest> getContestByJury(Integer jury);
 
-	public Contest getContestByName(String name);
+	Contest getContestByName(String name);
 
-	public List<Contest> getContestBySubject(Integer subject, Integer year);
+	List<Contest> getContestBySubject(Integer subject, Integer year);
 
-	public List<Contest> getContestsByProfessor(Integer id);
+	List<Contest> getContestsByProfessor(Integer id);
 
-	public List<String> getContestsNamesByProfessor(Integer id);
+	List<String> getContestsNamesByProfessor(Integer id);
 
-	public Integer getIdByName(String name);
+	Integer getIdByName(String name);
 
-	public void update(Contest contest);
+	void update(Contest contest);
+
+	Contest getFetchJoinConstraints(Integer id);
 }
