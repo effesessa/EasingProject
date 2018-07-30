@@ -40,6 +40,16 @@ public class ContestDAOImpl implements ContestDAO
 		session.close();
 		return contest;
 	}
+	
+	@Override
+	public Contest getFetchJoinConstraints(Integer id) {
+		final Session session = databaseHandler.getSessionFactory().openSession();
+		final Query query = session.createQuery("from Contest C left join fetch C.problemConstraints PC left join fetch C.quizConstraints QC where C.idcontest = :idcontest");
+		query.setParameter("idcontest", id);
+		final Contest contest = (Contest) query.uniqueResult();
+		session.close();
+		return contest;
+	}
 
 	@Override
 	public List<Contest> getAll()
