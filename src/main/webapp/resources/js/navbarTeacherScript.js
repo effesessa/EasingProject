@@ -23,50 +23,9 @@ var nav_newAnswer = '<div class="answer" id=""> \
 function init()
 {
 	var fileExtension;
-	$("#testcase").on('change',function(){
-		fileExtension = $(this).val();
-		if(/\.(txt|dlv)$/gmi.test(fileExtension))
-		{
-			$('#output').closest('.form-group').removeClass('hidden');
-			$('#type').val("1");
-		}
-		else
-		{
-			$('#output').closest('.form-group').addClass('hidden');
-		}
-		if(/\.(zip|rar|7z|tar)$/gmi.test(fileExtension))
-		{
-			$('#type').val("2");
-			
-		}
-		if(/\.(java|cpp|c)$/gmi.test(fileExtension))
-		{
-			$('#type').val("3");
-			$('#generateInput').closest('.form-check').removeClass('hidden');
-			if($("#generateInput").is(':checked'))
-			{
-				$('#type').val("4");
-				$('#intDomain').closest('.form-group').removeClass('hidden');
-			}
-		}
-		else
-		{
-			$('#intDomain').closest('.form-group').addClass('hidden');
-			$('#generateInput').closest('.form-check').addClass('hidden');
-		}
-	});
-	$("#generateInput").on('change',function(){
-		if($(this).is(':checked'))
-		{
-			$('#type').val("4");
-			$('#intDomain').closest('.form-group').removeClass('hidden');
-		}
-		else
-		{
-			$('#type').val("3");
-			$('#intDomain').closest('.form-group').addClass('hidden');
-		}
-	});
+	$("#testcase").on('change',manageProblemForm);
+	$("#generateInput").on('change', generateInput);
+	$("#isExam").on('change',askPassword);
 	
 	$("#newSub_year").datepicker( {
 	    format: "yyyy",
@@ -176,6 +135,95 @@ function init()
 	});
 	
 	$('#addQuestionModal form').submit(submitNewQuestion);
+	$("#myModal2 form").submit(newContestChecks);
+}
+
+function askPassword()
+{
+	if($(this).is(':checked'))
+	{
+		$('#newContest_password').closest('.form-group').removeClass('hidden');
+		$('#newContest_confPassword').closest('.form-group').removeClass('hidden');
+		$('#newContest_password').prop("required", true);
+		$('#newContest_confPassword').prop("required", true);
+	}
+	else
+	{
+		$('#newContest_password').closest('.form-group').addClass('hidden');
+		$('#newContest_confPassword').closest('.form-group').addClass('hidden');
+		$('#newContest_password').prop("required", false);
+		$('#newContest_confPassword').prop("required", false);
+	}
+}
+
+function generateInput()
+{
+	if($(this).is(':checked'))
+	{
+		$('#type').val("4");
+		$('#intDomain').closest('.form-group').removeClass('hidden');
+	}
+	else
+	{
+		$('#type').val("3");
+		$('#intDomain').closest('.form-group').addClass('hidden');
+	}
+}
+
+function manageProblemForm()
+{
+	fileExtension = $(this).val();
+	if(/\.(txt|dlv)$/gmi.test(fileExtension))
+	{
+		$('#output').closest('.form-group').removeClass('hidden');
+		$('#type').val("1");
+	}
+	else
+	{
+		$('#output').closest('.form-group').addClass('hidden');
+	}
+	if(/\.(zip|rar|7z|tar)$/gmi.test(fileExtension))
+	{
+		$('#type').val("2");
+		
+	}
+	if(/\.(java|cpp|c)$/gmi.test(fileExtension))
+	{
+		$('#type').val("3");
+		$('#generateInput').closest('.form-check').removeClass('hidden');
+		if($("#generateInput").is(':checked'))
+		{
+			$('#type').val("4");
+			$('#intDomain').closest('.form-group').removeClass('hidden');
+		}
+	}
+	else
+	{
+		$('#intDomain').closest('.form-group').addClass('hidden');
+		$('#generateInput').closest('.form-check').addClass('hidden');
+	}
+}
+
+function newContestChecks(e)
+{
+	var psw = $('#newContest_password').val();
+	var pswConf = $('#newContest_confPassword').val();
+	
+	if (psw != pswConf)
+	{
+		if (!$('#pswConfError').length)
+		{
+			$("#newContest_confPassword").closest('.form-group').addClass('has-error');
+			$("#newContest_confPassword").closest('.input-group').after("<span id='pswConfError' class='help-block'>Password does not match the confirm password!</span>");
+
+		}
+		e.preventDefault();
+	}
+	else
+	{
+		$('#pswConfError').remove();
+		$("#newContest_confPassword").closest('.form-group').removeClass('has-error');
+	}
 }
 
 function getContests()

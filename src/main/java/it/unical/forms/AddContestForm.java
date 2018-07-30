@@ -10,6 +10,8 @@ public class AddContestForm
 	private String subjectId;
 
 	private String deadline;
+	private String password;
+	private boolean exam;
 
 	public AddContestForm()
 	{
@@ -17,6 +19,8 @@ public class AddContestForm
 		this.rankable = "";
 		this.subjectId = null;
 		this.deadline = null;
+		this.password = "";
+		this.exam = false;
 	}
 
 	public String getDeadline()
@@ -34,6 +38,11 @@ public class AddContestForm
 		return name;
 	}
 
+	public String getPassword()
+	{
+		return password;
+	}
+
 	public String getRankable()
 	{
 		return rankable;
@@ -44,9 +53,19 @@ public class AddContestForm
 		return subjectId;
 	}
 
+	public boolean isExam()
+	{
+		return exam;
+	}
+
 	public void setDeadline(String deadline)
 	{
 		this.deadline = deadline;
+	}
+
+	public void setExam(boolean exam)
+	{
+		this.exam = exam;
 	}
 
 	public void setJury(String jury)
@@ -57,6 +76,11 @@ public class AddContestForm
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public void setPassword(String password)
+	{
+		this.password = password;
 	}
 
 	public void setRankable(String rankable)

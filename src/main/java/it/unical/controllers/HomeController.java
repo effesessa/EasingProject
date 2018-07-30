@@ -57,12 +57,7 @@ public class HomeController
 
 	// Creazione Contest
 	@RequestMapping(value = "/addContest", method = RequestMethod.POST)
-	public String addContest(@ModelAttribute AddContestForm addContestForm, /*
-																			 * @RequestParam
-																			 * String
-																			 * restriction
-																			 */
-			HttpSession session, Model model)
+	public String addContest(@ModelAttribute AddContestForm addContestForm, HttpSession session, Model model)
 	{
 		setAccountAttribute(session, model);
 		// controllo se il corso esiste giÃ 
@@ -76,13 +71,14 @@ public class HomeController
 		final JuryDAO juryDAO = (JuryDAO) context.getBean("juryDAO");
 		final Jury jury = juryDAO.get(Integer.parseInt(addContestForm.getJury()));
 		// TODO Effettuare controlli (esistenza Subject/Jury)
-		// Controllare struttura DB di Contest: perché FK idcontest-id_jury?
-
 		contest.setName(addContestForm.getName());
 		contest.setRestriction(1);
 		contest.setSubject(subject);
 		contest.setJury(jury);
 		contest.setDeadline(addContestForm.getDeadline());
+		contest.setExam(addContestForm.isExam());
+		contest.setVisible(!addContestForm.isExam());
+		contest.setPassword(addContestForm.getPassword());
 		contestDAO.create(contest);
 		return "redirect:/";
 

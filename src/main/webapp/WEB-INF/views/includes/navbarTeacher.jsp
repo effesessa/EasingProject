@@ -98,6 +98,9 @@
 					</a></li> -->
 					<li class="submenu"><a href="#"><i class="material-icons">account_box</i><span>My...</span></a>
 						<ul>
+					   		<li class="submenu"><a href="myContests">
+								<i class="material-icons">view_list</i> <span>My Contests</span>
+							</a></li>
 					   		<li class="submenu"><a href="myProblems">
 								<i class="material-icons">view_list</i> <span>My Problems</span>
 							</a></li>
@@ -192,8 +195,6 @@
 							</span>
 							<input type="text" class="form-control" name="name" id="newContest_contestName" placeholder="Contest Name" required autofocus>
 						</div>
-						<!-- <div>Nome del Contest:</div>
-						<input type="text" class="form-control" name="name"	placeholder="Name"> -->
 					</div>
 					<div class="form-group">
 						<label for="newContest_subjectName">Subject Name</label>
@@ -204,8 +205,6 @@
 							<select class="form-control" id="newContest_subjectName" name="subjectId" required>
 							</select>
 						</div>
-						<!-- <div>Corso:</div>
-						<input type="text" name="subjectId" placeholder="Id Subject"> -->
 					</div>
 					<div class="form-group">
 						<label for="newContest_jury">Jury ID</label>
@@ -216,8 +215,6 @@
 							<select class="form-control" id="newContest_jury" name="jury" required>
 							</select>
 						</div>
-						<!-- <div>Corso:</div>
-						<input type="text" name="jury" placeholder="Id Jury"> -->
 					</div>
 					<div class="form-group">
 						<label for="newContest_deadline">Deadline</label>
@@ -227,9 +224,31 @@
 							</span>
 							<input type="text" class="form-control" name="deadline" id="newContest_deadline" placeholder="Deadline" required>
 						</div>
-						<!-- <div>Data Scadenza:</div>
-						<input type="text" id="datepicker"> -->
 					</div>
+					
+					<div class="form-check generate-group">
+				  		<input class="form-check-input" type="checkbox" value=1 id="isExam" name="exam">
+				  		<label class="form-check-label" for="isExam"> Is this an Exam?</label>
+					</div>
+					<div class="form-group hidden">
+			    		<label for="newContest_password">Password</label>
+						<div class="input-group">
+				    		<span class="input-group-addon">
+								<i class="glyphicon glyphicon-lock"></i>
+							</span>
+			  				<input class="form-control" id="newContest_password" name="password" type="password" placeholder="Choose a password" />
+				  		</div>
+			  		</div>
+					<div class="form-group hidden">
+			    		<label for="newContest_confPassword">Confirm password</label>
+						<div class="input-group">
+				    		<span class="input-group-addon">
+								<i class="glyphicon glyphicon-lock"></i>
+							</span>
+			    			<input class="form-control" id="newContest_confPassword" name="confPassword" type="password" placeholder="Confirm password" />
+				  		</div>
+			  		</div>
+					
 					<div class="modal-footer">
 						<input type="submit" class="btn btn-primary button-login" value="Add Contest" />
 					</div>

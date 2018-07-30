@@ -38,6 +38,7 @@ import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Answer;
 import it.unical.entities.Contest;
+import it.unical.entities.Jury;
 import it.unical.entities.JuryMember;
 import it.unical.entities.Membership;
 import it.unical.entities.Partecipation;
@@ -108,7 +109,10 @@ public class ContestController
 	@RequestMapping(value = "/contest", method = RequestMethod.GET)
 	public String contestMainView(@RequestParam String name, HttpSession session, Model model)
 	{
-		// TODO Reindirizzare in caso di name empty o di Professore
+		final User user = (User) model.asMap().get("user");
+		if (user == null || user.isProfessor() || name == null)
+			return "redirect:/";
+
 		setAccountAttribute(session, model);
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final Contest contest = contestDAO.getContestByName(name);
@@ -117,9 +121,21 @@ public class ContestController
 		final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
 		final List<Membership> memberships = membershipDAO
 				.getTeamByStudent(SessionUtils.getUserIdFromSessionOrNull(session));
+		final PartecipationDAO partecipationDAO = (PartecipationDAO) context.getBean("partecipationDAO");
+
 		final ArrayList<Team> teams = new ArrayList<>(memberships.size());
 		for (int i = 0; i < memberships.size(); i++)
 			teams.add(memberships.get(i).getTeam());
+
+		if (contest.isExam())
+		{
+			boolean registered = false;
+			for (final Team team : teams)
+				if (partecipationDAO.getTeamPartecipation(team.getId(), contest.getIdcontest()) != null)
+					registered = true;
+			if (!registered)
+				return "redirect:/";
+		}
 
 		final List<Submit> submitsByAllJoinedTeams = new LinkedList<>();
 		for (final Team team : teams)
@@ -133,7 +149,7 @@ public class ContestController
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
 		final List<Quiz> quizzes = quizDAO.getAllQuizByContest(contest.getIdcontest());
-		//debugQuiz(quizs);
+		// debugQuiz(quizs);
 		model.addAttribute("quizzes", quizzes);
 		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);
@@ -144,25 +160,9 @@ public class ContestController
 		model.addAttribute("contest", contest.getIdcontest());
 		return "contest";
 	}
-	
-	public void debugQuiz(List<Quiz> quizs) {
-		System.out.println("**************************debug quiz**************************");
-		for (Quiz quiz : quizs) {
-			System.out.println("Quiz:" + quiz.getName());
-			for (Question question : quiz.getQuestions()) {
-				System.out.println("Question:" + question.getText());
-				for (Answer answer : question.getAnswers()) {
-					System.out.println("Answer:" + answer.getText());
-				}
-			}
-			System.out.println("__________________________________________________________");
-		}
-		System.out.println("**************************debug quiz**************************");
-	}
 
 	// Iscrizione a un Contest
-	// Vista di origine mai utilizzata
-	@RequestMapping(value = "/subscribe", method = RequestMethod.POST)
+	@RequestMapping(value = "/subscribeContest", method = RequestMethod.POST)
 	public String contestSignUp(HttpSession session, @ModelAttribute SubscribeForm subscribeForm, Model model)
 	{
 		// controlli del team (team gi√† iscritto e membri iscritti al corso
@@ -177,6 +177,33 @@ public class ContestController
 		Partecipation partecipation = partecipationDAO.getTeamPartecipation(team.getId(), contest.getIdcontest());
 		final SubjectDAO subjectDAO = (SubjectDAO) context.getBean("subjectDAO");
 		final Subject subject = subjectDAO.get(contest.getSubject().getSubjectId().getId_subject());
+		final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
+
+		if (contest.isExam())
+		{
+			final List<Membership> memberships = membershipDAO
+					.getTeamByStudent(SessionUtils.getUserIdFromSessionOrNull(session));
+			final ArrayList<Team> teams = new ArrayList<>();
+			for (int i = 0; i < memberships.size(); i++)
+				teams.add(memberships.get(i).getTeam());
+
+			if (!subscribeForm.getPassword().equals(contest.getPassword()))
+			{
+				logger.info("Password errata");
+				return "redirect:/";
+			}
+			for (final Team t : teams)
+			{
+				final Partecipation p = partecipationDAO.getTeamPartecipation(t.getId(), contest.getIdcontest());
+				if (p != null)
+				{
+					logger.info("Un Team di cui fai parte Ë gi‡ iscritto a quest'Esame");
+					return "redirect:/";
+				}
+			}
+
+		}
+
 		if (partecipation != null)
 		{
 			logger.info("il team √® gi√† iscritto");
@@ -188,7 +215,6 @@ public class ContestController
 		{
 			// controllo se i membri sono iscritti al corso e se il prof ha
 			// stabilito tale regola!
-			final MembershipDAO membershipDAO = (MembershipDAO) context.getBean("membershipDAO");
 			final List<Membership> members = membershipDAO.getStudentsByTeam(team.getId());
 			final RegistrationDAO registrationDAO = (RegistrationDAO) context.getBean("registrationDAO");
 			for (int i = 0; i < members.size(); i++)
@@ -202,8 +228,25 @@ public class ContestController
 			partecipation.setContest(contest);
 			partecipation.setTeam(team);
 			partecipationDAO.create(partecipation);
-			return "iscritto";
+			return "redirect:/";
 		}
+	}
+
+	public void debugQuiz(List<Quiz> quizs)
+	{
+		System.out.println("**************************debug quiz**************************");
+		for (final Quiz quiz : quizs)
+		{
+			System.out.println("Quiz:" + quiz.getName());
+			for (final Question question : quiz.getQuestions())
+			{
+				System.out.println("Question:" + question.getText());
+				for (final Answer answer : question.getAnswers())
+					System.out.println("Answer:" + answer.getText());
+			}
+			System.out.println("__________________________________________________________");
+		}
+		System.out.println("**************************debug quiz**************************");
 	}
 
 	@RequestMapping(value = "/files/{file_name}", method = RequestMethod.GET)
@@ -293,6 +336,49 @@ public class ContestController
 				logger.info("Error writing file to output stream. Filename was '{}'", id_problem, ex);
 				throw new RuntimeException("IOError writing file to output stream");
 			}
+	}
+
+	@RequestMapping(value = "/manageExam", method = RequestMethod.GET)
+	public String manageExam(final HttpSession session, @RequestParam int contestID, final Model model)
+	{
+		setAccountAttribute(session, model);
+		final User user = (User) model.asMap().get("user");
+		if (user == null || !user.isProfessor())
+			return "redirect:/";
+
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+
+		final List<Problem> problems = problemDAO.getProblemOfAContest(contestID);
+		final List<Quiz> quizzes = quizDAO.getAllQuizByContest(contestID);
+		model.addAttribute("problems", problems);
+		model.addAttribute("quizzes", quizzes);
+
+		return "manageExam";
+	}
+
+	@RequestMapping(value = "/myContests", method = RequestMethod.GET)
+	public String myContests(final HttpSession session, final Model model)
+	{
+		setAccountAttribute(session, model);
+		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+		final SubjectDAO subjectDAO = (SubjectDAO) context.getBean("subjectDAO");
+		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+		final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
+		if (user != null && user.isProfessor())
+		{
+			final Map<Subject, List<Contest>> subjectsMap = new HashMap<>();
+			final List<Subject> subjects = subjectDAO.getAllSubjectFromProfessor(user.getId());
+			for (final Subject subject : subjects)
+			{
+				final List<Contest> contests = contestDAO.getContestBySubject(subject.getSubjectId().getId_subject(),
+						Integer.valueOf(subject.getSubjectId().getYear()));
+				subjectsMap.put(subject, contests);
+			}
+			model.addAttribute("subjectsMap", subjectsMap);
+			return "myContests";
+		}
+		return "redirect:/";
 	}
 
 	private void setAccountAttribute(HttpSession session, Model model)

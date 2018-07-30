@@ -10,6 +10,8 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import it.unical.dao.DatabaseHandler;
 
 @Entity
@@ -36,6 +38,17 @@ public class Contest
 	@Column(name = "rankable")
 	private String rankable;
 
+	@Column(name = "password")
+	private String password;
+
+	@Column(name = "exam", columnDefinition = "TINYINT")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
+	private boolean exam;
+
+	@Column(name = "visible", columnDefinition = "TINYINT")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
+	private boolean visible;
+
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "id_subject"), @JoinColumn(name = "year") })
 	private Subject subject;
@@ -53,6 +66,8 @@ public class Contest
 		this.rankable = null;
 		this.subject = null;
 		this.jury = null;
+		this.exam = false;
+		this.visible = true;
 	}
 
 	public Contest(String name, String deadline, String url_image, String rankable, Subject subject, Jury jury)
@@ -63,6 +78,8 @@ public class Contest
 		this.rankable = rankable;
 		this.subject = subject;
 		this.jury = jury;
+		this.exam = false;
+		this.visible = true;
 	}
 
 	public String getDeadline()
@@ -85,6 +102,11 @@ public class Contest
 		return name;
 	}
 
+	public String getPassword()
+	{
+		return password;
+	}
+
 	public String getRankable()
 	{
 		return rankable;
@@ -105,9 +127,24 @@ public class Contest
 		return url_image;
 	}
 
+	public boolean isExam()
+	{
+		return exam;
+	}
+
+	public boolean isVisible()
+	{
+		return visible;
+	}
+
 	public void setDeadline(String deadline)
 	{
 		this.deadline = deadline;
+	}
+
+	public void setExam(boolean exam)
+	{
+		this.exam = exam;
 	}
 
 	public void setIdcontest(Integer idcontest)
@@ -123,6 +160,11 @@ public class Contest
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public void setPassword(String password)
+	{
+		this.password = password;
 	}
 
 	public void setRankable(String rankable)
@@ -143,6 +185,11 @@ public class Contest
 	public void setUrl_image(String url_image)
 	{
 		this.url_image = url_image;
+	}
+
+	public void setVisible(boolean visible)
+	{
+		this.visible = visible;
 	}
 
 }

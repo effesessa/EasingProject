@@ -61,11 +61,13 @@
 										</thead>
 										<tbody>
 											<c:forEach items="${contests}" var="contest">
-												<tr>
-													<td><a href="contest?name=${contest.name}">${contest.name}</a></td>
-													<td>${contest.subject.subjectId.year}</td>
-													<td>${contest.deadline}</td>
-												</tr>
+												<c:if test="${contest.visible}">
+													<tr>
+														<td><a href="contest?name=${contest.name}">${contest.name}</a></td>
+														<td>${contest.subject.subjectId.year}</td>
+														<td>${contest.deadline}</td>
+													</tr>
+												</c:if>
 											</c:forEach>
 										</tbody>
 									</table>

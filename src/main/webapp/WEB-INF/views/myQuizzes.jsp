@@ -6,7 +6,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Easing - I miei Quiz</title>
+	<title>Easing - My Quizzes</title>
 	<%@ include file="includes/header.jsp" %>
 	<link href="resources/css/style.css" rel="stylesheet">
 	<link href="resources/css/myQuizzesStyle.css" rel="stylesheet">
@@ -36,8 +36,8 @@
 													<li class="list-group-item">
 														<a href="quizSubmits?idQuiz=${quiz.id}">${quiz.name}</a>
 														<span class="toRight">
-															<input class="btn btn-success cloneQuizBtn" type="button" value="Clona" data-id="${quiz.id}" data-toggle="modal" data-target="#cloneQuizModal" />
-															<input class="btn btn-danger deleteQuizBtn" type="button" value="Elimina" data-id="${quiz.id}" />
+															<input class="btn btn-success cloneQuizBtn" type="button" value="Clone" data-id="${quiz.id}" data-toggle="modal" data-target="#cloneQuizModal" />
+															<input class="btn btn-danger deleteQuizBtn" type="button" value="Delete" data-id="${quiz.id}" />
 														</span>
 													</li>
 												</c:forEach>
@@ -74,7 +74,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<input type="submit" class="btn btn-primary button-login" value="Clona Quiz" />
+						<input type="submit" class="btn btn-primary button-login" value="Clone" />
 					</div>
 				</form:form>
 				<div class="clearfix"></div>

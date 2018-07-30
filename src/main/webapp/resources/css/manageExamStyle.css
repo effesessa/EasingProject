@@ -1,0 +1,22 @@
+@charset "ISO-8859-1";
+
+#manageExamForm
+{
+	margin: 0;
+}
+
+#manageExamForm .btn-primary
+{
+	float: right;
+	margin: 10px;
+}
+
+#problemsQuizzesList .form-group
+{
+	margin-left: 35%;
+}
+
+#problemsQuizzesList .form-group input
+{
+	text-align: center;
+}

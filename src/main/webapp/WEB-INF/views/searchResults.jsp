@@ -122,26 +122,51 @@
 									<div class="panel-body">
 										<ul class="list-group">
 											<c:forEach var="contest" items="${ContestResult}">
-												<li class="list-group-item">${contest.name}
-													<div style="display: inline;">
-														<form:form id="password-form"
-															class="navbar-form form-inline"
-															action="signUpSubject?name=${subject.name}" method="POST"
-															modelAttribute="subjectPasswordForm"
-															style="display:inline-block;">
-															<div class="form-group">
-																<div class="input-group">
-																	<select class="form-control" id="team" name="team">
-																		<c:forEach var="team" items="${TeamResult}">
-																			<option>${team.name }</option>
-																		</c:forEach>
-																	</select>
-																</div>
+												<c:if test="${contest.visible}">
+													<li class="list-group-item">${contest.name}
+														<c:if test="${contest.exam}">
+															<div style="display: inline;">
+																<form:form id="password-form" class="navbar-form form-inline" action="subscribeContest" method="POST"
+																	modelAttribute="subjectPasswordForm" style="display:inline-block;">
+																	<%-- <div class="form-group">
+																		<div class="input-group">
+																			<select class="form-control" id="team" name="team">
+																				<c:forEach var="team" items="${TeamResult}">
+																					<option>${team.name }</option>
+																				</c:forEach>
+																			</select>
+																		</div>
+																	</div> --%>
+																	<input type="hidden" name="contest" value="${contest.idcontest}" />
+																	<div class="form-group">
+																		<label for="subContest_team">Team</label>
+																		<div class="input-group">
+																			<span class="input-group-addon">
+																				<i class="glyphicon glyphicon-education"></i>
+																			</span>
+																			<select class="form-control" id="subContest_team" name="team" required>
+																				<c:forEach var="team" items="${TeamResult}">
+																					<option>${team.name }</option>
+																				</c:forEach>
+																			</select>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label for="subContest_password"> Password</label>
+																		<div class="input-group">
+																			<span class="input-group-addon">
+																				<i class="glyphicon glyphicon-text-size"></i>
+																			</span>
+																			<input type="password" class="form-control" name="password" id="subContest_password" placeholder="Insert password" required>
+																		</div>
+																	</div>
+																	<button class="btn btn-primary">Subscribe</button>
+																	
+																</form:form>
 															</div>
-														</form:form>
-														<button class="btn btn-primary button-add" data-toggle="tooltip">Subscribe</button>
-													</div>
-												</li>
+														</c:if>
+													</li>
+												</c:if>
 											</c:forEach>
 										</ul>
 									</div>

@@ -1,31 +1,46 @@
 package it.unical.forms;
 
-public class SubscribeForm{
-	
+public class SubscribeForm
+{
+
 	private String team;
 	private String contest;
+	private String password;
 
 	public SubscribeForm()
 	{
-		this.team="";
-		this.contest="";
+		this.team = "";
+		this.contest = "";
 	}
-	
-	public String getContest() {
+
+	public String getContest()
+	{
 		return contest;
 	}
 
-	public void setContest(String contest) {
-		this.contest = contest;
+	public String getPassword()
+	{
+		return password;
 	}
 
-	public String getTeam() {
+	public String getTeam()
+	{
 		return team;
 	}
 
-	public void setTeam(String team) {
+	public void setContest(String contest)
+	{
+		this.contest = contest;
+	}
+
+	public void setPassword(String password)
+	{
+		this.password = password;
+	}
+
+	public void setTeam(String team)
+	{
 		this.team = team;
 	}
-	
-	
+
 }
