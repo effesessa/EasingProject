@@ -27,8 +27,8 @@ public class ProblemConstraint implements Serializable {
 	private Contest contest;
 	
 	@ManyToOne
-	@JoinColumn(name = "idquiz")
-	private Quiz quiz;
+	@JoinColumn(name = "idproblem")
+	private Problem problem;
 	
 	@Column(name = "min_points", nullable = false)
 	private Integer minPoints = 0;
@@ -37,7 +37,7 @@ public class ProblemConstraint implements Serializable {
 	private Integer minCorrects = 0;
 	
 	public ProblemConstraint() {
-		quiz = null;
+		problem = null;
 		contest = null;
 		minCorrects = 0;
 		minPoints = 0;
@@ -59,14 +59,14 @@ public class ProblemConstraint implements Serializable {
 		this.contest = contest;
 	}
 	
-	public Quiz getQuiz() {
-		return quiz;
+	public Problem getProblem() {
+		return problem;
 	}
-
-	public void setQuiz(Quiz quiz) {
-		this.quiz = quiz;
+	
+	public void setProblem(Problem problem) {
+		this.problem = problem;
 	}
-
+	
 	public Integer getMinPoints() {
 		return minPoints;
 	}

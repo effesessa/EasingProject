@@ -47,11 +47,11 @@ public class Contest
 
 	@Column(name = "exam", columnDefinition = "TINYINT")
 	@Type(type = "org.hibernate.type.NumericBooleanType")
-	private boolean exam;
+	private boolean exam = false;
 
 	@Column(name = "visible", columnDefinition = "TINYINT")
 	@Type(type = "org.hibernate.type.NumericBooleanType")
-	private boolean visible;
+	private boolean visible = true;
 
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "id_subject"), @JoinColumn(name = "year") })

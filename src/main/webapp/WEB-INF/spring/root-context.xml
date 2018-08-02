@@ -117,6 +117,14 @@
 		<property name="databaseHandler" ref="databaseHandler" />
 	</bean>
 	
+	<bean id="problemConstraintDAO" class="it.unical.dao.ProblemConstraintDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
+	<bean id="quizConstraintDAO" class="it.unical.dao.QuizConstraintDAOImpl">
+		<property name="databaseHandler" ref="databaseHandler" />
+	</bean>
+	
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />

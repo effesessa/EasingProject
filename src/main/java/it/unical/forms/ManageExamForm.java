@@ -1,19 +1,18 @@
 package it.unical.forms;
 
-import java.util.List;
 import java.util.Map;
 
 public class ManageExamForm
 {
 	private int contestID;
-	// private List<Integer> minProblems;
-	// private List<Integer> minPoints;
 
 	private Map<String, Integer> minProblems;
+	
 	private Map<String, Integer> minPoints;
 
 	public ManageExamForm()
 	{
+		
 	}
 
 	public int getContestID()
