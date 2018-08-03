@@ -2,6 +2,8 @@ package it.unical.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,23 +36,27 @@ import it.unical.dao.QuizDAO;
 import it.unical.dao.RegistrationDAO;
 import it.unical.dao.SubjectDAO;
 import it.unical.dao.SubmitDAO;
+import it.unical.dao.SubmitQuizDAO;
 import it.unical.dao.TeamDAO;
 import it.unical.dao.UserDAO;
 import it.unical.entities.Answer;
 import it.unical.entities.Contest;
-import it.unical.entities.Jury;
 import it.unical.entities.JuryMember;
 import it.unical.entities.Membership;
 import it.unical.entities.Partecipation;
 import it.unical.entities.Problem;
+import it.unical.entities.ProblemConstraint;
 import it.unical.entities.Question;
 import it.unical.entities.Quiz;
+import it.unical.entities.QuizConstraint;
 import it.unical.entities.Subject;
 import it.unical.entities.Submit;
+import it.unical.entities.SubmitQuiz;
 import it.unical.entities.Team;
 import it.unical.entities.User;
 import it.unical.forms.SubscribeForm;
 import it.unical.utils.SessionUtils;
+import it.unical.utils.Status;
 import it.unical.utils.TypeFileExtension;
 
 @Controller
@@ -82,7 +88,6 @@ public class ContestController
 			}
 			catch (final IOException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -99,7 +104,6 @@ public class ContestController
 			}
 			catch (final IOException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -122,7 +126,7 @@ public class ContestController
 		final List<Membership> memberships = membershipDAO
 				.getTeamByStudent(SessionUtils.getUserIdFromSessionOrNull(session));
 		final PartecipationDAO partecipationDAO = (PartecipationDAO) context.getBean("partecipationDAO");
-
+		final SubmitQuizDAO submitQuizDAO = (SubmitQuizDAO) context.getBean("submitQuizDAO");
 		final ArrayList<Team> teams = new ArrayList<>(memberships.size());
 		for (int i = 0; i < memberships.size(); i++)
 			teams.add(memberships.get(i).getTeam());
@@ -149,6 +153,90 @@ public class ContestController
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
 		final List<Quiz> quizzes = quizDAO.getAllQuizByContest(contest.getIdcontest());
+		
+		
+		/**
+		 * 
+		 */
+		//init boolean array
+		final List<Boolean> quizzesToShow = new ArrayList<>(Arrays.asList(new Boolean[quizzes.size()]));
+		Collections.fill(quizzesToShow, Boolean.TRUE);
+		final List<Boolean> problemsToShow = new ArrayList<>(Arrays.asList(new Boolean[problems.size()]));
+		Collections.fill(problemsToShow, Boolean.TRUE);
+		//init constraint of a contest
+		Contest contestFetch = contestDAO.getFetchJoinConstraints(contest.getIdcontest());
+		
+		//if contest has constraints for its quizzes
+		if (!contest.getQuizConstraints().isEmpty()) {
+			int i = 0;
+			for (final Quiz quiz : quizzes) {
+				boolean passed = true;
+				int totalScore = 0;
+				int correct = 0;
+				for (final QuizConstraint quizConstraint : contestFetch.getQuizConstraints()) {
+					if (quizConstraint.getQuiz().getId().equals(quiz.getId())) {
+						for (final Quiz quiz2 : quizzes) {
+							if (!quiz2.getId().equals(quiz.getId())) {
+								final SubmitQuiz submitQuiz = submitQuizDAO.getByTeamAndQuiz(teams.get(0), quiz2);
+								if (submitQuiz != null)
+									totalScore+=submitQuiz.getTotalScore();
+							}
+						}
+						for (final Problem problem : problems) {
+							final List<Submit> submits = submitDAO.getAllSubmitByProblemAndTeam(problem.getId_problem(), teams.get(0).getId());
+							for (final Submit submit : submits) {
+								if (submit.getInfo().equals(Status.CORRECT)) {
+									correct++;
+									break;
+								}
+							}
+						}
+						if (totalScore < quizConstraint.getMinPoints() || correct < quizConstraint.getMinCorrects())
+							passed = false;
+						break;
+					}
+				}
+				quizzesToShow.set(i, passed);
+				i++;
+			}
+		}
+		//if contest has constraints for its problems
+				if (!contest.getProblemConstraints().isEmpty()) {
+					int i = 0;
+					for (final Problem problem : problems) {
+						boolean passed = true;
+						int totalScore = 0;
+						int correct = 0;
+						for (final ProblemConstraint problemConstraint : contestFetch.getProblemConstraints()) {
+							if (problemConstraint.getProblem().getId_problem().equals(problem.getId_problem())) {
+								for (final Problem problem2 : problems) {
+									if (!problem2.getId_problem().equals(problem.getId_problem())) {
+										final List<Submit> submits = submitDAO.getAllSubmitByProblemAndTeam(problem2.getId_problem(), teams.get(0).getId());
+										for (final Submit submit : submits) {
+											if (submit.getInfo().equals(Status.CORRECT)) {
+												correct++;
+												break;
+											}
+										}
+									}
+								}
+								for (final Quiz quiz : quizzes) {
+									final SubmitQuiz submitQuiz = submitQuizDAO.getByTeamAndQuiz(teams.get(0), quiz);
+									if (submitQuiz != null)
+										totalScore+=submitQuiz.getTotalScore();
+								}
+								if (totalScore < problemConstraint.getMinPoints() || correct < problemConstraint.getMinCorrects())
+									passed = false;
+								break;
+							}
+						}
+						problemsToShow.set(i, passed);
+						i++;
+					}
+				}
+		/**
+		 * 
+		 */
 		// debugQuiz(quizs);
 		model.addAttribute("quizzes", quizzes);
 		model.addAttribute("submits", submitsByAllJoinedTeams);
@@ -158,6 +246,8 @@ public class ContestController
 		else
 			model.addAttribute("problems", "");
 		model.addAttribute("contest", contest.getIdcontest());
+		model.addAttribute("quizzesToShow", quizzesToShow);
+		model.addAttribute("problemsToShow", problemsToShow);
 		return "contest";
 	}
 
