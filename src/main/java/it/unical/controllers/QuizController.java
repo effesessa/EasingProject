@@ -460,9 +460,8 @@ public class QuizController
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/toBeCorrection", method = RequestMethod.GET)
-	public String getAllSubmitToBeCorrection(@RequestParam String idProfessor, final HttpSession session,
-			final Model model)
+	@RequestMapping(value = "/correctQuizzes", method = RequestMethod.GET)
+	public String getAllSubmitToBeCorrection(final HttpSession session, final Model model)
 	{
 		_setAccountAttribute(session, model);
 		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
@@ -473,23 +472,23 @@ public class QuizController
 		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
 
 		final Map<Contest, List<Quiz>> contestQuizzesMap = new HashMap<>();
-		final Map<Quiz, List<SubmitQuiz>> quizSubmitQuizsMap = new HashMap<>();
+		final Map<Quiz, List<SubmitQuiz>> quizSubmitQuizzesMap = new HashMap<>();
 		final Map<SubmitQuiz, List<SubmitAnswer>> submitQuizSubmitAnswersMap = new HashMap<>();
 
 		if (user != null && user.isProfessor())
 		{
-			final List<Contest> contests = contestDAO.getContestsByProfessor(Integer.parseInt(idProfessor));
+			final List<Contest> contests = contestDAO.getContestsByProfessor(user.getId());
 			for (final Contest contest : contests)
 			{
 				final Jury jury = contest.getJury();
-				if (jury.getProfessor().getId().equals(Integer.parseInt(idProfessor)))
+				if (jury.getProfessor().getId().equals(user.getId()))
 				{
 					final List<Quiz> quizzes = quizDAO.getAllQuizByContest(contest.getIdcontest());
 					contestQuizzesMap.put(contest, quizzes);
 					for (final Quiz quiz : quizzes)
 					{
 						final List<SubmitQuiz> submitQuizzes = submitQuizDAO.getAllToBeCorrectionByQuiz(quiz);
-						quizSubmitQuizsMap.put(quiz, submitQuizzes);
+						quizSubmitQuizzesMap.put(quiz, submitQuizzes);
 						for (final SubmitQuiz submitQuiz : submitQuizzes)
 						{
 							final List<SubmitAnswer> submitAnswers = submitAnswerDAO.getBySubmitQuiz(submitQuiz);
@@ -500,9 +499,9 @@ public class QuizController
 				}
 			}
 			model.addAttribute("contestQuizzesMap", contestQuizzesMap);
-			model.addAttribute("quizSubmitQuizsMap", quizSubmitQuizsMap);
+			model.addAttribute("quizSubmitQuizzesMap", quizSubmitQuizzesMap);
 			model.addAttribute("submitQuizSubmitAnswersMap", submitQuizSubmitAnswersMap);
-			return "quizsubmitsToBeCorrection";
+			return "correctQuizzes";
 		}
 		return "redirect:/";
 	}

@@ -22,7 +22,6 @@
 						<h2>Submits</h2>
 						<div class="panel-group" id="accordion" style="margin-top: 16px;">
 							<c:forEach var="teamsSubmit" items="${submitQuizSubmitAnswersMap}" varStatus="index">
-								
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h4 class="panel-title">
@@ -83,7 +82,6 @@
 										</div>
 									</div>
 								</div>
-								
 							</c:forEach>
 						</div>
 					</div>

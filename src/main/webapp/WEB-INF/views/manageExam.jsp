@@ -22,7 +22,7 @@
 					<div class="header">
 						<h2>Prepare exam - ${contest.name}</h2>
 					</div>
-					<form:form id="manageExamForm">
+					<form:form id="manageExamForm" action="manageExam" method="POST">
 						<input type="hidden" name="contestID" value="${contest.idcontest}" />
 						<table class="table table-hover table-responsive">
 							<thead class="headTable">

@@ -26,63 +26,74 @@ import it.unical.forms.ManageExamForm;
 import it.unical.utils.SessionUtils;
 
 @Controller
-public class ExamController {
+public class ExamController
+{
 
 	@Autowired
 	private WebApplicationContext context;
 
 	@RequestMapping(value = "/manageExam", method = RequestMethod.POST)
-	public String manageExam(@ModelAttribute ManageExamForm form, final HttpSession session, final Model model) {
+	public String manageExam(@ModelAttribute ManageExamForm form, final HttpSession session, final Model model)
+	{
 		setAccountAttribute(session, model);
-		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
-		ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
-		ProblemConstraintDAO problemConstraintDAO = (ProblemConstraintDAO) context.getBean("problemConstraintDAO");
-		QuizConstraintDAO quizConstraintDAO = (QuizConstraintDAO) context.getBean("quizConstraintDAO");
-		QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
-		ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
+		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+		final ProblemConstraintDAO problemConstraintDAO = (ProblemConstraintDAO) context
+				.getBean("problemConstraintDAO");
+		final QuizConstraintDAO quizConstraintDAO = (QuizConstraintDAO) context.getBean("quizConstraintDAO");
+		final QuizDAO quizDAO = (QuizDAO) context.getBean("quizDAO");
+		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 
-		Contest contest = contestDAO.get(form.getContestID());
+		final Contest contest = contestDAO.get(form.getContestID());
 
 		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
-		if (userID != null && userDAO.get(userID).isProfessor()) {
-			for (Map.Entry<String, Integer> entry : form.getMinProblems().entrySet()) {
-				String key = entry.getKey();
-				switch (key.substring(0, 1)) {
+		if (userID != null && userDAO.get(userID).isProfessor())
+			for (final Map.Entry<String, Integer> entry : form.getMinProblems().entrySet())
+			{
+				// TODO Evitare di creare il Constraint se minProblems e
+				// minPoints sono 0
+				// TODO Eliminare i vecchi Constraint di quel Contest per
+				// evitare duplicazioni
+				final String key = entry.getKey();
+				switch (key.substring(0, 1))
+				{
 				case "q":
-					QuizConstraint quizConstraint = new QuizConstraint();
+					final QuizConstraint quizConstraint = new QuizConstraint();
 					quizConstraint.setContest(contest);
 					quizConstraint.setMinCorrects(entry.getValue());
 					quizConstraint.setMinPoints(form.getMinPoints().get(key));
 					quizConstraint.setQuiz(quizDAO.get(Integer.parseInt(key.substring(1, key.length()))));
 					quizConstraintDAO.create(quizConstraint);
-					contest.getQuizConstraints().add(quizConstraint);
+					// contest.getQuizConstraints().add(quizConstraint);
 					break;
 				case "p":
-					ProblemConstraint problemConstraint = new ProblemConstraint();
+					final ProblemConstraint problemConstraint = new ProblemConstraint();
 					problemConstraint.setContest(contest);
 					problemConstraint.setMinCorrects(entry.getValue());
 					problemConstraint.setMinPoints(form.getMinPoints().get(key));
 					problemConstraint.setProblem(problemDAO.get(Integer.parseInt(key.substring(1, key.length()))));
 					problemConstraintDAO.create(problemConstraint);
-					contest.getProblemConstraints().add(problemConstraint);
+					// contest.getProblemConstraints().add(problemConstraint);
 					break;
 				default:
 					break;
 				}
 			}
-			contestDAO.update(contest);
-		}
+		// contestDAO.update(contest);
 		return "redirect:/";
 	}
 
-	private void setAccountAttribute(HttpSession session, Model model) {
-		if (SessionUtils.isUser(session)) {
+	private void setAccountAttribute(HttpSession session, Model model)
+	{
+		if (SessionUtils.isUser(session))
+		{
 			final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 			final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
 			model.addAttribute("user", user);
 			model.addAttribute("typeSession", "Account");
 			model.addAttribute("userLogged", true);
-		} else
+		}
+		else
 			model.addAttribute("typeSession", "Login");
 	}
 }
