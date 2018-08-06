@@ -52,183 +52,201 @@
 					</div>
 					<div class="body">
 						<c:forEach items="${problems}" var="problem" varStatus="status">
-							<div id="problem-${problem.id_problem}" ${status.first ? '' : 'style="display:none"'}>
-								<small class="form-text text-muted">Click the Problem name to download the essay</small>
-								<h3>Problema <span class="label label-primary"><a target="_blank" href="${pageContext.servletContext.contextPath }/files/${problem.id_problem}">${problem.name}</a></span></h3><br>
-								<c:if test="${problem.show_testcase}">
-									<c:choose>
-										<c:when test="${(problem.type == 'zip')}">
-											<h4>Test-Case</h4>
-											<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">Input file</a><br><br>
-										</c:when>
-										<c:when test="${(problem.type == 'txt') || (problem.type == 'dlv') || (problem.type == 'dat')}">
-											<h4>Test-Case</h4>
-											<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">Input file</a>
-											<a href="${pageContext.servletContext.contextPath }/testCase/output/${problem.id_problem}" class="btn btn-info">Output file</a><br><br>
-										</c:when>
-									</c:choose>
-								</c:if>
-								<div class="bubble">
-									<h4><span class="label label-warning">Description</span></h4>
-									<div class="well well-sm">${problem.description}</div>
-									<br>
-								</div><br>
-								<c:if test="${not empty submits}">
-									<div class="panel-group" id="prob${problem.id_problem }accordion" style="margin-top: 16px;">
-										<c:forEach var="team" items="${teams}" varStatus="index">
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													<h4 class="panel-title">
-														<a data-toggle="collapse" data-parent="#prob${problem.id_problem }accordion" href="#prob${problem.id_problem }team${team.id }"> ${team.name }</a>
-													</h4>
-												</div>
-												<div id="prob${problem.id_problem }team${team.id }" class="panel-collapse collapse ${index.first ? 'in' : ''}">
-													<table class="table table-hover table-responsive">
-														<thead class="headTable">
-													  		<tr>
-															    <th>Info</th>
-															    <th class="hidden-xs">Score</th>
-															    <th>Problem</th>
-															    <th class="hidden-xs">Language</th>
-													  		</tr>
-														</thead>
-														<tbody id="table_prob${problem.id_problem }_team${team.id }">
-															<c:forEach items="${submits}" var="submit">
-																<c:if test="${team.id == submit.team.id && submit.problem.id_problem == problem.id_problem }">
-																	<tr id="table_prob${problem.id_problem }_team${team.id }_sub${submit.id }">
-																		<td>
-																			<a href="viewSubmit?submitId=${submit.id }">
-																				<c:choose>
-																					<c:when test="${submit.info=='CORRECT'}">
-																						<span class="label label-success">CORRECT</span>
-																					</c:when>
-																					<c:when test="${submit.info=='WRONG_ANSWER'}">
-																						<span class="label label-danger">WRONG_ANSWER</span>
-																					</c:when>
-																					<c:when test="${submit.info=='COMPILE_ERROR'}">
-																						<span class="label label-danger">COMPILE_ERROR</span>
-																					</c:when>
-																					<c:when test="${submit.info=='TIME_LIMIT_EXIT'}">
-																						<span class="label label-warning">TIME_LIMIT_EXIT</span>
-																					</c:when>
-																					<c:when test="${submit.info=='RUN_TIME_ERROR'}">
-																						<span class="label label-default">RUN_TIME_ERROR</span>
-																					</c:when>
-																					<c:when test="${submit.info=='EXECUTION_ERROR'}">
-																						<span class="label label-default">EXECUTION_ERROR</span>
-																					</c:when>
-																					<c:otherwise>
-																						<span class="label label-info">UNKNOWN_ERROR</span>
-																					</c:otherwise>
-																				</c:choose>
-																			</a>
-																		</td>
-																		<td class="hidden-xs">
-																			${submit.score }
-																		</td>
-																		<td>
-																			${submit.problem.name }
-																		</td>
-																		<td class="hidden-xs">
-																			${submit.type }
-																		</td>
-																	</tr>
-																</c:if>
-															</c:forEach>
-														</tbody>
-													</table>
+							<c:choose>
+								<c:when test="${problemsToShow[status.index]}">
+									<div id="problem-${problem.id_problem}" ${status.first ? '' : 'style="display:none"'}>
+										<small class="form-text text-muted">Click the Problem name to download the essay</small>
+										<h3>Problema <span class="label label-primary"><a target="_blank" href="${pageContext.servletContext.contextPath }/files/${problem.id_problem}">${problem.name}</a></span></h3><br>
+										<c:if test="${problem.show_testcase}">
+											<c:choose>
+												<c:when test="${(problem.type == 'zip')}">
+													<h4>Test-Case</h4>
+													<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">Input file</a><br><br>
+												</c:when>
+												<c:when test="${(problem.type == 'txt') || (problem.type == 'dlv') || (problem.type == 'dat')}">
+													<h4>Test-Case</h4>
+													<a href="${pageContext.servletContext.contextPath }/testCase/input/${problem.id_problem}" class="btn btn-info">Input file</a>
+													<a href="${pageContext.servletContext.contextPath }/testCase/output/${problem.id_problem}" class="btn btn-info">Output file</a><br><br>
+												</c:when>
+											</c:choose>
+										</c:if>
+										<div class="bubble">
+											<h4><span class="label label-warning">Description</span></h4>
+											<div class="well well-sm">${problem.description}</div>
+											<br>
+										</div><br>
+										<c:if test="${not empty submits}">
+											<div class="panel-group" id="prob${problem.id_problem }accordion" style="margin-top: 16px;">
+												<c:forEach var="team" items="${teams}" varStatus="index">
+													<div class="panel panel-default">
+														<div class="panel-heading">
+															<h4 class="panel-title">
+																<a data-toggle="collapse" data-parent="#prob${problem.id_problem }accordion" href="#prob${problem.id_problem }team${team.id }"> ${team.name }</a>
+															</h4>
+														</div>
+														<div id="prob${problem.id_problem }team${team.id }" class="panel-collapse collapse ${index.first ? 'in' : ''}">
+															<table class="table table-hover table-responsive">
+																<thead class="headTable">
+															  		<tr>
+																	    <th>Info</th>
+																	    <th class="hidden-xs">Score</th>
+																	    <th>Problem</th>
+																	    <th class="hidden-xs">Language</th>
+															  		</tr>
+																</thead>
+																<tbody id="table_prob${problem.id_problem }_team${team.id }">
+																	<c:forEach items="${submits}" var="submit">
+																		<c:if test="${team.id == submit.team.id && submit.problem.id_problem == problem.id_problem }">
+																			<tr id="table_prob${problem.id_problem }_team${team.id }_sub${submit.id }">
+																				<td>
+																					<a href="viewSubmit?submitId=${submit.id }">
+																						<c:choose>
+																							<c:when test="${submit.info=='CORRECT'}">
+																								<span class="label label-success">CORRECT</span>
+																							</c:when>
+																							<c:when test="${submit.info=='WRONG_ANSWER'}">
+																								<span class="label label-danger">WRONG_ANSWER</span>
+																							</c:when>
+																							<c:when test="${submit.info=='COMPILE_ERROR'}">
+																								<span class="label label-danger">COMPILE_ERROR</span>
+																							</c:when>
+																							<c:when test="${submit.info=='TIME_LIMIT_EXIT'}">
+																								<span class="label label-warning">TIME_LIMIT_EXIT</span>
+																							</c:when>
+																							<c:when test="${submit.info=='RUN_TIME_ERROR'}">
+																								<span class="label label-default">RUN_TIME_ERROR</span>
+																							</c:when>
+																							<c:when test="${submit.info=='EXECUTION_ERROR'}">
+																								<span class="label label-default">EXECUTION_ERROR</span>
+																							</c:when>
+																							<c:otherwise>
+																								<span class="label label-info">UNKNOWN_ERROR</span>
+																							</c:otherwise>
+																						</c:choose>
+																					</a>
+																				</td>
+																				<td class="hidden-xs">
+																					${submit.score }
+																				</td>
+																				<td>
+																					${submit.problem.name }
+																				</td>
+																				<td class="hidden-xs">
+																					${submit.type }
+																				</td>
+																			</tr>
+																		</c:if>
+																	</c:forEach>
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</c:forEach>
+											</div>
+										</c:if>
+										<form:form action="submit" method="post" enctype="multipart/form-data" modelAttribute="submitForm">
+											<input type="hidden" name="idProblem" id="idProblem" value="${problem.id_problem}"/> 
+											<div class="form-group">
+												<label for="team">Team Name</label>
+												<div class="input-group">
+													<span class="input-group-addon">
+														<i class="glyphicon glyphicon-education"></i>
+													</span>
+													<select class="form-control" id="team" name="team" required>
+														<c:forEach items="${teams}" var="team">
+															<option value="${team.name}">${team.name}</option>
+														</c:forEach>
+													</select>
 												</div>
 											</div>
-										</c:forEach>
+											<div class="form-group">
+										    	<label for="solution">Solution</label>
+												<div class="input-group">
+													<span class="input-group-addon">
+														<i class="glyphicon glyphicon-open-file"></i>
+													</span>
+						    						<input id="solution" name="solution" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".dlv,.java,.cpp,.c,.py" required>
+												</div>
+									  		</div>
+											<div>
+												<input type="submit" class="btn btn-primary btn-lg button-login" value="Send" />
+											</div>
+										</form:form>
 									</div>
-								</c:if>
-								<form:form action="submit" method="post" enctype="multipart/form-data" modelAttribute="submitForm">
-									<input type="hidden" name="idProblem" id="idProblem" value="${problem.id_problem}"/> 
-									<div class="form-group">
-										<label for="team">Team Name</label>
-										<div class="input-group">
-											<span class="input-group-addon">
-												<i class="glyphicon glyphicon-education"></i>
-											</span>
-											<select class="form-control" id="team" name="team" required>
-												<c:forEach items="${teams}" var="team">
-													<option value="${team.name}">${team.name}</option>
-												</c:forEach>
-											</select>
-										</div>
+								</c:when>
+								<c:otherwise>
+									<div id="problem-${problem.id_problem}" ${status.first ? '' : 'style="display:none"'}>
+										<h3><span class="label label-danger">You need to resolve others Problems\Quizzes to unlock this Problem</span></h3><br>
 									</div>
-									<div class="form-group">
-								    	<label for="solution">Solution</label>
-										<div class="input-group">
-											<span class="input-group-addon">
-												<i class="glyphicon glyphicon-open-file"></i>
-											</span>
-				    						<input id="solution" name="solution" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".dlv,.java,.cpp,.c,.py" required>
-										</div>
-							  		</div>
-									<div>
-										<input type="submit" class="btn btn-primary btn-lg button-login" value="Send" />
-									</div>
-								</form:form>
-							</div>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
 						<c:forEach items="${quizzes}" var="quiz" varStatus="status">
-							<div id="quiz-${quiz.id}" style="display:none">
-								<h3><span class="label label-primary">${quiz.name}</span></h3><br>
-								<form action="submitQuiz" method="post" modelAttribute="submitQuizForm">
-									<input type="hidden" name="quizID" id="quizID" value="${quiz.id}"/> 
-									<div class="form-group">
-										<label for="team">Team Name</label>
-										<div class="input-group">
-											<span class="input-group-addon">
-												<i class="glyphicon glyphicon-education"></i>
-											</span>
-											<select class="form-control" id="quizTeam" name="teamName" required>
-												<c:forEach items="${teams}" var="team">
-													<option value="${team.name}">${team.name}</option>
-												</c:forEach>
-											</select>
-										</div>
-									</div>
-									<c:forEach items="${quiz.questions}" var="question">
-										<c:choose>
-											<c:when test="${question.type == 'OPEN' }">
-												<div class="form-group">
-											  		<label class="col-sm-1 control-label">Question</label>
-											  		<div class="col-sm-11">
-										    			<p class="form-control-static">${question.text }</p>
-											  		</div>
+							<c:choose>
+								<c:when test="${quizzesToShow[status.index]}">
+									<div id="quiz-${quiz.id}" style="display:none">
+										<h3><span class="label label-primary">${quiz.name}</span></h3><br>
+										<form action="submitQuiz" method="post" modelAttribute="submitQuizForm">
+											<input type="hidden" name="quizID" id="quizID" value="${quiz.id}"/> 
+											<div class="form-group">
+												<label for="team">Team Name</label>
+												<div class="input-group">
+													<span class="input-group-addon">
+														<i class="glyphicon glyphicon-education"></i>
+													</span>
+													<select class="form-control" id="quizTeam" name="teamName" required>
+														<c:forEach items="${teams}" var="team">
+															<option value="${team.name}">${team.name}</option>
+														</c:forEach>
+													</select>
 												</div>
-												<div class="form-group">
-													<label class="col-sm-1 control-label" for="questionID-${question.id}">Answer</label>
-													<div class="col-sm-11">
-														<input type="text" class="form-control" name="question_answer['${question.id}']" id="questionID-${question.id}" placeholder="Answer" required autofocus>
-													</div>
-												</div>
-											</c:when>
-											<c:otherwise>
-												<div class="form-group">
-											  		<label class="col-sm-1 control-label">Question</label>
-											  		<div class="col-sm-11">
-										    			<p class="form-control-static">${question.text }</p>
-											  		</div>
-												</div>
-												<div class="answers">
-													<c:forEach items="${question.answers}" var="answer">
-														<div class="form-check">
-															<input class="form-check-input" type="radio" name="question_answer['${question.id}']" id="answerID-${answer.id }" value="${answer.id}" required>
-														  	<label class="form-check-label" for="answerID-${answer.id }">${answer.text }</label>
+											</div>
+											<c:forEach items="${quiz.questions}" var="question">
+												<c:choose>
+													<c:when test="${question.type == 'OPEN' }">
+														<div class="form-group">
+													  		<label class="col-sm-1 control-label">Question</label>
+													  		<div class="col-sm-11">
+												    			<p class="form-control-static">${question.text }</p>
+													  		</div>
 														</div>
-													</c:forEach>
-												</div>
-											</c:otherwise>
-										</c:choose>
-										<br/>
-										<br/>
-									</c:forEach>
-									<input type="submit" class="btn btn-primary btn-lg" value="Send" />
-								</form>
-							</div>
+														<div class="form-group">
+															<label class="col-sm-1 control-label" for="questionID-${question.id}">Answer</label>
+															<div class="col-sm-11">
+																<input type="text" class="form-control" name="question_answer['${question.id}']" id="questionID-${question.id}" placeholder="Answer" required autofocus>
+															</div>
+														</div>
+													</c:when>
+													<c:otherwise>
+														<div class="form-group">
+													  		<label class="col-sm-1 control-label">Question</label>
+													  		<div class="col-sm-11">
+												    			<p class="form-control-static">${question.text }</p>
+													  		</div>
+														</div>
+														<div class="answers">
+															<c:forEach items="${question.answers}" var="answer">
+																<div class="form-check">
+																	<input class="form-check-input" type="radio" name="question_answer['${question.id}']" id="answerID-${answer.id }" value="${answer.id}" required>
+																  	<label class="form-check-label" for="answerID-${answer.id }">${answer.text }</label>
+																</div>
+															</c:forEach>
+														</div>
+													</c:otherwise>
+												</c:choose>
+												<br/>
+												<br/>
+											</c:forEach>
+											<input type="submit" class="btn btn-primary btn-lg" value="Send" />
+										</form>
+									</div>
+								</c:when>
+								<c:otherwise>
+									<div id="quiz-${quiz.id}" style="display:none">
+										<h3><span class="label label-danger">You need to resolve others Problems\Quizzes to unlock this Quiz</span></h3><br>
+									</div>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
 					</div>
 				</div>

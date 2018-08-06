@@ -125,10 +125,13 @@
 								<i class="material-icons">view_list</i> <span>My Problems</span>
 							</a></li>
 						   	<li class="submenu"><a href="myQuizzes">
-								<i class="material-icons">list</i> <span>My Quizzes</span>
+								<i class="material-icons">view_list</i> <span>My Quizzes</span>
 							</a></li>
 				  		</ul>
 				  	</li>
+				  	<li><a href="correctQuizzes">
+						<i class="material-icons">view_list</i> <span>Correct Quizzes</span>
+					</a></li>
 					<hr>
 					<li><a href="logout">
 						<i class="material-icons">exit_to_app</i> <span>Logout</span>

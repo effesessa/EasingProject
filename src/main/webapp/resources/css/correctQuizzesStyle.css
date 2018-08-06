@@ -1,0 +1,56 @@
+@charset "ISO-8859-1";
+
+.border
+{
+	border-style: solid;
+	border-width: 1px;
+	border-color: lightgrey;
+	border-radius: 5px;
+	padding: 1vw 1vw 1vw 2vw;
+}
+
+.panel-heading
+{
+	font-weight: bold;
+}
+
+.content h3
+{
+	text-align: center;
+}
+
+.subPanel
+{
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.input-sm
+{
+	width: 5em !important;
+	margin-left: 23px;
+}
+
+.correctionForm
+{
+	margin: 0;
+}
+
+.correctionForm > .btn
+{
+	margin: 10px;
+}
+
+.correctionForm .form-control-static
+{
+	margin-left: 10px;
+	margin-top: -7px;
+}
+
+@media only screen and (max-width: 700px)
+{
+    .border
+    {
+        padding: 1vw 5vw 2vw 5vw;
+    }
+}

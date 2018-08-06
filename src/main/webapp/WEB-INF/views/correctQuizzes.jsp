@@ -9,6 +9,7 @@
 	<title>Easing - ${team.name}</title>
 	<%@ include file="includes/header.jsp" %>
 	<link href="resources/css/style.css" rel="stylesheet">
+	<link href="resources/css/correctQuizzesStyle.css" rel="stylesheet">
 </head>
 <body>
 	<jsp:include page="includes/navbarTeacher.jsp"></jsp:include>
@@ -17,14 +18,7 @@
 		<div class="container-fluid">
 			<div class="block-header">
 				<div class="card" style="height: auto !important;">
-					<div class="header">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h2>Correct Quizzes</h2>
-							</div>
-						</div>
-					</div>
-					<h3>Submit</h3>
+					<h3>Corrections</h3>
 					<div class="panel panel-default">
 						<div class="panel-body">
 							<div class="panel-group" id="accordion" style="margin-top: 16px;">
@@ -37,62 +31,64 @@
 												</h4>
 											</div>
 											<div id="con${contest.key.idcontest}" class="panel-collapse collapse ${index.first ? 'in' : ''}">
-												<div class="panel-group" id="accordion2" style="margin-top: 16px;">
+												<div class="panel-group" id="accordion_c${contest.key.idcontest}" style="margin-top: 16px;">
 													<c:forEach var="quiz" items="${contest.value}" varStatus="quizIndex">
 														<c:if test="${not empty quizSubmitQuizzesMap[quiz]}">
-															<div class="panel panel-default">
+															<div class="panel panel-default subPanel">
 																<div class="panel-heading">
 																	<h4 class="panel-title">
-																		<a data-toggle="collapse" data-parent="#accordion2" href="#quiz${quiz.id}"> ${quiz.name}</a>
+																		<a data-toggle="collapse" data-parent="#accordion_c${contest.key.idcontest}" href="#quiz${quiz.id}"> ${quiz.name}</a>
 																	</h4>
 																</div>
 																<div id="quiz${quiz.id}" class="panel-collapse collapse">
 																	
-																	<div class="panel-group" id="accordion3" style="margin-top: 16px;">
+																	<div class="panel-group" id="accordion_q${quiz.id}" style="margin-top: 16px;">
 																		<c:forEach var="submit" items="${quizSubmitQuizzesMap[quiz]}">
-																			<div class="panel panel-default">
+																			<div class="panel panel-default subPanel">
 																				<div class="panel-heading">
 																					<h4 class="panel-title">
-																						<a data-toggle="collapse" data-parent="#accordion3" href="#sub${submit.id}"> ${submit.team.name}</a>
+																						<a data-toggle="collapse" data-parent="#accordion_q${quiz.id}" href="#sub${submit.id}"> ${submit.team.name}</a>
 																					</h4>
 																				</div>
 																				<div id="sub${submit.id}" class="panel-collapse collapse">
 																					
-																					<c:forEach var="answer" items="${submitQuizSubmitAnswersMap[submit]}" varStatus="subIndex">
-																							<div class="panel-body">
+																					<form:form class="correctionForm">
+																						<c:forEach var="answer" items="${submitQuizSubmitAnswersMap[submit]}" varStatus="subIndex">
 																								<c:if test="${answer.question.type == 'OPEN'}">
-																									<br>
-																									<div class="panel panel-default">
-																										<div class="panel-heading">
-																											QUESTION POINTS: ${answer.question.points }
+																									<div class="panel-body">
+																										<br>
+																										<div class="panel panel-default">
+																											<div class="panel-heading">
+																												QUESTION POINTS: ${answer.question.points }
+																											</div>
 																										</div>
-																									</div>
-																									<div class="border">
-																										<div class="row">
-																											<div class="form-group">
-																										  		<label class="col-sm-1 control-label">Question</label>
-																										  		<div class="col-sm-11">
-																									    			<p class="form-control-static">${answer.question.text }</p>
-																										  		</div>
-																											</div>
-																											<div class="form-group">
-																												<label class="col-sm-1 control-label">Answer</label>
-																												<div class="col-sm-11">
-																													<p class="form-control-static">${answer.openAnswer }</p>
+																										<div class="border">
+																											<div class="row">
+																												<div class="form-group">
+																											  		<label class="col-sm-1 control-label">Question</label>
+																											  		<div class="col-sm-11">
+																										    			<p class="form-control-static">${answer.question.text }</p>
+																											  		</div>
 																												</div>
-																											</div>
-																											<div class="form-group">
-																												<label class="col-sm-1 control-label" for="ans${answer.id}">Rating /${answer.question.points}</label>
-																												<div class="col-sm-11 input-group">
-																													<input class="form-control input-sm" id="ans${answer.id}" name="points[${answer.id}]" type="number" min=0 max="${answer.question.points}" step=1 value=0 required />
+																												<div class="form-group">
+																													<label class="col-sm-1 control-label">Answer</label>
+																													<div class="col-sm-11">
+																														<p class="form-control-static">${answer.openAnswer }</p>
+																													</div>
 																												</div>
-																										  	</div>
+																												<div class="form-group">
+																													<label class="col-sm-1 control-label" for="ans${answer.id}">Rating /${answer.question.points}</label>
+																													<div class="col-sm-11 input-group">
+																														<input class="form-control input-sm" id="ans${answer.id}" name="points[${answer.id}]" type="number" min=0 max="${answer.question.points}" step=1 value=0 required />
+																													</div>
+																											  	</div>
+																											</div>
 																										</div>
 																									</div>
 																								</c:if>
-																							</div>
-																					</c:forEach>
-
+																						</c:forEach>
+																						<input type="submit" class="btn btn-lg btn-primary" value="Submit" />
+																					</form:form>
 																				</div>
 																			</div>
 																		</c:forEach>

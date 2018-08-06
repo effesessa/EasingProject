@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.h2.engine.SysProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,11 +114,13 @@ public class ContestController
 	@RequestMapping(value = "/contest", method = RequestMethod.GET)
 	public String contestMainView(@RequestParam String name, HttpSession session, Model model)
 	{
+		// TODO Se il Contest è un esame, prendere solamente il Team iscritto
+		// all'esame (si può utilizzare "partecipations")
+		setAccountAttribute(session, model);
 		final User user = (User) model.asMap().get("user");
 		if (user == null || user.isProfessor() || name == null)
 			return "redirect:/";
 
-		setAccountAttribute(session, model);
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final Contest contest = contestDAO.getContestByName(name);
 		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
@@ -138,7 +141,10 @@ public class ContestController
 				if (partecipationDAO.getTeamPartecipation(team.getId(), contest.getIdcontest()) != null)
 					registered = true;
 			if (!registered)
+			{
+				logger.info("You have to subscribe to this Exam. Search it using search bar");
 				return "redirect:/";
+			}
 		}
 
 		final List<Submit> submitsByAllJoinedTeams = new LinkedList<>();
@@ -153,91 +159,111 @@ public class ContestController
 		for (final Problem p : problems)
 			p.setDescription(p.getDescription().replaceAll(System.getProperty("line.separator"), "<br />"));
 		final List<Quiz> quizzes = quizDAO.getAllQuizByContest(contest.getIdcontest());
-		
-		
+
 		/**
-		 * 
+		 *
 		 */
-		//init boolean array
+		// init boolean array
 		final List<Boolean> quizzesToShow = new ArrayList<>(Arrays.asList(new Boolean[quizzes.size()]));
 		Collections.fill(quizzesToShow, Boolean.TRUE);
 		final List<Boolean> problemsToShow = new ArrayList<>(Arrays.asList(new Boolean[problems.size()]));
 		Collections.fill(problemsToShow, Boolean.TRUE);
-		//init constraint of a contest
-		Contest contestFetch = contestDAO.getFetchJoinConstraints(contest.getIdcontest());
-		
-		//if contest has constraints for its quizzes
-		if (!contest.getQuizConstraints().isEmpty()) {
+		// init constraint of a contest
+		final Contest contestFetch = contestDAO.getFetchJoinConstraints(contest.getIdcontest());
+
+		// if contest has constraints for its quizzes
+		if (!contestFetch.getQuizConstraints().isEmpty())
+		{
 			int i = 0;
-			for (final Quiz quiz : quizzes) {
+			for (final Quiz quiz : quizzes)
+			{
 				boolean passed = true;
 				int totalScore = 0;
 				int correct = 0;
-				for (final QuizConstraint quizConstraint : contestFetch.getQuizConstraints()) {
-					if (quizConstraint.getQuiz().getId().equals(quiz.getId())) {
-						for (final Quiz quiz2 : quizzes) {
-							if (!quiz2.getId().equals(quiz.getId())) {
+				for (final QuizConstraint quizConstraint : contestFetch.getQuizConstraints())
+					if (quizConstraint.getQuiz().getId().equals(quiz.getId()))
+					{
+						for (final Quiz quiz2 : quizzes)
+							if (!quiz2.getId().equals(quiz.getId()))
+							{
 								final SubmitQuiz submitQuiz = submitQuizDAO.getByTeamAndQuiz(teams.get(0), quiz2);
 								if (submitQuiz != null)
-									totalScore+=submitQuiz.getTotalScore();
+									totalScore += submitQuiz.getTotalScore();
 							}
-						}
-						for (final Problem problem : problems) {
-							final List<Submit> submits = submitDAO.getAllSubmitByProblemAndTeam(problem.getId_problem(), teams.get(0).getId());
-							for (final Submit submit : submits) {
-								if (submit.getInfo().equals(Status.CORRECT)) {
+						for (final Problem problem : problems)
+						{
+							final List<Submit> submits = submitDAO.getAllSubmitByProblemAndTeam(problem.getId_problem(),
+									teams.get(0).getId());
+							for (final Submit submit : submits)
+								if (submit.getInfo().equals(Status.CORRECT))
+								{
 									correct++;
 									break;
 								}
-							}
 						}
 						if (totalScore < quizConstraint.getMinPoints() || correct < quizConstraint.getMinCorrects())
 							passed = false;
 						break;
 					}
-				}
 				quizzesToShow.set(i, passed);
 				i++;
 			}
 		}
-		//if contest has constraints for its problems
-				if (!contest.getProblemConstraints().isEmpty()) {
-					int i = 0;
-					for (final Problem problem : problems) {
-						boolean passed = true;
-						int totalScore = 0;
-						int correct = 0;
-						for (final ProblemConstraint problemConstraint : contestFetch.getProblemConstraints()) {
-							if (problemConstraint.getProblem().getId_problem().equals(problem.getId_problem())) {
-								for (final Problem problem2 : problems) {
-									if (!problem2.getId_problem().equals(problem.getId_problem())) {
-										final List<Submit> submits = submitDAO.getAllSubmitByProblemAndTeam(problem2.getId_problem(), teams.get(0).getId());
-										for (final Submit submit : submits) {
-											if (submit.getInfo().equals(Status.CORRECT)) {
-												correct++;
-												break;
-											}
-										}
+		// if contest has constraints for its problems
+		if (!contestFetch.getProblemConstraints().isEmpty())
+		{
+			int i = 0;
+			for (final Problem problem : problems)
+			{
+				boolean passed = true;
+				int totalScore = 0;
+				int correct = 0;
+				for (final ProblemConstraint problemConstraint : contestFetch.getProblemConstraints())
+					if (problemConstraint.getProblem().getId_problem().equals(problem.getId_problem()))
+					{
+						for (final Problem problem2 : problems)
+							if (!problem2.getId_problem().equals(problem.getId_problem()))
+							{
+								final List<Submit> submits = submitDAO
+										.getAllSubmitByProblemAndTeam(problem2.getId_problem(), teams.get(0).getId());
+								for (final Submit submit : submits)
+									if (submit.getInfo().equals(Status.CORRECT))
+									{
+										correct++;
+										break;
 									}
-								}
-								for (final Quiz quiz : quizzes) {
-									final SubmitQuiz submitQuiz = submitQuizDAO.getByTeamAndQuiz(teams.get(0), quiz);
-									if (submitQuiz != null)
-										totalScore+=submitQuiz.getTotalScore();
-								}
-								if (totalScore < problemConstraint.getMinPoints() || correct < problemConstraint.getMinCorrects())
-									passed = false;
-								break;
 							}
+						for (final Quiz quiz : quizzes)
+						{
+							final SubmitQuiz submitQuiz = submitQuizDAO.getByTeamAndQuiz(teams.get(0), quiz);
+							if (submitQuiz != null)
+								totalScore += submitQuiz.getTotalScore();
 						}
-						problemsToShow.set(i, passed);
-						i++;
+						if (totalScore < problemConstraint.getMinPoints()
+								|| correct < problemConstraint.getMinCorrects())
+							passed = false;
+						break;
 					}
-				}
+				problemsToShow.set(i, passed);
+				i++;
+			}
+		}
 		/**
-		 * 
+		 *
 		 */
 		// debugQuiz(quizs);
+		for (final Boolean b : problemsToShow)
+			if (b)
+				System.out.print("SHOW - ");
+			else
+				System.out.print("HIDE - ");
+		System.out.println();
+		for (final Boolean b : quizzesToShow)
+			if (b)
+				System.out.print("SHOW - ");
+			else
+				System.out.print("HIDE - ");
+		System.out.println();
 		model.addAttribute("quizzes", quizzes);
 		model.addAttribute("submits", submitsByAllJoinedTeams);
 		model.addAttribute("teams", teams);
