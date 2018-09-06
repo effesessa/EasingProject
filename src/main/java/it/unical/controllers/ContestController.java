@@ -136,6 +136,12 @@ public class ContestController
 
 		if (contest.isExam())
 		{
+			if (!contest.isVisible())
+			{
+				logger.info("No Contest found or not visible yet");
+				return "redirect:/";
+			}
+
 			boolean registered = false;
 			for (final Team team : teams)
 				if (partecipationDAO.getTeamPartecipation(team.getId(), contest.getIdcontest()) != null)

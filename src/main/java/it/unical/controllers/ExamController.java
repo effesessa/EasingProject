@@ -2,6 +2,7 @@ package it.unical.controllers;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 import it.unical.dao.ContestDAO;
@@ -32,10 +34,24 @@ public class ExamController
 	@Autowired
 	private WebApplicationContext context;
 
+	private void _setAccountAttribute(HttpSession session, Model model)
+	{
+		if (SessionUtils.isUser(session))
+		{
+			final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+			final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
+			model.addAttribute("user", user);
+			model.addAttribute("typeSession", "Account");
+			model.addAttribute("userLogged", true);
+		}
+		else
+			model.addAttribute("typeSession", "Login");
+	}
+
 	@RequestMapping(value = "/manageExam", method = RequestMethod.POST)
 	public String manageExam(@ModelAttribute ManageExamForm form, final HttpSession session, final Model model)
 	{
-		setAccountAttribute(session, model);
+		_setAccountAttribute(session, model);
 		final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
 		final ProblemConstraintDAO problemConstraintDAO = (ProblemConstraintDAO) context
@@ -83,17 +99,22 @@ public class ExamController
 		return "redirect:/";
 	}
 
-	private void setAccountAttribute(HttpSession session, Model model)
+	@RequestMapping(value = "/examVisibility", method = RequestMethod.POST)
+	public void toggleVisibility(@RequestParam Integer contestID, final HttpSession session, final Model model,
+			HttpServletResponse response)
 	{
-		if (SessionUtils.isUser(session))
+		_setAccountAttribute(session, model);
+		final User user = (User) model.asMap().get("user");
+
+		if (user != null && user.isProfessor())
 		{
-			final UserDAO userDAO = (UserDAO) context.getBean("userDAO");
-			final User user = userDAO.get(SessionUtils.getUserIdFromSessionOrNull(session));
-			model.addAttribute("user", user);
-			model.addAttribute("typeSession", "Account");
-			model.addAttribute("userLogged", true);
+			response.setContentType("text/plain");
+			response.setCharacterEncoding("UTF-8");
+			final ContestDAO contestDAO = (ContestDAO) context.getBean("contestDAO");
+			final Contest contest = contestDAO.get(contestID);
+			contest.setVisible(!contest.isVisible());
+			contestDAO.update(contest);
+
 		}
-		else
-			model.addAttribute("typeSession", "Login");
 	}
 }

@@ -23,7 +23,6 @@ function deleteQuiz(quizID)
 		{
 			if (result)
 			{
-				// TODO POST DELETE
 				$.post("quiz", { op: "deleteQuiz", id: quizID })
 					.done(function(){
 						$("input[data-id='"+quizID+"']").closest(".list-group-item").fadeOut('slow', function(){

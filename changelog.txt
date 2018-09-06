@@ -139,8 +139,3 @@
 		- Nessuna chiamata Ajax, ora viene utilizzato Spring usando gli stessi nomi per creare delle Liste
 	- Aggiunto form per la generazione di Quiz casuali
 		- Modificato createQuizScript.js per rendere il form dinamico
-	
-	
-	
-	
-	

@@ -76,7 +76,9 @@
 								</c:forEach>
 							</tbody>
 						</table>
-						<input type="submit" class="btn btn-lg btn-primary" value="Apply">
+						<c:if test="${not empty problems || not empty quizzes}">
+							<input type="submit" class="btn btn-lg btn-primary" value="Apply">
+						</c:if>
 					</form:form>
 				</div>
 			</div>

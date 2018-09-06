@@ -37,10 +37,10 @@
 														${contest.name}
 														<span class="toRight">
 															<c:if test="${contest.exam}">
+																<input class="btn btn-${contest.visible ? 'danger' : 'success' } visibleExamBtn" type="button" value="${contest.visible ? 'Hide' : 'Show' } Exam" data-id="${contest.idcontest}" />
 																<a href="manageExam?contestID=${contest.idcontest }" class="btn btn-warning manageContestBtn">Manage Exam</a>
-																<%-- <input class="btn btn-warning manageContestBtn" type="button" value="Manage Exam" data-id="${contest.idcontest}" /> --%>
 															</c:if>
-															<input class="btn btn-danger deleteContestBtn" type="button" value="Delete" data-id="${contest.idcontest}" />
+															<%-- <input class="btn btn-danger deleteContestBtn" type="button" value="Delete" data-id="${contest.idcontest}" /> --%>
 														</span>
 													</li>
 												</c:forEach>
