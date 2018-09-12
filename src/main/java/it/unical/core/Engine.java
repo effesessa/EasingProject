@@ -63,7 +63,7 @@ public class Engine {
 		if(input.length > 0) {
 			String maybeItWillFail = null;
 			try {
-				maybeItWillFail = IOUtils.toString(new FileInputStream(manager.getTestCaseFile()), "UTF-8");
+				maybeItWillFail = IOUtils.toString(new FileInputStream(manager.getRandomDirectory() + manager.separator() + input[0]), "UTF-8");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

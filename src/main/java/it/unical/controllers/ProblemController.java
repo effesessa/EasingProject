@@ -469,7 +469,6 @@ public class ProblemController
 		typeContext.setStrategy(Engine.BASE_NAME_INPUT + Engine.DOT + problem.getType());
 		final DirFilesManager dirFilesManager = new DirFilesManager();
 		final Verdict verdict = typeContext.submit(problem, submitForm, dirFilesManager);
-		System.out.println("newsubmit Verdicti:" + verdict.getTestCaseFailed());
 		SubmissionHandler.save(context, problem, submitForm, verdict, dirFilesManager);
 		return "redirect:/";
 	}

@@ -102,8 +102,9 @@ public class SubjectDAOImpl implements SubjectDAO
 		final Query query = session.createQuery("SELECT max(s.subjectId.id_subject) FROM Subject s");
 		final Integer result = (Integer) query.uniqueResult();
 		session.close();
-		return result;
-
+		if(result != null)
+			return result;
+		return 0;
 	}
 
 	public void setDatabaseHandler(DatabaseHandler databaseHandler)
