@@ -21,38 +21,42 @@ import it.unical.utils.StringUtils;
  * @author Fabrizio
  */
 
-public class SubmissionHandler {
-	
+public class SubmissionHandler
+{
+
 	public static final int MAX_SUBMISSION_SAVED = 5;
-	
-	public static void save(WebApplicationContext context, Problem problem, SubmitForm submitDTO, Verdict verdict, DirFilesManager dirFilesManager) {
-		File submittedFile = dirFilesManager.getSubmittedFile();
-		SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
-		TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
-		Team team = teamDAO.getByName(submitDTO.getTeam());
+
+	private static void checkAndRemove(Problem problem, SubmitDAO submitDAO, Team team)
+	{
+		final List<Submit> submits = submitDAO.getAllSubmitByProblemAndTeam(problem.getId_problem(), team.getId());
+		if (submits.size() == 5)
+			submitDAO.delete(submits.get(submits.size() - 1));
+	}
+
+	public static void save(WebApplicationContext context, Problem problem, SubmitForm submitDTO, Verdict verdict,
+			DirFilesManager dirFilesManager)
+	{
+		final File submittedFile = dirFilesManager.getSubmittedFile();
+		final SubmitDAO submitDAO = (SubmitDAO) context.getBean("submitDAO");
+		final TeamDAO teamDAO = (TeamDAO) context.getBean("teamDAO");
+		final Team team = teamDAO.getByName(submitDTO.getTeam());
 		checkAndRemove(problem, submitDAO, team);
-		Submit submit = new Submit();
+		final Submit submit = new Submit();
 		submit.setIdTeam(team);
 		submit.setProblem(problem);
 		submit.setInfo(verdict.getStatus());
-		if(verdict.getErrorText() != null && !verdict.getErrorText().equals(""))
+		if (verdict.getErrorText() != null && !verdict.getErrorText().equals(""))
 			submit.setError(verdict.getErrorText());
-		if(verdict.getTestCaseFailed() != null && !verdict.getTestCaseFailed().equals(""))
+		if (verdict.getTestCaseFailed() != null && !verdict.getTestCaseFailed().equals(""))
 			submit.setTestCaseFailed(verdict.getTestCaseFailed());
-		if(verdict.getExecutionTime() != null)
+		if (verdict.getExecutionTime() != null)
 			submit.setScore(verdict.getExecutionTime());
 		submit.setDate(DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDate.now()));
-		byte submittedFileInBytes[] = FFileUtils.readFileToByteArray(submittedFile);
+		final byte submittedFileInBytes[] = FFileUtils.readFileToByteArray(submittedFile);
 		submit.setSolution(submittedFileInBytes);
 		submit.setType(StringUtils.getExtension(submittedFile.getName()));
 		submitDAO.create(submit);
 		FileUtils.deleteQuietly(dirFilesManager.getRandomDirectory());
-	}
-	
-	private static void checkAndRemove(Problem problem, SubmitDAO submitDAO, Team team) {
-		List<Submit> submits = submitDAO.getAllSubmitByProblemAndTeam(problem.getId_problem(), team.getId());
-		if(submits.size() == 5)
-			submitDAO.delete(submits.get(submits.size()-1));
 	}
 
 }
