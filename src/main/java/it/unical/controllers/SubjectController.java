@@ -62,7 +62,6 @@ public class SubjectController
 
 		model.addAttribute("contests", contests);
 		model.addAttribute("name", name);
-		// TODO Standardizzare la Vista allo stile del Sistema
 		return "subjectview";
 
 	}
@@ -88,8 +87,8 @@ public class SubjectController
 				registration.setSubject(subject);
 				registration.setUser(user);
 				registrationDAO.create(registration);
-				// Restituire un messaggio piuttosto che una nuova Vista (?)
-				return "iscritto";
+				logger.info("Registrazione effettuata con successo");
+				return "redirect:/";
 			}
 			else
 				return "index";

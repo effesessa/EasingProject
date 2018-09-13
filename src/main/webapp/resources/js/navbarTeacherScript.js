@@ -24,7 +24,7 @@ function init()
 {
 	var fileExtension;
 	$("#testcase").on('change',manageProblemForm);
-	$("#generateInput").on('change', generateInput);
+	//$("#generateInput").on('change', generateInput); TODO Implement in back-end
 	$("#isExam").on('change',askPassword);
 	
 	$("#newSub_year").datepicker( {
@@ -187,21 +187,21 @@ function manageProblemForm()
 		$('#type').val("2");
 		
 	}
-	if(/\.(java|cpp|c)$/gmi.test(fileExtension))
-	{
-		$('#type').val("3");
-		$('#generateInput').closest('.form-check').removeClass('hidden');
-		if($("#generateInput").is(':checked'))
-		{
-			$('#type').val("4");
-			$('#intDomain').closest('.form-group').removeClass('hidden');
-		}
-	}
-	else
-	{
-		$('#intDomain').closest('.form-group').addClass('hidden');
-		$('#generateInput').closest('.form-check').addClass('hidden');
-	}
+//	if(/\.(java|cpp|c)$/gmi.test(fileExtension)) TODO Implement in back-end (generate input by Algorithm)
+//	{
+//		$('#type').val("3");
+//		$('#generateInput').closest('.form-check').removeClass('hidden');
+//		if($("#generateInput").is(':checked'))
+//		{
+//			$('#type').val("4");
+//			$('#intDomain').closest('.form-group').removeClass('hidden');
+//		}
+//	}
+//	else
+//	{
+//		$('#intDomain').closest('.form-group').addClass('hidden');
+//		$('#generateInput').closest('.form-check').addClass('hidden');
+//	}
 }
 
 function newContestChecks(e)
