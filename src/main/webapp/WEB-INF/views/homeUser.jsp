@@ -105,6 +105,9 @@
 													<c:when test="${submit.type=='cpp'}">
 														<span class="smallball smallball-cpp"></span> c++
 													</c:when>
+													<c:when test="${submit.type=='pl'}">
+														<span class="smallball smallball-cpp"></span> perl
+													</c:when>
 													<c:when test="${submit.type=='py'}">
 														<span class="smallball smallball-python"></span> python
 													</c:when>

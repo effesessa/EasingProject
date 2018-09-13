@@ -32,6 +32,8 @@ public class TypeFileExtension {
 	
 	public static final String ZIP = "zip";
 	
+	public static final String PERL = "pl";
+	
 	public static final String SEVEN_Z = "7z";
 	
 	public static final String DAT = "dat";
@@ -44,6 +46,8 @@ public class TypeFileExtension {
 	
 	public static final String PYTHON_NAME = "python";
 	
+	public static final String PERL_NAME = "perl";
+	
 	static {
 		Map<String, String> map = new HashMap<>();
 		map.put(DLV,PROLOG);
@@ -51,6 +55,7 @@ public class TypeFileExtension {
 		map.put(PYTHON, PYTHON_NAME);
 		map.put(C,C);
 		map.put(JAVA,JAVA);
+		map.put(PERL_NAME, PERL);
 		highlight = Collections.unmodifiableMap(map);
 	}
 	
@@ -61,14 +66,13 @@ public class TypeFileExtension {
 		list.add(JAVA);
 		list.add(PYTHON);
 		list.add(DLV);
+		list.add(PERL);
 		extensionsLanguage = Collections.unmodifiableList(list);
 	}
 	
 	static {
 		List<String> list = new ArrayList<>();
-		list.add(RAR);
 		list.add(ZIP);
-		list.add(SEVEN_Z);
 		extensionsCompress = Collections.unmodifiableList(list);
 	}
 	
