@@ -91,9 +91,13 @@ public class SubjectController
 				return "redirect:/";
 			}
 			else
-				return "index";
+			{
+				logger.info("Risulti già registrato a questo Corso");
+				return "redirect:/";
+			}
 
-		return "index";
+		logger.info("Password non corretta");
+		return "redirect:/";
 
 	}
 }
