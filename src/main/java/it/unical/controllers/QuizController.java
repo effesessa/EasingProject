@@ -205,30 +205,39 @@ public class QuizController
 		final Set<Question> questions = new LinkedHashSet<>();
 		final List<Quiz> quizes = new ArrayList<>();
 		quizes.add(quiz);
-		for (int i = 0; i < addQuizForm.getQuestions().size(); i++)
+		int key = 1;
+		for (int i = 0; i < addQuizForm.getQuestions().size();)
 		{
-			final String questionKey = "question" + (i + 1);
-			final Question question = new Question();
-			question.setPoints(addQuizForm.getPoints().get(i));
-			question.setText(addQuizForm.getQuestions().get(i));
-			question.setType(getType(addQuizForm.getQuestion_types().get(questionKey)));
-			question.setQuizzes(quizes);
-			questionDAO.create(question);
-			if (addQuizForm.getQuestions_tags() != null || addQuizForm.getQuestions_tags().isEmpty())
-				if (questionDAO.exists(addQuizForm.getQuestions().get(i)))
-				{
-					final Question existingQuestion = questionDAO.getDistinctByText(addQuizForm.getQuestions().get(i));
-					for (final QuestionTag questionTag : existingQuestion.getTags())
+			// final String questionKey = "question" + (i + 1);
+			final String questionKey = "question" + key;
+
+			if (addQuizForm.getQuestion_types().containsKey(questionKey))
+			{
+				final Question question = new Question();
+				question.setPoints(addQuizForm.getPoints().get(i));
+				question.setText(addQuizForm.getQuestions().get(i));
+				question.setType(getType(addQuizForm.getQuestion_types().get(questionKey)));
+				question.setQuizzes(quizes);
+				questionDAO.create(question);
+				if (addQuizForm.getQuestions_tags() != null || addQuizForm.getQuestions_tags().isEmpty())
+					if (questionDAO.exists(addQuizForm.getQuestions().get(i)))
 					{
-						final QuestionTag copyQuestionTag = new QuestionTag();
-						copyQuestionTag.setQuestion(question);
-						copyQuestionTag.setValue(questionTag.getValue());
-						questionTagDAO.create(copyQuestionTag);
-						question.getTags().add(copyQuestionTag);
+						final Question existingQuestion = questionDAO
+								.getDistinctByText(addQuizForm.getQuestions().get(i));
+						for (final QuestionTag questionTag : existingQuestion.getTags())
+						{
+							final QuestionTag copyQuestionTag = new QuestionTag();
+							copyQuestionTag.setQuestion(question);
+							copyQuestionTag.setValue(questionTag.getValue());
+							questionTagDAO.create(copyQuestionTag);
+							question.getTags().add(copyQuestionTag);
+						}
 					}
-				}
-			questionDAO.update(question);
-			questions.add(question);
+				questionDAO.update(question);
+				questions.add(question);
+				i++;
+			}
+			key++;
 		}
 		// update quiz
 		quiz.setQuestions(questions);
