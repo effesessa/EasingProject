@@ -247,7 +247,12 @@ public class QuizController
 		int i = 1;
 		for (final Question question : questions)
 		{
-			final String questionKey = "question" + i;
+			String questionKey = "question" + i;
+			while (!addQuizForm.getQuestion_types().containsKey(questionKey))
+			{
+				i++;
+				questionKey = "question" + i;
+			}
 			final Set<Answer> answers = new LinkedHashSet<>();
 			if (addQuizForm.getQuestions_answers() != null
 					&& addQuizForm.getQuestions_answers().containsKey(questionKey))
