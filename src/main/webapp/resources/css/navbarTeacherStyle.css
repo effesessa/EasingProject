@@ -78,6 +78,11 @@ ul.list span
 	list-style: none;
 }
 
+#leftsidebar>.menu
+{
+	overflow-y: hidden;
+}
+
 #leftsidebar>.menu ul ul
 {
 	display: none;

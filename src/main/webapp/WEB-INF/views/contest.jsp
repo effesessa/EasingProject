@@ -33,8 +33,11 @@
 								<c:forEach items="${problems}" var="problem" varStatus="status">
 									<a href="#" data-nav="problem-${problem.id_problem}" class="pn-ProductNav_Link" ${status.first ? 'aria-selected="true"' : ''}>${problem.name }</a>
 								</c:forEach>
+								<c:if test="${empty problems}">
+									
+								</c:if>
 								<c:forEach items="${quizzes}" var="quiz" varStatus="status">
-									<a href="#" data-nav="quiz-${quiz.id}" class="pn-ProductNav_Link">${quiz.name }</a>
+									<a href="#" data-nav="quiz-${quiz.id}" class="pn-ProductNav_Link" ${empty problems && status.first ? 'aria-selected="true"' : '' }>${quiz.name }</a>
 								</c:forEach>
 								<span id="pnIndicator" class="pn-ProductNav_Indicator"></span>
 							</div>
@@ -56,7 +59,7 @@
 								<c:when test="${problemsToShow[status.index]}">
 									<div id="problem-${problem.id_problem}" ${status.first ? '' : 'style="display:none"'}>
 										<small class="form-text text-muted">Click the Problem name to download the essay</small>
-										<h3>Problema <span class="label label-primary"><a target="_blank" href="${pageContext.servletContext.contextPath }/files/${problem.id_problem}">${problem.name}</a></span></h3><br>
+										<h3><span class="label label-primary"><a target="_blank" href="${pageContext.servletContext.contextPath }/files/${problem.id_problem}">${problem.name}</a></span></h3><br>
 										<c:if test="${problem.show_testcase}">
 											<c:choose>
 												<c:when test="${(problem.type == 'zip')}">
@@ -184,7 +187,7 @@
 						<c:forEach items="${quizzes}" var="quiz" varStatus="status">
 							<c:choose>
 								<c:when test="${quizzesToShow[status.index]}">
-									<div id="quiz-${quiz.id}" style="display:none">
+									<div id="quiz-${quiz.id}" ${empty problems && status.first ? '' : 'style="display:none"'}>
 										<h3><span class="label label-primary">${quiz.name}</span></h3><br>
 										<form action="submitQuiz" method="post" modelAttribute="submitQuizForm">
 											<input type="hidden" name="quizID" id="quizID" value="${quiz.id}"/> 
