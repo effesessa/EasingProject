@@ -49,7 +49,7 @@ public class Problem
 	@Column(name = "sol", columnDefinition = "blob")
 	private byte[] sol;
 
-	@Column(name = "description")
+	@Column(name = "description", columnDefinition="TEXT")
 	private String description;
 
 	@Column(name = "download", columnDefinition = "mediumblob")

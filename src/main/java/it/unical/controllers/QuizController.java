@@ -207,6 +207,7 @@ public class QuizController
 		quizes.add(quiz);
 		for (int i = 0; i < addQuizForm.getQuestions().size(); i++)
 		{
+			System.out.println(addQuizForm.getQuestions().get(i));
 			final String questionKey = "question" + (i + 1);
 			final Question question = new Question();
 			question.setPoints(addQuizForm.getPoints().get(i));
