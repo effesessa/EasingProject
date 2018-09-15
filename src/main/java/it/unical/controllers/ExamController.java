@@ -61,40 +61,40 @@ public class ExamController
 		final ProblemDAO problemDAO = (ProblemDAO) context.getBean("problemDAO");
 
 		final Contest contest = contestDAO.get(form.getContestID());
-
 		final Integer userID = SessionUtils.getUserIdFromSessionOrNull(session);
 		if (userID != null && userDAO.get(userID).isProfessor())
+		{
+			quizConstraintDAO.deleteByContest(contest.getIdcontest());
+			problemConstraintDAO.deleteByContest(contest.getIdcontest());
 			for (final Map.Entry<String, Integer> entry : form.getMinProblems().entrySet())
 			{
-				// TODO Evitare di creare il Constraint se minProblems e
-				// minPoints sono 0
-				// TODO Eliminare i vecchi Constraint di quel Contest per
-				// evitare duplicazioni
 				final String key = entry.getKey();
-				switch (key.substring(0, 1))
-				{
-				case "q":
-					final QuizConstraint quizConstraint = new QuizConstraint();
-					quizConstraint.setContest(contest);
-					quizConstraint.setMinCorrects(entry.getValue());
-					quizConstraint.setMinPoints(form.getMinPoints().get(key));
-					quizConstraint.setQuiz(quizDAO.get(Integer.parseInt(key.substring(1, key.length()))));
-					quizConstraintDAO.create(quizConstraint);
-					// contest.getQuizConstraints().add(quizConstraint);
-					break;
-				case "p":
-					final ProblemConstraint problemConstraint = new ProblemConstraint();
-					problemConstraint.setContest(contest);
-					problemConstraint.setMinCorrects(entry.getValue());
-					problemConstraint.setMinPoints(form.getMinPoints().get(key));
-					problemConstraint.setProblem(problemDAO.get(Integer.parseInt(key.substring(1, key.length()))));
-					problemConstraintDAO.create(problemConstraint);
-					// contest.getProblemConstraints().add(problemConstraint);
-					break;
-				default:
-					break;
-				}
+				if (entry.getValue() != 0 || form.getMinPoints().get(key) != 0)
+					switch (key.substring(0, 1))
+					{
+					case "q":
+						final QuizConstraint quizConstraint = new QuizConstraint();
+						quizConstraint.setContest(contest);
+						quizConstraint.setMinCorrects(entry.getValue());
+						quizConstraint.setMinPoints(form.getMinPoints().get(key));
+						quizConstraint.setQuiz(quizDAO.get(Integer.parseInt(key.substring(1, key.length()))));
+						quizConstraintDAO.create(quizConstraint);
+						// contest.getQuizConstraints().add(quizConstraint);
+						break;
+					case "p":
+						final ProblemConstraint problemConstraint = new ProblemConstraint();
+						problemConstraint.setContest(contest);
+						problemConstraint.setMinCorrects(entry.getValue());
+						problemConstraint.setMinPoints(form.getMinPoints().get(key));
+						problemConstraint.setProblem(problemDAO.get(Integer.parseInt(key.substring(1, key.length()))));
+						problemConstraintDAO.create(problemConstraint);
+						// contest.getProblemConstraints().add(problemConstraint);
+						break;
+					default:
+						break;
+					}
 			}
+		}
 		// contestDAO.update(contest);
 		return "redirect:/";
 	}

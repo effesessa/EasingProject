@@ -25,7 +25,7 @@
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion" href="#${teamsSubmit.key.team.id }"> ${teamsSubmit.key.team.name } ${teamsSubmit.key.correction ? "<div class='text-danger'> TO BE CORRECTED </div>" : "" }</a>
+											<a data-toggle="collapse" data-parent="#accordion" href="#${teamsSubmit.key.team.id }"> ${teamsSubmit.key.team.name } ${teamsSubmit.key.correction ? "<div class='text-danger'> PENDING FOR REVIEW </div>" : "" }</a>
 										</h4>
 									</div>
 									<div id="${teamsSubmit.key.team.id}" class="panel-collapse collapse ${index.first ? 'in' : ''}">

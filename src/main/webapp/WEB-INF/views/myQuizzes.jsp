@@ -37,7 +37,7 @@
 														<li class="list-group-item">
 															<a href="quizSubmits?idQuiz=${quiz.id}">${quiz.name}</a>
 															<span class="toRight">
-																<input class="btn btn-success cloneQuizBtn" type="button" value="Clone" data-id="${quiz.id}" data-toggle="modal" data-target="#cloneQuizModal" />
+																<!-- [TODO backend clone] <input class="btn btn-success cloneQuizBtn" type="button" value="Clone" data-id="${quiz.id}" data-toggle="modal" data-target="#cloneQuizModal" />-->
 																<input class="btn btn-danger deleteQuizBtn" type="button" value="Delete" data-id="${quiz.id}" />
 															</span>
 														</li>
