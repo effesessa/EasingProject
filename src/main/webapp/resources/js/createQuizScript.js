@@ -317,6 +317,12 @@ function addQuestion(question)
 	lastQuestion.find("#question1_points").val(question[2] !== undefined ? question[2] : 5);
 	lastQuestion.find("#question1_points").attr("id","question"+lastQuestionID+"_points");
 	
+	// Add Tags input if first Question is generated
+	if($("#question1_name").attr("readonly"))
+	{
+		lastQuestion.find("#question1_tags").closest(".form-group").css("display", "block");
+	}
+	
 	// Set Tags input for new Question
 	lastQuestion.find(".bootstrap-tagsinput").remove();
 	lastQuestion.find("#question1_tags").css('display', '');
@@ -428,7 +434,7 @@ function toggleForm()
 	{
 		var questionID = $(this).closest('.quizQuestion').attr('id');
 		questionID = questionID.replace(/^question/i, '');
-		
+		console.log(questionID);
 		addAnswer(questionID);
 		addAnswer(questionID);
 		addAnswer(questionID);
