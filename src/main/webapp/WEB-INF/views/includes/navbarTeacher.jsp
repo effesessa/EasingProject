@@ -341,12 +341,12 @@
 				  		<label class="form-check-label" for="show_testcase"> Do you want share input/output files with the students?</label>
 					</div>
 					<div class="form-group">
-				    	<label for="testcase">Input file or Algorithm</label>
+				    	<label for="testcase">Input file</label>
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-open-file"></i>
 							</span>
-    						<input id="testcase" name="testcase" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.dat,.dlv,.java,.cpp,.c,.zip" required>
+    						<input id="testcase" name="testcase" type="file" class="file btn btn-default btn-file" data-show-upload="true" data-show-caption="true" accept=".txt,.dat,.dlv,.zip" required>
 						</div>
 			  		</div>
 					<div class="form-group output-group hidden">
