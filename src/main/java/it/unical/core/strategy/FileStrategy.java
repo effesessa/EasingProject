@@ -40,7 +40,7 @@ public class FileStrategy extends AbstractStrategy {
 		Verdict verdict = Engine.compile(dirFilesManager);
 		if(verdict.getStatus().equals(Status.COMPILE_ERROR))
 			return verdict;
-		long timeLimit = TimeUnit.SECONDS.toMillis((long)(float)problem.getTimelimit());
+		long timeLimit = TimeUnit.MILLISECONDS.toMillis((long)(float)problem.getTimelimit());
 		verdict = Engine.run(dirFilesManager, timeLimit,
 				dirFilesManager.getTestCaseFile().getName());
 		if(Status.statusList.contains(verdict.getStatus()))

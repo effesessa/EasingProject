@@ -61,7 +61,7 @@ public class CompressStrategy extends AbstractStrategy {
 			verdict = Engine.compile(dirFilesManager);
 			if(verdict.getStatus().equals(Status.COMPILE_ERROR))
 				return verdict;
-			long timeLimit = TimeUnit.SECONDS.toMillis((long)(float)problem.getTimelimit());
+			long timeLimit = TimeUnit.MILLISECONDS.toMillis((long)(float)problem.getTimelimit());
 			verdict = Engine.run(dirFilesManager, timeLimit, 
 					dirFilesManager.getPathArchiveAndFile(file.getName()));
 			if(Status.statusList.contains(verdict.getStatus()))
